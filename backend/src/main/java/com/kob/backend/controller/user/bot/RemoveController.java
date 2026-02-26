@@ -1,7 +1,8 @@
 package com.kob.backend.controller.user.bot;
 
 
-import com.kob.backend.service.user.Bot.RemoveService;
+import com.kob.backend.pojo.Result;
+import com.kob.backend.service.userInterface.Bot.RemoveService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,7 +16,8 @@ public class RemoveController {
     private RemoveService removeService;
 
     @PostMapping("/user/bot/remove/")
-    private Map<String,String> remove(@RequestParam Map<String,String> data){
-        return removeService.remove(data);
+    private Result remove(@RequestParam Map<String,String> data){
+
+        return Result.success(removeService.remove(data));
     }
 }

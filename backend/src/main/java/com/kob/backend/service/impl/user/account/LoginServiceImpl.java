@@ -2,17 +2,14 @@ package com.kob.backend.service.impl.user.account;
 
 import com.kob.backend.pojo.User;
 import com.kob.backend.service.impl.utils.UserDetailsImpl;
-import com.kob.backend.service.user.account.LoginService;
+import com.kob.backend.service.userInterface.account.LoginService;
 import com.kob.backend.utils.JwtUtil;
-import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import javax.swing.*;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 

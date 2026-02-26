@@ -16,6 +16,7 @@
 
 package com.kob.backend.demos.web;
 
+import com.kob.backend.pojo.Result;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,11 +39,11 @@ public class BasicController {
     // http://127.0.0.1:8080/user
     @RequestMapping("/user")
     @ResponseBody
-    public User user() {
+    public Result user() {
         User user = new User();
         user.setName("theonefx");
         user.setAge(666);
-        return user;
+        return Result.success(user);
     }
 
     // http://127.0.0.1:8080/save_user?name=newName&age=11

@@ -1,6 +1,7 @@
 package com.kob.backend.controller.user.bot;
 
-import com.kob.backend.service.user.Bot.UpdateService;
+import com.kob.backend.pojo.Result;
+import com.kob.backend.service.userInterface.Bot.UpdateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,7 +15,8 @@ public class UpdateController {
     private UpdateService updateService;
 
     @PostMapping("/user/bot/update/")
-    private Map<String,String> update(@RequestParam Map<String,String> data){
-        return updateService.update(data);
+    private Result update(@RequestParam Map<String,String> data){
+
+        return Result.success(updateService.update(data));
     }
 }

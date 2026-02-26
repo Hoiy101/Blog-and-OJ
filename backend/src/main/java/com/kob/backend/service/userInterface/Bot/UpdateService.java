@@ -1,4 +1,4 @@
-package com.kob.backend.service.user.Bot;
+package com.kob.backend.service.userInterface.Bot;
 
 import java.util.Map;
 
