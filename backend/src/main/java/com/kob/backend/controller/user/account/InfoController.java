@@ -1,6 +1,5 @@
 package com.kob.backend.controller.user.account;
 
-import com.kob.backend.pojo.Result;
 import com.kob.backend.service.userInterface.account.InfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,8 +13,8 @@ public class InfoController {
     private InfoService infoService;
 
     @GetMapping("/user/account/info/")
-    public Result getinfo(){
-        return Result.success(infoService.getinfo());
+    public Map<String,String> getinfo(){
+        return infoService.getinfo();
     }
 
 }

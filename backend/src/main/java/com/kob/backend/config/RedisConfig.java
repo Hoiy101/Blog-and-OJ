@@ -37,6 +37,8 @@ public class RedisConfig {
         poolConfig.setMaxIdle(maxIdle);
         poolConfig.setMinIdle(minIdle);
 
+        poolConfig.setJmxEnabled(false);
+
         if (password != null && !password.trim().isEmpty()) {
             return new JedisPool(poolConfig, host, port, timeout, password);
         } else {

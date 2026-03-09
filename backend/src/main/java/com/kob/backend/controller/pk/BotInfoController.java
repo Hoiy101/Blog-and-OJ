@@ -1,11 +1,8 @@
 package com.kob.backend.controller.pk;
 
-import com.kob.backend.pojo.Result;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -14,10 +11,10 @@ import java.util.List;
 public class BotInfoController {
 
     @RequestMapping("/getbotinfo/")
-    public Result getBotInfo(){
+    public List getBotInfo(){
         List<String> list = new LinkedList<>();
         list.add("sword");
         list.add("tiger");
-        return Result.success(list);
+        return list;
     }
 }

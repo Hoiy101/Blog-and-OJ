@@ -1,6 +1,5 @@
 package com.kob.backend.controller.user.account;
 
-import com.kob.backend.pojo.Result;
 import com.kob.backend.service.userInterface.account.RegisterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,10 +14,10 @@ public class RegisterController {
     private RegisterService registerService;
 
     @PostMapping("/user/account/register/")
-    public Result register(@RequestParam Map<String,String> map){
+    public Map<String, String> register(@RequestParam Map<String,String> map){
         String username = map.get("username");
         String password = map.get("password");
         String confirmedPassword = map.get("confirmedPassword");
-        return  Result.success(registerService.register(username,password,confirmedPassword));
+        return  registerService.register(username,password,confirmedPassword);
     }
 }
