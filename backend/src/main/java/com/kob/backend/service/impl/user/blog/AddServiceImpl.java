@@ -1,34 +1,30 @@
-package com.kob.backend.service.impl.user.Bot;
+package com.kob.backend.service.impl.user.blog;
 
-import com.kob.backend.mapper.BotMapper;
-import com.kob.backend.pojo.Bot;
+import com.kob.backend.mapper.BlogMapper;
+import com.kob.backend.pojo.Blog;
 import com.kob.backend.pojo.User;
 import com.kob.backend.service.impl.utils.UserDetailsImpl;
-import com.kob.backend.service.user.Bot.UpdateService;
+import com.kob.backend.service.user.blog.AddService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class UpdateServiceImpl implements UpdateService {
+public class AddServiceImpl implements AddService {
     @Autowired
-    private BotMapper botMapper;
+    private BlogMapper blogMapper;
 
     @Override
-    public Map<String, String> update(Map<String, String> data) {
+    public Map<String, String> add(Map<String, String> data) {
         UsernamePasswordAuthenticationToken authenticationToken =
                 (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImpl loginUser = (UserDetailsImpl) authenticationToken.getPrincipal();
         User user = loginUser.getUser();
-
-        int bot_id = Integer.parseInt(data.get("bot_id"));
-        Bot bot = botMapper.selectById(bot_id);
 
         String title = data.get("title");
         String description = data.get("description");
@@ -65,22 +61,10 @@ public class UpdateServiceImpl implements UpdateService {
             return map;
         }
 
-        if(bot == null){
-            map.put("error_message", "bot不存在或已被删除");
-            return map;
-        }
-
-        if(!user.getId().equals(bot.getUserId())){
-            map.put("error_message", "没有权限修改此bot");
-            return map;
-        }
-
-
         Date date = new Date();
-        Bot new_bot = new Bot(bot.getId(), user.getId(), title, description, content, bot.getRating(), bot.getCreatetime(), date);
+        Blog blog = new Blog(null, user.getId(), title, description, content, date, date);
 
-        botMapper.updateById(new_bot);
-
+        blogMapper.insert(blog);
         map.put("error_message", "success");
 
         return map;

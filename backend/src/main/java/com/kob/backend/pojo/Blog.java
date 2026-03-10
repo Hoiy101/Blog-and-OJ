@@ -12,14 +12,13 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Bot {
+public class Blog {
     @TableId(type = IdType.AUTO)
     private Integer id;
     private Integer userId;
     private String title;
     private String description;
     private String content;
-    private Integer rating;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
     private Date createtime;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")

@@ -1,6 +1,6 @@
-package com.kob.backend.controller.user.bot;
+package com.kob.backend.controller.user.blog;
 
-import com.kob.backend.service.user.Bot.AddService;
+import com.kob.backend.service.user.blog.AddService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
