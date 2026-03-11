@@ -1,7 +1,7 @@
 <template>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container">
-    <router-link class="navbar-brand" :to="{name:'home'}">King Of Bots</router-link>
+    <router-link class="navbar-brand" :to="{name:'home'}">Blog Of Oj</router-link>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -24,7 +24,7 @@
           </a>
           <ul class="dropdown-menu">
             <li>
-                <router-link class="dropdown-item" :to="{name:'userbot_index'}">我的Bot</router-link>
+                <router-link class="dropdown-item" :to="{name:'userbot_index'}">我的blog</router-link>
             </li>
             <li>
                 <router-link class="dropdown-item" :to="{name:'settings_index'}">设置</router-link>

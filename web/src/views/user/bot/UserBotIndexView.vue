@@ -9,17 +9,26 @@
                 </div>
             </div>
             <div class="col-9">
-                <div class="card" style="margin-top: 20px;">
+                <nav class="custom-tabs-nav" style="margin-top: 20px; background-color: white; border-radius: 8px 8px 0 0;">
+                    <div class="nav nav-tabs" id="nav-tab" role="tablist" >
+                        <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">blog</button>
+                        <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">刷题记录</button>
+                        <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Contact</button>
+                    </div>
+                </nav>
+                <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                <div class="card">
                     <div class="card-header">
-                        <span style="font-size: 130%;">我的bot</span>
+                        <span style="font-size: 130%;">我的blog</span>
                         <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#add-bot-btn">
-                            创建bot
+                            创建blog
                         </button>
                             <div class="modal fade" id="add-bot-btn" tabindex="-1">
                             <div class="modal-dialog modal-xl">
                                 <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">创建bot</h5>
+                                    <h5 class="modal-title" id="exampleModalLabel">创建blog</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
@@ -46,8 +55,8 @@
                                 </div>
                                 <div class="modal-footer">
                                     <div class="error-message">{{botadd.error_message}}</div>
-                                    <button type="button" class="btn btn-primary" @click="add_bot">创建</button>
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                                    <button type="button" class="btn btn-primary btn-lg" @click="add_bot">创建</button>
+                                    <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">取消</button>
                                 </div>
                                 </div>
                             </div>
@@ -55,32 +64,26 @@
                     </div>
                     <div class="card-body">
                         <table class="table table-striped table-hover">
-                           <thead>
-                                <tr>
-                                    <th>名称</th>
-                                    <th>创建时间</th>
-                                    <th>修改时间</th>
-                                    <th>操作</th>
-                                </tr>
-                            </thead>
                             <tbody>
                                 <tr v-for="bot in bots" :key="bot.id">
-                                    <td>{{ bot.title }}</td>
-                                    <td>{{ bot.createtime }}</td>
-                                    <td>{{ bot.modifytime }}</td>
+                                    <h5 class="card-title">{{ bot.title }}</h5>
+                                        <h6 class="card-subtitle mb-2 text-muted">
+                                            <small>创建于: {{ bot.createtime }} | 更新于: {{ bot.createtime }}</small>
+                                        </h6>
+                                        <p class="card-text">{{ bot.description }}</p>
                                     <td>
-                                        <button class="btn btn-sm btn btn-primary" style="margin-right: 10px;" data-bs-toggle="modal" :data-bs-target="'#update-bot-modal-' + bot.id">编辑</button>
+                                        <button class="btn btn-sm btn btn-primary btn-lg" style="margin-right: 10px;" data-bs-toggle="modal" :data-bs-target="'#update-bot-modal-' + bot.id">编辑</button>
 
                                             <div class="modal fade" :id="'update-bot-modal-' + bot.id" tabindex="-1">
                                             <div class="modal-dialog modal-xl">
                                                 <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalLabel">创建bot</h5>
+                                                    <h5 class="modal-title" id="exampleModalLabel">创建blog</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
                                                     <div class="mb-3">
-                                                        <label for="add-bot-title" class="form-label">名称</label>
+                                                        <label for="add-bot-title" class="form-label">标题</label>
                                                         <input v-model="bot.title" type="text" class="form-control" id="add-bot-title" placeholder="请填写bot名称">
                                                     </div>
                                                     <div class="mb-3">
@@ -109,17 +112,17 @@
                                             </div>
                                             </div>
 
-                                        <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#romver">删除</button>
+                                        <button class="btn btn-sm btn-danger btn-lg" data-bs-toggle="modal" data-bs-target="#romver">删除</button>
 
                                         <div class="modal fade" id="romver" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">删除bot</h5>
+                                                <h5 class="modal-title" id="exampleModalLabel">删除blog</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
-                                                是否确认删除bot {{ bot.title }}
+                                                是否确认删除blog {{ bot.title }}
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-primary" @click="remove_bot(bot)">确认</button>
@@ -135,6 +138,37 @@
                         </table>
                     </div>
                 </div>
+                </div>
+                <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                    <div class="card">
+                        <div class="card-header">
+                            <span style="font-size: 130%;">我的刷题记录</span>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>题号</th>
+                                        <th>标题</th>
+                                        <th>状态</th>
+                                        <th>分数</th>
+                                        <th>提交时间</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="record in records" :key="record.id">
+                                        <td>{{ record.questionId }}</td>
+                                        <td>{{ record.title }}</td>
+                                        <td>{{ record.state }}</td>
+                                        <td>{{ record.score }}</td>
+                                        <td>{{ record.createtime }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+             </div>
             </div>
         </div>
     </div>
@@ -169,6 +203,7 @@ export default{
     setup(){
         const store = useStore();
         let bots = ref([]);
+        let records = ref([]);
 
         const botadd = reactive({
             title: "",  
@@ -189,8 +224,20 @@ export default{
                 }
             })
         }
-
         refresh_bots();
+        const getlist_record = () => {
+            $.ajax({
+                url : "http://127.0.0.1:3000/oj/record/getlist/",
+                type : "get",
+                headers: {
+                    Authorization: "Bearer " + store.state.user.token,
+                },
+                success(resp){
+                    records.value = resp;
+                }
+            })
+        }
+        getlist_record();
         
         const add_bot = () => {
             botadd.error_message = "";
@@ -219,6 +266,8 @@ export default{
                 }
             })
         }
+
+        
 
         const remove_bot = (bot) => {
             $.ajax({
@@ -271,6 +320,8 @@ export default{
             add_bot,
             remove_bot,
             update_bot,
+            getlist_record,
+            records,
         }
 
     }
