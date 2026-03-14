@@ -66,11 +66,13 @@
                         <table class="table table-striped table-hover">
                             <tbody>
                                 <tr v-for="bot in bots" :key="bot.id">
+                                    <td>
                                     <h5 class="card-title">{{ bot.title }}</h5>
                                         <h6 class="card-subtitle mb-2 text-muted">
-                                            <small>创建于: {{ bot.createtime }} | 更新于: {{ bot.createtime }}</small>
+                                            <small>创建于: {{ bot.createtime }} | 更新于: {{ bot.modifytime }}</small>
                                         </h6>
                                         <p class="card-text">{{ bot.description }}</p>
+                                    </td>
                                     <td>
                                         <button class="btn btn-sm btn btn-primary btn-lg" style="margin-right: 10px;" data-bs-toggle="modal" :data-bs-target="'#update-bot-modal-' + bot.id">编辑</button>
 
