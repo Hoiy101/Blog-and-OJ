@@ -24,7 +24,7 @@
           </a>
           <ul class="dropdown-menu">
             <li>
-                <router-link class="dropdown-item" :to="{name:'userbot_index'}">我的blog</router-link>
+                <router-link class="dropdown-item" :to="{name:'userbot_index'}">个人空间</router-link>
             </li>
             <li>
                 <router-link class="dropdown-item" :to="{name:'settings_index'}">设置</router-link>

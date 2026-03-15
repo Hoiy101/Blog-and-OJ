@@ -58,7 +58,7 @@ const routes = [
     component:UserAccountRegisterView,
     meta: { requiresAuth: false },
   },
-    {
+  {
     path:"/:CatchAll(.*)",
     name:"NotFound_index",
     component:NotFound,
