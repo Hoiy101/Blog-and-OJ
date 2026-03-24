@@ -8,6 +8,7 @@ import UserSettingsView from '@/views/user/bot/settings/UserSettingsView.vue'
 import UserAccountLoginView from '@/views/user/bot/account/UserAccountLoginView.vue'
 import UserAccountRegisterView from '@/views/user/bot/account/UserAccountRegisterView.vue'
 import store from '@/store/index.js'
+import QuestionDetails from '@/views/ranklist/QuestionDetails.vue'
 
 const routes = [
   {
@@ -56,6 +57,12 @@ const routes = [
     path:"/user/account/register/",
     name:"user_account_register",
     component:UserAccountRegisterView,
+    meta: { requiresAuth: false },
+  },
+    {
+    path:"/oj/details/",
+    name:"Details",
+    component:QuestionDetails,  
     meta: { requiresAuth: false },
   },
   {

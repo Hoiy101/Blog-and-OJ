@@ -1,7 +1,7 @@
-package com.kob.backend.controller.oj;
+package com.kob.backend.controller.oj.record;
 
 
-import com.kob.backend.service.userInterface.oj.AddRecordService;
+import com.kob.backend.service.oj.record.AddRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;

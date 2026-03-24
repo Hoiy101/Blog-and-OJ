@@ -1,4 +1,4 @@
-package com.kob.backend.service.userInterface.oj;
+package com.kob.backend.service.oj.record;
 
 import com.kob.backend.pojo.RecordOfQuestion;
 

@@ -1,11 +1,11 @@
-package com.kob.backend.service.impl.oj;
+package com.kob.backend.service.impl.oj.record;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.kob.backend.mapper.RecordOfQuestionMapper;
 import com.kob.backend.pojo.RecordOfQuestion;
 import com.kob.backend.pojo.User;
 import com.kob.backend.service.impl.utils.UserDetailsImpl;
-import com.kob.backend.service.userInterface.oj.GetListRecordService;
+import com.kob.backend.service.oj.record.GetListRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;

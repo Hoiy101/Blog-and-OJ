@@ -1,7 +1,7 @@
-package com.kob.backend.controller.oj;
+package com.kob.backend.controller.oj.record;
 
 import com.kob.backend.pojo.RecordOfQuestion;
-import com.kob.backend.service.userInterface.oj.GetListRecordService;
+import com.kob.backend.service.oj.record.GetListRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
