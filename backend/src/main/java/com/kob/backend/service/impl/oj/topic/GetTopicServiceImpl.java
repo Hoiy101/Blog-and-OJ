@@ -2,8 +2,12 @@ package com.kob.backend.service.impl.oj.topic;
 
 import com.kob.backend.mapper.TopicMapper;
 import com.kob.backend.pojo.Topic;
+import com.kob.backend.pojo.User;
+import com.kob.backend.service.impl.utils.UserDetailsImpl;
 import com.kob.backend.service.oj.topic.GetTopicService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -24,6 +28,11 @@ public class GetTopicServiceImpl implements GetTopicService {
         map.put("star", topic.getStar());
         map.put("time_limit", topic.getTimeLimit().toString());
         map.put("mem_limit", topic.getMemLimit().toString());
+        map.put("input_format",  topic.getInputFormat());
+        map.put("output_format",  topic.getOutputFormat());
+        map.put("sample_input", topic.getSampleInput());
+        map.put("sample_output", topic.getSampleOutput());
+        map.put("hint",  topic.getHint());
         return map;
     }
 }

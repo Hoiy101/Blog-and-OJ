@@ -4,7 +4,7 @@
             <!-- 卡片头部 -->
             <div class="card-header border-bottom bg-light">
                 <div class="row align-items-center">
-                    <div class="col-md-8">
+                    <div class="col-md-4">
                         <h5 class="mb-0">题库列表</h5>
                         <p class="text-muted mb-0 small">共 {{ problems.length }} 道题目</p>
                     </div>
@@ -23,9 +23,75 @@
                             </button>
                         </div>
                     </div>
+                    <div class="col-md-4">
+                        <button type="button" class="btn btn-primary" style="margin-left: auto; right: 0;" 
+                                data-bs-toggle="modal" data-bs-target="#add-bot-btn">
+                            添加题目
+                        </button>
+                        <div class="modal fade" id="add-bot-btn" tabindex="-1">
+                            <div class="modal-dialog modal-xl">
+                                <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">创建题目</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label for="add-bot-title" class="form-label">测试点数量</label>
+                                        <input v-model="topicadd.test_point" type="text" class="form-control" id="add-bot-title" placeholder="请填写测试点数量">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="add-bot-description" class="form-label">题目标题</label>
+                                        <textarea v-model="topicadd.title" class="form-control" id="add-bot-description" placeholder="请填写题目标题" rows="2"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="add-bot-description" class="form-label">题目简介</label>
+                                        <textarea v-model="topicadd.description" class="form-control" id="add-bot-description" placeholder="请填写题目简介" rows="2"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="add-bot-description" class="form-label">题目难度</label>
+                                        <textarea v-model="topicadd.star" class="form-control" id="add-bot-description" placeholder="难度为1-5星，1为简单，5为困难" rows="2"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="add-bot-description" class="form-label">时间限制</label>
+                                        <textarea v-model="topicadd.time_limit" class="form-control" id="add-bot-description" placeholder="请填写时间限制" rows="2"></textarea>
+                                    </div>
+                                   <div class="mb-3">
+                                        <label for="add-bot-description" class="form-label">内存限制</label>
+                                        <textarea v-model="topicadd.mem_limit" class="form-control" id="add-bot-description" placeholder="请填写内存限制" rows="2"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="add-bot-description" class="form-label">输入格式</label>
+                                        <textarea v-model="topicadd.input_format" class="form-control" id="add-bot-description" placeholder="请填写输入格式" rows="2"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="add-bot-description" class="form-label">输出格式</label>
+                                        <textarea v-model="topicadd.output_format" class="form-control" id="add-bot-description" placeholder="请填写输出格式" rows="2"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="add-bot-description" class="form-label">样例输入</label>
+                                        <textarea v-model="topicadd.sample_input" class="form-control" id="add-bot-description" placeholder="请填写样例输入" rows="2"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="add-bot-description" class="form-label">样例输出</label>
+                                        <textarea v-model="topicadd.sample_output" class="form-control" id="add-bot-description" placeholder="请填写样例输出" rows="2"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="add-bot-description" class="form-label">题目提示</label>
+                                        <textarea v-model="topicadd.hint" class="form-control" id="add-bot-description" placeholder="请填写样例输出" rows="2"></textarea>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <div class="error-message">{{topicadd.error_message}}</div>
+                                    <button type="button" class="btn btn-primary btn-lg" @click="addtopic">创建</button>
+                                    <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">取消</button>
+                                </div>
+                                </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-
+        </div>
             <!-- 题目列表 -->
             <div class="card-body p-0 problem-list-container">
                 <!-- 加载状态 -->
@@ -115,8 +181,9 @@
 </template>
 
 <script>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, reactive} from 'vue'
 import $ from 'jquery'
+import { Modal } from 'bootstrap/dist/js/bootstrap';
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router';
 
@@ -130,6 +197,21 @@ export default {
         const searchKeyword = ref('')
         const error = ref(null)
         const router = useRouter();
+
+        const topicadd = reactive({
+            test_point: "",
+            title: "",  
+            description: "",
+            star:"",
+            time_limit:"",
+            mem_limit:"",
+            input_format:"",
+            output_format:"",
+            sample_input:"",
+            sample_output:"",
+            hint:"",
+            error_message: "",
+        });
 
         // 计算属性：根据搜索关键词过滤题目
         const filteredProblems = computed(() => {
@@ -183,7 +265,7 @@ export default {
             error.value = null
             
             console.log('开始获取题目列表...')
-            
+            topicadd.error_message = ""
             $.ajax({
                 url: "http://127.0.0.1:3000/oj/topic/getlist/",
                 type: "GET",
@@ -204,8 +286,6 @@ export default {
                         console.log('成功获取到', resp.list.length, '道题目')
                     } else {
                         console.warn('API返回数据格式异常，使用模拟数据')
-                        // 使用模拟数据
-                        problems.value = generateMockProblems(15)
                     }
                     
                     if (problems.value.length === 0) {
@@ -227,10 +307,6 @@ export default {
                     }
                     
                     error.value = errorMsg
-                    
-                    // 使用模拟数据
-                    console.log('使用模拟数据进行测试')
-                    problems.value = generateMockProblems(10)
                 },
                 complete() {
                     loading.value = false
@@ -238,55 +314,48 @@ export default {
             })
         }
 
-        // 生成模拟题目数据
-        const generateMockProblems = (count) => {
-            const mockTitles = [
-                '两数之和', '反转链表', '有效的括号', '合并两个有序链表', 
-                '最大子数组和', '爬楼梯', '二叉树的层序遍历', '最长公共前缀',
-                '罗马数字转整数', '回文数', '合并区间', '三数之和',
-                '盛最多水的容器', '括号生成', '全排列', '旋转图像'
-            ]
-            
-            const mockDescriptions = [
-                '给定一个整数数组和一个目标值，找出数组中和为目标值的两个数。',
-                '反转一个单链表。',
-                '给定一个只包括括号的字符串，判断字符串是否有效。',
-                '将两个有序链表合并为一个新的有序链表并返回。',
-                '给定一个整数数组，找到一个具有最大和的连续子数组。',
-                '假设你正在爬楼梯。需要n阶你才能到达楼顶。',
-                '给你一个二叉树，请你返回其按层序遍历得到的节点值。',
-                '编写一个函数来查找字符串数组中的最长公共前缀。',
-                '罗马数字包含七种字符，将其转换成整数。',
-                '判断一个整数是否是回文数。',
-                '给出一个区间的集合，请合并所有重叠的区间。',
-                '给你一个包含n个整数的数组，判断是否存在三个元素使和为0。',
-                '给你n个非负整数，每个数代表坐标中的一个点，找出其中两个点，使得它们与x轴共同构成的容器可以容纳最多的水。',
-                '数字n代表生成括号的对数，请你设计一个函数，生成所有可能的并且有效的括号组合。',
-                '给定一个没有重复数字的序列，返回其所有可能的全排列。',
-                '给定一个n×n的二维矩阵表示一个图像，将图像顺时针旋转90度。'
-            ]
-            
-            const problems = []
-            for (let i = 1; i <= count; i++) {
-                const titleIndex = (i - 1) % mockTitles.length
-                const descriptionIndex = (i - 1) % mockDescriptions.length
-                const star = Math.floor(Math.random() * 5) + 1 // 1-5星难度
-                
-                problems.push({
-                    id: 1000 + i,
-                    testPoint: Math.floor(Math.random() * 10) + 1,
-                    title: mockTitles[titleIndex],
-                    description: mockDescriptions[descriptionIndex],
-                    star: star.toString(),
-                    timeLimit: Math.floor(Math.random() * 3) + 1, // 1-3秒
-                    memLimit: Math.floor(Math.random() * 256) + 64 // 64-320MB
-                })
-            }
-            
-            return problems
+        const addtopic = () =>{
+            $.ajax({
+                url: "http://127.0.0.1:3000/oj/topic/add/",
+                type: "post",
+                headers: {
+                    Authorization: "Bearer " + store.state.user.token,
+                },
+                data: {
+                    test_point: topicadd.test_point,
+                    title: topicadd.title,
+                    description: topicadd.description,
+                    star:topicadd.star,
+                    time_limit:topicadd.time_limit,
+                    mem_limit:topicadd.mem_limit,
+                    input_format:topicadd.input_format,
+                    output_format:topicadd.output_format,
+                    sample_input:topicadd.sample_input,
+                    sample_output:topicadd.sample_output,
+                    hint:topicadd.hint,
+                },
+                success(resp){
+                    if(resp.error_message == "success"){
+                      topicadd.test_point = "",
+                      topicadd.title = "",
+                      topicadd.description = "",
+                      topicadd.star = "",
+                      topicadd.time_limit = "",
+                      topicadd.mem_limit = "",
+                      topicadd.input_format = "",
+                      topicadd.output_format = "",
+                      topicadd.sample_input = "",
+                      topicadd.sample_output = "",
+                      topicadd.hint = "",
+                      Modal.getInstance("#add-bot-btn").hide();  
+                      getProblemList()
+                    }
+                    else{
+                        topicadd.error_message = resp.error_message
+                    }
+                }
+            })
         }
-
-        // 搜索功能（占位，实际功能可后续实现）
         const handleSearch = () => {
             console.log('搜索关键词:', searchKeyword.value)
             // 搜索功能已通过computed属性filteredProblems实现
@@ -306,7 +375,9 @@ export default {
             getDifficultyText,
             getProblemList,
             handleSearch,
-            handleView
+            handleView,
+            topicadd,
+            addtopic,
         }
     }
 }
@@ -418,6 +489,9 @@ export default {
     vertical-align: middle;
 }
 
+.input-group {
+    margin: auto;
+}
 /* 题号样式 */
 .problem-id {
     font-size: 0.9rem;
@@ -523,6 +597,10 @@ export default {
     animation: spin 1s linear infinite;
     margin: 2rem auto;
 }
+div.error-message{
+    color: red;
+}
+
 
 @keyframes spin {
     0% { transform: rotate(0deg); }

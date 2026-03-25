@@ -18,4 +18,9 @@ public class Topic {
     String star;
     Integer timeLimit;
     Integer memLimit;
+    String inputFormat;
+    String outputFormat;
+    String sampleInput;
+    String sampleOutput;
+    String hint;
 }

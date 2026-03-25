@@ -324,19 +324,19 @@ export default {
                 success(resp) {
                     console.log('题目详情API响应:', resp)
                     if (resp && (resp.id || resp.title)) {
-                        // 根据后端返回的map格式赋值
+                        console.log(resp)
                         problem.value = {
                             id: resp.id || problemId,
                             title: resp.title || '无标题',
                             description: resp.description || '暂无题目描述',
                             star: resp.star || '3',
-                            timeLimit: resp.timeLimit || 1000,
-                            memLimit: resp.memLimit || 256,
-                            testPoint: resp.testPoint || 0,
-                            inputFormat: resp.inputFormat || '标准输入',
-                            outputFormat: resp.outputFormat || '标准输出',
-                            sampleInput: resp.sampleInput || '',
-                            sampleOutput: resp.sampleOutput || '',
+                            timeLimit: resp.time_limit || 1000,
+                            memLimit: resp.mem_limit || 256,
+                            testPoint: resp.test_point || 0,
+                            inputFormat: resp.input_format || '标准输入',
+                            outputFormat: resp.output_format || '标准输出',
+                            sampleInput: resp.sample_input || '',
+                            sampleOutput: resp.sample_output || '',
                             hint: resp.hint || ''
                         }
                         
