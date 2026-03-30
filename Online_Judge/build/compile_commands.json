@@ -1,0 +1,74 @@
+[
+{
+  "directory": "/home/zz/Desktop/project/Online_Judge/build",
+  "command": "/usr/bin/g++  -I/home/zz/Desktop/project/Online_Judge/Compile/compile_server -I/home/zz/Desktop/project/Online_Judge/Compile -I/home/zz/Desktop/project/Online_Judge/Common/Http -I/home/zz/Desktop/project/Online_Judge/Common/Util -I/home/zz/Desktop/project/Online_Judge/Common/Log -I/home/zz/Desktop/project/Online_Judge/Common/Pool -isystem /usr/include/jsoncpp -g -std=gnu++17 -o CMakeFiles/compile_server.dir/home/zz/Desktop/project/Online_Judge/Common/Log/Buffer.cpp.o -c /home/zz/Desktop/project/Online_Judge/Common/Log/Buffer.cpp",
+  "file": "/home/zz/Desktop/project/Online_Judge/Common/Log/Buffer.cpp",
+  "output": "CMakeFiles/compile_server.dir/home/zz/Desktop/project/Online_Judge/Common/Log/Buffer.cpp.o"
+},
+{
+  "directory": "/home/zz/Desktop/project/Online_Judge/build",
+  "command": "/usr/bin/g++  -I/home/zz/Desktop/project/Online_Judge/Compile/compile_server -I/home/zz/Desktop/project/Online_Judge/Compile -I/home/zz/Desktop/project/Online_Judge/Common/Http -I/home/zz/Desktop/project/Online_Judge/Common/Util -I/home/zz/Desktop/project/Online_Judge/Common/Log -I/home/zz/Desktop/project/Online_Judge/Common/Pool -isystem /usr/include/jsoncpp -g -std=gnu++17 -o CMakeFiles/compile_server.dir/home/zz/Desktop/project/Online_Judge/Common/Log/Format.cpp.o -c /home/zz/Desktop/project/Online_Judge/Common/Log/Format.cpp",
+  "file": "/home/zz/Desktop/project/Online_Judge/Common/Log/Format.cpp",
+  "output": "CMakeFiles/compile_server.dir/home/zz/Desktop/project/Online_Judge/Common/Log/Format.cpp.o"
+},
+{
+  "directory": "/home/zz/Desktop/project/Online_Judge/build",
+  "command": "/usr/bin/g++  -I/home/zz/Desktop/project/Online_Judge/Compile/compile_server -I/home/zz/Desktop/project/Online_Judge/Compile -I/home/zz/Desktop/project/Online_Judge/Common/Http -I/home/zz/Desktop/project/Online_Judge/Common/Util -I/home/zz/Desktop/project/Online_Judge/Common/Log -I/home/zz/Desktop/project/Online_Judge/Common/Pool -isystem /usr/include/jsoncpp -g -std=gnu++17 -o CMakeFiles/compile_server.dir/home/zz/Desktop/project/Online_Judge/Common/Log/Logger.cpp.o -c /home/zz/Desktop/project/Online_Judge/Common/Log/Logger.cpp",
+  "file": "/home/zz/Desktop/project/Online_Judge/Common/Log/Logger.cpp",
+  "output": "CMakeFiles/compile_server.dir/home/zz/Desktop/project/Online_Judge/Common/Log/Logger.cpp.o"
+},
+{
+  "directory": "/home/zz/Desktop/project/Online_Judge/build",
+  "command": "/usr/bin/g++  -I/home/zz/Desktop/project/Online_Judge/Compile/compile_server -I/home/zz/Desktop/project/Online_Judge/Compile -I/home/zz/Desktop/project/Online_Judge/Common/Http -I/home/zz/Desktop/project/Online_Judge/Common/Util -I/home/zz/Desktop/project/Online_Judge/Common/Log -I/home/zz/Desktop/project/Online_Judge/Common/Pool -isystem /usr/include/jsoncpp -g -std=gnu++17 -o CMakeFiles/compile_server.dir/home/zz/Desktop/project/Online_Judge/Common/Log/Looper.cpp.o -c /home/zz/Desktop/project/Online_Judge/Common/Log/Looper.cpp",
+  "file": "/home/zz/Desktop/project/Online_Judge/Common/Log/Looper.cpp",
+  "output": "CMakeFiles/compile_server.dir/home/zz/Desktop/project/Online_Judge/Common/Log/Looper.cpp.o"
+},
+{
+  "directory": "/home/zz/Desktop/project/Online_Judge/build",
+  "command": "/usr/bin/g++  -I/home/zz/Desktop/project/Online_Judge/Compile/compile_server -I/home/zz/Desktop/project/Online_Judge/Compile -I/home/zz/Desktop/project/Online_Judge/Common/Http -I/home/zz/Desktop/project/Online_Judge/Common/Util -I/home/zz/Desktop/project/Online_Judge/Common/Log -I/home/zz/Desktop/project/Online_Judge/Common/Pool -isystem /usr/include/jsoncpp -g -std=gnu++17 -o CMakeFiles/compile_server.dir/home/zz/Desktop/project/Online_Judge/Common/Log/Sink.cpp.o -c /home/zz/Desktop/project/Online_Judge/Common/Log/Sink.cpp",
+  "file": "/home/zz/Desktop/project/Online_Judge/Common/Log/Sink.cpp",
+  "output": "CMakeFiles/compile_server.dir/home/zz/Desktop/project/Online_Judge/Common/Log/Sink.cpp.o"
+},
+{
+  "directory": "/home/zz/Desktop/project/Online_Judge/build",
+  "command": "/usr/bin/g++  -I/home/zz/Desktop/project/Online_Judge/Compile/compile_server -I/home/zz/Desktop/project/Online_Judge/Compile -I/home/zz/Desktop/project/Online_Judge/Common/Http -I/home/zz/Desktop/project/Online_Judge/Common/Util -I/home/zz/Desktop/project/Online_Judge/Common/Log -I/home/zz/Desktop/project/Online_Judge/Common/Pool -isystem /usr/include/jsoncpp -g -std=gnu++17 -o CMakeFiles/compile_server.dir/home/zz/Desktop/project/Online_Judge/Common/Log/util.cpp.o -c /home/zz/Desktop/project/Online_Judge/Common/Log/util.cpp",
+  "file": "/home/zz/Desktop/project/Online_Judge/Common/Log/util.cpp",
+  "output": "CMakeFiles/compile_server.dir/home/zz/Desktop/project/Online_Judge/Common/Log/util.cpp.o"
+},
+{
+  "directory": "/home/zz/Desktop/project/Online_Judge/build",
+  "command": "/usr/bin/g++  -I/home/zz/Desktop/project/Online_Judge/Compile/compile_server -I/home/zz/Desktop/project/Online_Judge/Compile -I/home/zz/Desktop/project/Online_Judge/Common/Http -I/home/zz/Desktop/project/Online_Judge/Common/Util -I/home/zz/Desktop/project/Online_Judge/Common/Log -I/home/zz/Desktop/project/Online_Judge/Common/Pool -isystem /usr/include/jsoncpp -g -std=gnu++17 -o CMakeFiles/compile_server.dir/home/zz/Desktop/project/Online_Judge/Common/Util/Tool.cpp.o -c /home/zz/Desktop/project/Online_Judge/Common/Util/Tool.cpp",
+  "file": "/home/zz/Desktop/project/Online_Judge/Common/Util/Tool.cpp",
+  "output": "CMakeFiles/compile_server.dir/home/zz/Desktop/project/Online_Judge/Common/Util/Tool.cpp.o"
+},
+{
+  "directory": "/home/zz/Desktop/project/Online_Judge/build",
+  "command": "/usr/bin/g++  -I/home/zz/Desktop/project/Online_Judge/Compile/compile_server -I/home/zz/Desktop/project/Online_Judge/Compile -I/home/zz/Desktop/project/Online_Judge/Common/Http -I/home/zz/Desktop/project/Online_Judge/Common/Util -I/home/zz/Desktop/project/Online_Judge/Common/Log -I/home/zz/Desktop/project/Online_Judge/Common/Pool -isystem /usr/include/jsoncpp -g -std=gnu++17 -o CMakeFiles/compile_server.dir/home/zz/Desktop/project/Online_Judge/Common/Pool/ThreadPool.cpp.o -c /home/zz/Desktop/project/Online_Judge/Common/Pool/ThreadPool.cpp",
+  "file": "/home/zz/Desktop/project/Online_Judge/Common/Pool/ThreadPool.cpp",
+  "output": "CMakeFiles/compile_server.dir/home/zz/Desktop/project/Online_Judge/Common/Pool/ThreadPool.cpp.o"
+},
+{
+  "directory": "/home/zz/Desktop/project/Online_Judge/build",
+  "command": "/usr/bin/g++  -I/home/zz/Desktop/project/Online_Judge/Compile/compile_server -I/home/zz/Desktop/project/Online_Judge/Compile -I/home/zz/Desktop/project/Online_Judge/Common/Http -I/home/zz/Desktop/project/Online_Judge/Common/Util -I/home/zz/Desktop/project/Online_Judge/Common/Log -I/home/zz/Desktop/project/Online_Judge/Common/Pool -isystem /usr/include/jsoncpp -g -std=gnu++17 -o CMakeFiles/compile_server.dir/Compile_Run.cpp.o -c /home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp",
+  "file": "/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp",
+  "output": "CMakeFiles/compile_server.dir/Compile_Run.cpp.o"
+},
+{
+  "directory": "/home/zz/Desktop/project/Online_Judge/build",
+  "command": "/usr/bin/g++  -I/home/zz/Desktop/project/Online_Judge/Compile/compile_server -I/home/zz/Desktop/project/Online_Judge/Compile -I/home/zz/Desktop/project/Online_Judge/Common/Http -I/home/zz/Desktop/project/Online_Judge/Common/Util -I/home/zz/Desktop/project/Online_Judge/Common/Log -I/home/zz/Desktop/project/Online_Judge/Common/Pool -isystem /usr/include/jsoncpp -g -std=gnu++17 -o CMakeFiles/compile_server.dir/Compile_Server.cpp.o -c /home/zz/Desktop/project/Online_Judge/Compile/Compile_Server.cpp",
+  "file": "/home/zz/Desktop/project/Online_Judge/Compile/Compile_Server.cpp",
+  "output": "CMakeFiles/compile_server.dir/Compile_Server.cpp.o"
+},
+{
+  "directory": "/home/zz/Desktop/project/Online_Judge/build",
+  "command": "/usr/bin/g++  -I/home/zz/Desktop/project/Online_Judge/Compile/compile_server -I/home/zz/Desktop/project/Online_Judge/Compile -I/home/zz/Desktop/project/Online_Judge/Common/Http -I/home/zz/Desktop/project/Online_Judge/Common/Util -I/home/zz/Desktop/project/Online_Judge/Common/Log -I/home/zz/Desktop/project/Online_Judge/Common/Pool -isystem /usr/include/jsoncpp -g -std=gnu++17 -o CMakeFiles/compile_server.dir/Compiler.cpp.o -c /home/zz/Desktop/project/Online_Judge/Compile/Compiler.cpp",
+  "file": "/home/zz/Desktop/project/Online_Judge/Compile/Compiler.cpp",
+  "output": "CMakeFiles/compile_server.dir/Compiler.cpp.o"
+},
+{
+  "directory": "/home/zz/Desktop/project/Online_Judge/build",
+  "command": "/usr/bin/g++  -I/home/zz/Desktop/project/Online_Judge/Compile/compile_server -I/home/zz/Desktop/project/Online_Judge/Compile -I/home/zz/Desktop/project/Online_Judge/Common/Http -I/home/zz/Desktop/project/Online_Judge/Common/Util -I/home/zz/Desktop/project/Online_Judge/Common/Log -I/home/zz/Desktop/project/Online_Judge/Common/Pool -isystem /usr/include/jsoncpp -g -std=gnu++17 -o CMakeFiles/compile_server.dir/Runner.cpp.o -c /home/zz/Desktop/project/Online_Judge/Compile/Runner.cpp",
+  "file": "/home/zz/Desktop/project/Online_Judge/Compile/Runner.cpp",
+  "output": "CMakeFiles/compile_server.dir/Runner.cpp.o"
+}
+]

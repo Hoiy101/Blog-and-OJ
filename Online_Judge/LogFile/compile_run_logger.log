@@ -1,0 +1,471 @@
+[23:17:54][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:77][开始提取数据]
+[23:17:54][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:81][提取数据code成功]
+[23:17:54][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:84][提取数据input成功]
+[23:17:54][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:87][提取数据cpu_limit成功]
+[23:17:54][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:90][提取数据mem_limit成功]
+[23:19:44][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:77][开始提取数据]
+[23:19:44][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:81][提取数据code成功]
+[23:19:44][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:84][提取数据input成功]
+[23:19:44][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:87][提取数据cpu_limit成功]
+[23:19:44][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:90][提取数据mem_limit成功]
+[23:34:31][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:101][文件名称:./temp/.cpp]
+[23:36:33][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:101][文件路径+名称:./temp/.cpp]
+[23:36:33][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:102][源文件名称:1771083393810_1]
+[23:39:08][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:101][文件路径+名称:./temp/.cpp]
+[23:39:08][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:102][源文件名称:1771083548145_1]
+[23:42:28][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:101][文件路径+名称:./temp/.cpp]
+[23:42:28][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:102][源文件名称:1771083748102_1]
+[23:53:36][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:101][文件路径+名称:/home/zz/Desktop/project/Online_Judge/Compile/temp/1771084416074_1.cpp]
+[23:53:36][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:102][源文件名称:1771084416074_1]
+[23:55:10][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:101][文件路径+名称:/home/zz/Desktop/project/Online_Judge/Compile/temp/1771084510602_2.cpp]
+[23:55:10][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:102][源文件名称:1771084510602_2]
+[21:43:07][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:83][code = #include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+class Solution
+{
+public:
+    int Max(const vector<int> &v)
+    {
+        std::cout << "hello , wrold" << std::endl;
+        return 0;
+    }
+};
+// 测试用例
+
+#ifndef COMPILER_ONLINE
+// 下面的代码，我们不想让编译器编译的时候，保留它，而是裁剪掉（g++ -D COMPILER_ONLINE）
+// 仅仅是为了让我们设计测试用例的时候，不要报错
+#include "header.cpp";
+#endif
+
+void Test1()
+{
+    std::vector<int> v = {1, 2, 3, 4, 5, 6};
+    int max = Solution().Max(v);
+    
+    if (max == 6)
+    {
+        std::cout << "Test 1 ... OK" << std::endl;
+    }
+    else
+    {
+        std::cout << "Test 1 ... Failed" << std::endl;
+    }
+}
+
+
+void Test2()
+{
+    std::vector<int> v = {-1, -2, -3, -4, -5, -6};
+    int max = Solution().Max(v);
+    
+    if (max == -1)
+    {
+        std::cout << "Test 2 ... OK" << std::endl;
+    }
+    else
+    {
+        std::cout << "Test 2 ... Failed" << std::endl;
+    }
+}
+
+int main()
+{
+    Test1();
+    Test2();
+
+    return 0;
+}
+input = 
+cpu_limit = 1
+mem_limit = 30000]
+[21:43:07][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:102][文件路径+名称:/home/zz/Desktop/project/Online_Judge/Compile/temp/1771767787603_1.cpp]
+[21:43:07][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:103][源文件名称:1771767787603_1]
+[21:28:51][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:83][code = #include <iostream>
+int main(void)
+{
+    std::cout << "hello , world" << std::endl;
+    return 0;
+}
+
+input = 
+cpu_limit = 1
+mem_limit = 30000
+number = 1]
+[21:37:11][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:83][code = #include <iostream>
+int main(void)
+{
+    std::cout << "hello , world" << std::endl;
+    return 0;
+}
+
+input = 
+cpu_limit = 1
+mem_limit = 30000
+number = 1]
+[21:44:09][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:83][code = #include <iostream>
+int main(void)
+{
+    std::cout << "hello , world" << std::endl;
+    return 0;
+}
+
+input = 
+cpu_limit = 1
+mem_limit = 30000
+number = 1]
+[21:57:30][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:83][code = #include <iostream>
+int main(void)
+{
+    std::cout << "hello , world" << std::endl;
+    return 0;
+}
+
+input = 
+cpu_limit = 1
+mem_limit = 30000
+number = 1]
+[21:58:07][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:83][code = #include <iostream>
+int main(void)
+{
+    std::cout << "hello , world" << std::endl;
+    return 0;
+}
+
+input = 
+cpu_limit = 1
+mem_limit = 30000
+number = 1]
+[21:58:08][compile_run_logger][ERROR][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:157][读取标准错误文件失败]
+[22:02:39][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:83][code = #include <iostream>
+int main(void)
+{
+    std::cout << "hello , world" << std::endl;
+    return 0;
+}
+
+input = 
+cpu_limit = 1
+mem_limit = 30000
+number = 1]
+[22:02:40][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:154][stdout = ]
+[22:02:40][compile_run_logger][ERROR][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:159][读取标准错误文件失败]
+[22:08:45][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:83][code = #include <iostream>
+#include <vector>
+int main(void)
+{
+    int T;
+    std::cin >> T;
+    while(T--)
+    {
+        int n , m;
+        std::cin >> n >> m;
+        std::vector<int>arr(n);
+        for(int i = 0; i < n; i++)
+            std::cin >> arr[i];
+        std::cout << "1 2" << "\n";
+    }
+}
+
+input = 
+cpu_limit = 1
+mem_limit = 30000
+number = 1]
+[22:08:46][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:154][stdout = ]
+[22:08:46][compile_run_logger][ERROR][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:159][读取标准错误文件失败]
+[22:14:13][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:88][code = #include <iostream>
+#include <vector>
+int main(void)
+{
+    int T;
+    std::cin >> T;
+    while(T--)
+    {
+        int n , m;
+        std::cin >> n >> m;
+        std::vector<int>arr(n);
+        for(int i = 0; i < n; i++)
+            std::cin >> arr[i];
+        std::cout << "1 2" << "\n";
+    }
+}
+
+input = 
+cpu_limit = 1
+mem_limit = 30000
+number = 1]
+[22:14:14][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:159][stdout = ]
+[22:14:14][compile_run_logger][ERROR][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:164][读取标准错误文件失败]
+[22:14:14][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:166][标准错误文件存在]
+[22:17:32][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:88][code = #include <iostream>
+#include <vector>
+int main(void)
+{
+    int T;
+    std::cin >> T;
+    while(T--)
+    {
+        int n , m;
+        std::cin >> n >> m;
+        std::vector<int>arr(n);
+        for(int i = 0; i < n; i++)
+            std::cin >> arr[i];
+        std::cout << "1 2" << "\n";
+    }
+}
+
+input = 
+cpu_limit = 1
+mem_limit = 30000
+number = 1]
+[22:17:33][compile_run_logger][ERROR][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:157][读取标准输出文件失败]
+[22:17:33][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:159][stdout = 1 2
+1 2
+]
+[22:17:33][compile_run_logger][ERROR][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:164][读取标准错误文件失败]
+[22:17:33][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:166][标准错误文件存在]
+[22:21:20][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:159][stdout = 1 2
+1 2
+]
+[10:02:51][compile_run_logger][ERROR][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:29][标准输出文件/home/zz/Desktop/project/Online_Judge/OJ/Questions/Data/Judge/1.out不存在]
+[10:05:10][compile_run_logger][ERROR][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:29][标准输出文件/home/zz/Desktop/project/Online_Judge/OJ/Questions/Data/Judge/1.out不存在]
+[10:05:50][compile_run_logger][ERROR][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:29][标准输出文件/home/zz/Desktop/project/Online_Judge/OJ/Questions/Data/Judge/1.out不存在]
+[10:06:41][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:159][stdout = 760
+141
+126
+115
+95
+105
+347
+380
+457
+280
+45
+303
+217
+17
+16
+48
+112
+120
+259
+309
+14
+288
+102
+367
+333
+360
+280
+215
+113
+230
+302
+143
+415
+446
+4
+389
+413
+82
+358
+217
+175
+143
+80
+111
+491
+391
+173
+53
+48
+195
+50
+184
+434
+177
+310
+136
+414
+23
+374
+236
+275
+64
+499
+473
+194
+41
+283
+151
+425
+322
+317
+454
+442
+186
+296
+99
+]
+[16:40:40][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:99][user_status = TEST
+input:
+1934551232]
+[16:40:42][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:164][status_code = 0]
+[16:58:06][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:99][user_status = TEST
+input:
+1221531840]
+[17:02:27][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:99][user_status = TEST
+input:
+1213139136]
+[19:49:12][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:99][user_status = TEST
+input:
+-424728384]
+[23:09:35][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:99][user_status = TEST
+input:
+-1437652800]
+[23:10:10][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:99][user_status = SUMMIT
+input:
+-1454438208]
+[23:10:12][compile_run_logger][ERROR][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:157][读取标准输出文件失败]
+[23:10:12][compile_run_logger][ERROR][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:162][读取标准错误文件失败]
+[23:10:12][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:195][status_code = 0]
+[23:10:12][compile_run_logger][ERROR][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:29][标准输出文件/home/zz/Desktop/project/Online_Judge/OJ/Questions/Data/Judge/1.out不存在]
+[23:12:22][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:99][user_status = TEST
+input:
+-1471223616]
+[23:27:07][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:99][user_status = TEST
+input:
+-1479616320]
+[23:33:13][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:99][user_status = TEST , input:1
+3
+1 2 3]
+[23:33:13][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:100][code = #include <iostream>
+#include <string>
+#include <fcntl.h>
+#include <unistd.h>
+
+int main(void)
+{
+    int T;
+    std::cin >> T;
+    while(T--)
+    {
+        int n;
+        std::cin >> n;
+        int a[n];
+        for(int i = 0 ; i < n ; i++)
+        {
+            std::cin >> a[i];
+        }
+
+        std::cout << n << "\n";
+        for(int i = 0 ; i < n ; i++)
+        {
+            std::cout << a[i] << " ";
+        }
+        std::cout << std::endl;
+    }
+
+    return 0;
+}
+]
+[23:33:15][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:147][开始执行代码]
+[23:36:26][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:99][user_status = TEST , input:1
+5
+1 2 3 4 5]
+[23:36:28][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:147][开始执行代码]
+[23:44:21][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:99][user_status = TEST , input:1
+5
+1 2 3 4 5]
+[23:44:23][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:143][开始执行代码]
+[23:46:16][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:99][user_status = TEST , input:1
+5
+1 2 3 4 5]
+[23:46:17][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:133][编译成功]
+[23:46:17][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:144][开始执行代码]
+[23:52:55][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:99][user_status = SUMMIT , input:]
+[23:52:57][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:133][编译成功]
+[23:52:57][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:144][开始执行代码]
+[23:52:57][compile_run_logger][ERROR][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:157][读取标准输出文件失败]
+[23:52:57][compile_run_logger][ERROR][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:162][读取标准错误文件失败]
+[23:52:57][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:195][status_code = 0]
+[23:52:57][compile_run_logger][ERROR][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:29][标准输出文件/home/zz/Desktop/project/Online_Judge/OJ/Questions/Data/Judge/1.out不存在]
+[00:03:09][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:99][user_status = TEST , input:1
+3
+1 2 3]
+[00:03:11][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:133][编译成功]
+[00:03:11][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:144][开始执行代码]
+[00:03:11][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:149][开始测试]
+[00:03:11][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:151][测试stdout = 3
+1 2 3 
+]
+[00:03:11][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:195][status_code = 0]
+[00:03:11][compile_run_logger][ERROR][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:29][标准输出文件/home/zz/Desktop/project/Online_Judge/OJ/Questions/Data/Judge/1.out不存在]
+[00:06:42][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:151][测试stdout = 3
+1 2 3 
+]
+[11:04:44][compile_run_logger][ERROR][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:157][读取标准输出文件失败]
+[11:04:44][compile_run_logger][ERROR][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:162][读取标准错误文件失败]
+[22:34:10][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:164][提交代码测试结果:测试结果如下
+0 0 0 0 0 0 0 0 0 0 ]
+[22:34:29][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:164][提交代码测试结果:测试结果如下
+1 0 1 1 1 1 1 1 1 1 ]
+[22:42:52][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:164][提交代码测试结果:测试结果如下
+0 0 0 0 0 0 0 0 0 0 ]
+[22:43:36][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:164][提交代码测试结果:测试结果如下
+0 0 0 0 0 0 0 0 0 0 ]
+[22:43:44][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:164][提交代码测试结果:测试结果如下
+0 0 0 0 0 0 0 0 0 0 ]
+[22:50:17][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:164][提交代码测试结果:测试结果如下
+1 0 1 1 1 1 1 1 1 1 ]
+[22:50:48][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:164][提交代码测试结果:测试结果如下
+1 0 1 1 1 1 1 1 1 1 ]
+[22:51:01][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:164][提交代码测试结果:测试结果如下
+1 1 1 1 1 1 1 1 1 1 ]
+[23:05:32][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:164][提交代码测试结果:测试结果如下
+0 0 0 0 0 0 0 0 0 0 ]
+[23:06:13][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:164][提交代码测试结果:测试结果如下
+0 0 0 0 0 0 0 0 0 0 ]
+[23:06:18][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:164][提交代码测试结果:测试结果如下
+0 0 0 0 0 0 0 0 0 0 ]
+[23:06:33][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:164][提交代码测试结果:测试结果如下
+0 0 0 0 0 0 0 0 0 0 ]
+[23:07:12][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:164][提交代码测试结果:测试结果如下
+0 0 0 0 0 0 0 0 0 0 ]
+[23:08:40][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:164][提交代码测试结果:测试结果如下
+0 0 0 0 0 0 0 0 0 0 ]
+[23:08:57][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:164][提交代码测试结果:测试结果如下
+0 0 0 0 0 0 0 0 0 0 ]
+[23:09:02][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:164][提交代码测试结果:测试结果如下
+0 0 0 0 0 0 0 0 0 0 ]
+[23:09:07][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:164][提交代码测试结果:测试结果如下
+0 0 0 0 0 0 0 0 0 0 ]
+[23:09:12][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:164][提交代码测试结果:测试结果如下
+0 0 0 0 0 0 0 0 0 0 ]
+[23:10:08][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:164][提交代码测试结果:测试结果如下
+0 0 0 0 0 0 0 0 0 0 ]
+[23:10:15][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:164][提交代码测试结果:测试结果如下
+0 0 0 0 0 0 0 0 0 0 ]
+[23:10:22][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:164][提交代码测试结果:测试结果如下
+1 1 1 1 1 1 1 1 1 1 ]
+[23:12:57][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:164][提交代码测试结果:测试结果如下
+1 1 1 1 1 1 1 1 1 1 ]
+[23:23:46][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:164][提交代码测试结果:测试结果如下
+1 1 1 1 1 1 1 1 1 1 ]
+[23:24:00][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:164][提交代码测试结果:测试结果如下
+1 0 1 1 1 1 1 1 1 1 ]
+[23:24:13][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:164][提交代码测试结果:测试结果如下
+0 0 0 0 0 0 0 0 0 0 ]
+[23:34:51][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:164][提交代码测试结果:测试结果如下
+1 1 1 1 1 1 1 1 1 1 ]
+[23:36:06][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:164][提交代码测试结果:测试结果如下
+1 1 1 1 1 1 1 1 1 1 ]
+[22:55:15][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:211][清除临时文件]
+[23:28:04][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:156][test Stdout = 1
+]
+[23:28:34][compile_run_logger][DEBUG][/home/zz/Desktop/project/Online_Judge/Compile/Compile_Run.cpp:169][提交代码测试结果:测试结果如下
+1 1 1 1 1 1 1 1 1 1 ]

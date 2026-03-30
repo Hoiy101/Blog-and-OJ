@@ -1,0 +1,8 @@
+我们题目的标准是 1 判断回文数 简单 1 30000这样的
+并且我们是以' ' 来分割的所以必须有且只有一个字符
+这样类型的插入时应该这么写
+编号 题目 难度 时间限制(s) 空间限制(kb)
+
+DataGenerate文件夹里面装的是各种测试用例的具体实现方式
+
+mysql账号名称:CREATE USER 'online_judge'@'localhost' IDENTIFIED BY 'Zz123456!';

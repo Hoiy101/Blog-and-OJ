@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 页面标题：通过模板变量动态渲染题号和题目名称 -->
+    <title>{{number}}.{{title}}</title>
+
+    <!-- 引入ACE在线代码编辑器核心库：支持代码编辑、语法高亮、自动补全 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/ace.js" type="text/javascript"
+        charset="utf-8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/ext-language_tools.js" type="text/javascript"
+        charset="utf-8"></script>
+    <!-- 引入jQuery：简化DOM操作和AJAX请求 -->
+    <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+
+    <style>
+        /* 全局样式重置：清除默认margin/padding，统一盒模型 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            /* 新增：统一盒模型，避免宽度计算偏差 */
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            font-family: "Microsoft Yahei", sans-serif;
+            /* 新增：统一字体，提升兼容性 */
+            overflow: hidden;
+            /* 防止页面整体滚动 */
+        }
+
+        /* 容器样式 */
+        .container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            /* 垂直排列子元素 */
+        }
+
+        /* ========== 导航栏样式 ========== */
+        .container .navbar {
+            width: 100%;
+            height: 50px;
+            background-color: #2d3748;
+            /* 深灰蓝主色调 */
+            overflow: hidden;
+            /* 防止子元素溢出 */
+        }
+
+        .container .navbar .title {
+            float: left;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            line-height: 50px;
+            /* 行高等于高度，垂直居中 */
+            padding: 0 20px;
+        }
+
+        .container .navbar a {
+            display: inline-block;
+            width: 80px;
+            color: white;
+            font-size: 16px;
+            line-height: 50px;
+            text-decoration: none;
+            text-align: center;
+            transition: background-color 0.3s;
+            /* 新增：hover过渡动画，提升体验 */
+        }
+
+        .container .navbar a:hover {
+            background-color: #48bb78;
+            /* 绿色hover效果 */
+        }
+
+        .container .navbar .study-link {
+            float: left;
+            color: #4299e1;
+            /* 浅蓝色 */
+            font-size: 14px;
+            line-height: 50px;
+            padding: 0 10px;
+            text-decoration: none;
+            width: auto;
+            /* 新增：取消固定宽度，适配文字 */
+        }
+
+        .container .navbar .register {
+            float: right;
+            color: white;
+            font-size: 14px;
+            line-height: 50px;
+            padding: 0 15px;
+            text-decoration: none;
+            width: auto;
+            /* 新增：取消固定宽度，适配文字 */
+        }
+
+        .container .navbar .login {
+            float: right;
+            width: auto;
+            /* 新增：取消固定宽度，适配文字 */
+            padding: 0 15px;
+            /* 新增：补充内边距，和注册按钮对齐 */
+        }
+
+        /* ========== 主体区域（题目+代码） ========== */
+        .container .part1 {
+            width: 100%;
+            flex: 1;
+            /* 占据剩余高度 */
+            overflow: hidden;
+            /* 防止子元素溢出 */
+            display: flex;
+            /* 水平排列左右两部分 */
+        }
+
+        /* 左侧题目描述区 */
+        .container .part1 .left_desc {
+            width: 50%;
+            overflow-y: auto;
+            /* 内容超出时垂直滚动 */
+            padding: 20px;
+            background-color: #f7fafc;
+            /* 浅灰背景，提升可读性 */
+        }
+
+        .container .part1 .left_desc h2 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: #2d3748;
+            font-weight: 600;
+        }
+
+        .container .part1 .left_desc .meta-info {
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #4a5568;
+            /* 中灰色 */
+            border-bottom: 1px solid #e2e8f0;
+            /* 新增：底部边框，分隔信息 */
+            padding-bottom: 10px;
+        }
+
+        .container .part1 .left_desc .meta-info p {
+            margin: 5px 0;
+        }
+
+        .container .part1 .left_desc .meta-info .difficulty {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: white;
+            background-color: #48bb78;
+            /* 简单：绿色；中等：橙色；困难：红色，可动态修改 */
+        }
+
+        .container .part1 .left_desc .section {
+            margin-bottom: 20px;
+        }
+
+        .container .part1 .left_desc .section h4 {
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+        }
+
+
+
+        .container .part1 .left_desc .section p {
+            font-size: 14px;
+            line-height: 1.6;
+            /* 行高1.6，提升可读性 */
+            color: #4a5568;
+        }
+
+        .container .part1 .left_desc .section .sample-box {
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            padding: 10px;
+            margin: 10px 0;
+            background-color: white;
+            font-family: "Consolas", monospace;
+            /* 新增：代码字体，适配样例 */
+        }
+
+        .container .part1 .left_desc .section .sample-box .sample-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #2d3748;
+        }
+
+        .container .part1 .left_desc .section .links a {
+            color: #4299e1;
+            text-decoration: none;
+            margin-right: 15px;
+            transition: color 0.3s;
+            /* 新增：hover过渡动画 */
+        }
+
+        .container .part1 .left_desc .section .links a:hover {
+            text-decoration: underline;
+            color: #2b6cb0;
+            /* 新增：hover加深颜色 */
+        }
+
+        /* 右侧代码编辑区 */
+        .container .part1 .right_code {
+            width: 50%;
+            position: relative;
+            /* 为子元素绝对定位提供参考 */
+            display: flex;
+            flex-direction: column;
+            /* 垂直排列子元素（ACM模式行 + 编辑器） */
+        }
+
+        /* ACM模式复选框行 */
+        .container .part1 .right_code .acm-mode {
+            position: static;
+            /* 取消绝对定位，跟随flex布局 */
+            background-color: white;
+            padding: 8px 10px;
+            border-bottom: 1px solid #e2e8f0;
+            /* 底部边框，分隔编辑器 */
+            color: #2d3748;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            /* 复选框和文字垂直居中，语言选择器右对齐 */
+        }
+
+        /* ACM模式复选框间距 */
+        .container .part1 .right_code .acm-mode input {
+            margin-right: 6px;
+            cursor: pointer;
+            /* 新增：鼠标指针样式，提升体验 */
+        }
+
+        /* 语言选择器：与ACM模式在同一行 */
+        .container .part1 .right_code .lang-selector {
+            position: static;
+            /* 取消绝对定位，跟随flex布局 */
+        }
+
+        .container .part1 .right_code .lang-selector select {
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px solid #e2e8f0;
+            font-size: 14px;
+            cursor: pointer;
+            /* 新增：鼠标指针样式 */
+            background-color: white;
+        }
+
+        /* ACE编辑器容器：高度自适应，减去ACM模式行高度 */
+        .container .part1 .right_code .ace_editor {
+            height: calc(100% - 36px);
+            /* 36px为ACM模式行高度 */
+            flex: 1;
+            /* 占满剩余高度 */
+        }
+
+        /* ========== 结果展示+提交区 ========== */
+        .container .part2 {
+            width: 100%;
+            overflow: hidden;
+            padding: 15px;
+            background-color: #edf2f7;
+            /* 浅蓝灰背景 */
+            min-height: 200px;
+            /* 最小高度，确保内容有足够空间 */
+            display: flex;
+            flex-direction: column;
+            /* 垂直排列子元素 */
+        }
+
+        /* 标签页样式 */
+        .container .part2 .tabs {
+            margin-bottom: 15px;
+        }
+
+        .container .part2 .tabs a {
+            display: inline-block;
+            padding: 8px 15px;
+            margin-right: 10px;
+            text-decoration: none;
+            color: #4a5568;
+            background-color: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px 4px 0 0;
+            cursor: pointer;
+        }
+
+        .container .part2 .tabs a.active {
+            background-color: #edf2f7;
+            border-bottom: 1px solid #edf2f7;
+            font-weight: bold;
+        }
+
+        /* 按钮组样式 */
+        .container .part2 .btn-group {
+            margin-top: 15px;
+            text-align: right;
+        }
+
+        .container .part2 .btn-group button {
+            padding: 8px 16px;
+            margin-left: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .container .part2 .btn-group .btn-self-test {
+            background-color: #4299e1;
+            color: white;
+        }
+
+        .container .part2 .btn-group .btn-submit {
+            background-color: #48bb78;
+            color: white;
+        }
+
+        .container .part2 .btn-group button:hover {
+            opacity: 0.9;
+        }
+
+        .container .part2 .result {
+            width: 100%;
+            flex: 1;
+            /* 占据剩余高度 */
+            min-height: 150px;
+            padding: 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            background-color: white;
+            overflow-y: auto;
+            /* 内容超出时垂直滚动 */
+        }
+
+        .container .part2 .result pre {
+            font-size: 14px;
+            white-space: pre-wrap;
+            /* 换行保留，自动换行 */
+            word-wrap: break-word;
+            /* 长单词换行 */
+            font-family: "Consolas", monospace;
+            /* 代码字体，适配运行结果 */
+            line-height: 1.5;
+        }
+
+        /* 自测输入文本框样式（动态生成） */
+        #self-test-input-content {
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            resize: vertical;
+            /* 新增：仅允许垂直调整大小 */
+            font-family: "Consolas", monospace;
+        }
+
+        /* 按钮容器：统一控制按钮布局，确保对齐 */
+        .container .part2 .btn-group {
+            float: right;
+            display: flex;
+            /* Flex布局，垂直居中+均匀间距 */
+            gap: 10px;
+            /* 按钮间距 */
+            align-items: center;
+            /* 垂直居中 */
+        }
+
+        /* 保存并提交按钮 */
+        .container .part2 .btn-submit {
+            width: 120px;
+            height: 40px;
+            font-size: 14px;
+            background-color: #48bb78;
+            /* 绿色主色调 */
+            color: #FFF;
+            border-radius: 4px;
+            border: 0;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            /* 新增：hover过渡动画 */
+        }
+
+        .container .part2 .btn-submit:hover {
+            background-color: #38a169;
+            /* 加深绿色 */
+        }
+
+        /* 自测运行按钮 */
+        .container .part2 .btn-self-test {
+            width: 120px;
+            height: 40px;
+            font-size: 14px;
+            background-color: #a0aec0;
+            /* 灰色主色调 */
+            color: #FFF;
+            border-radius: 4px;
+            border: 0;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            /* 新增：hover过渡动画 */
+        }
+
+        .container .part2 .btn-self-test:hover {
+            background-color: #718096;
+            /* 加深灰色 */
+        }
+
+        /* 标签页样式 */
+        .container .part2 .tabs {
+            clear: both;
+            /* 清除浮动，避免和按钮重叠 */
+            margin-top: 15px;
+        }
+
+        .container .part2 .tabs a {
+            display: inline-block;
+            padding: 5px 15px;
+            margin-right: 5px;
+            border-radius: 4px 4px 0 0;
+            /* 上圆角，模拟标签页 */
+            background-color: #e2e8f0;
+            color: #4a5568;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background-color 0.3s;
+            /* 新增：hover过渡动画 */
+            border: 1px solid transparent;
+            /* 新增：避免切换active时抖动 */
+        }
+
+        .container .part2 .tabs a.active {
+            background-color: white;
+            color: #2d3748;
+            border: 1px solid #e2e8f0;
+            border-bottom: 1px solid white;
+            /* 覆盖底部边框，和内容区衔接 */
+        }
+
+        .container .part2 .tabs a:hover:not(.active) {
+            background-color: #cbd5e0;
+            /* 新增：非active标签hover效果 */
+        }
+
+        .del {
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- 导航栏：站点核心导航 -->
+        <div class="navbar">
+            <div class="title">赵政 | OJ</div>
+            <a href="/">首页</a>
+            <a href="/all_questions">题库</a>
+            <a href="#">竞赛</a>
+            <a href="#">讨论</a>
+            <a href="#">求职</a>
+            <a class="study-link" href="#">学习 | 这些后续可以适当更改, 参考牛客网</a>
+            <a class="register" href="#">注册</a>
+            <a class="login" href="#">登录</a>
+        </div>
+
+        <!-- 主体区域：题目描述 + 代码编辑 -->
+        <div class="part1">
+            <!-- 左侧题目描述区：展示题目核心信息 -->
+            <div class="left_desc">
+                <h2>{{title}}</h2>
+                <div class="meta-info">
+                    <!-- 题号：通过模板变量渲染，供后端接口使用 -->
+                    <p>题号: <span id="number">{{number}}</span></p>
+                    <p>时间限制: C/C++/Rust/Pascal 1秒, 其他语言2秒</p>
+                    <p>空间限制: C/C++/Rust/Pascal 256 M, 其他语言512 M</p>
+                    <p>64bit IO: Format: %lld</p>
+                    <p>难度: <span class="difficulty">{{star}}</span></p>
+                </div>
+
+                <div class="section">
+                    <h4>题目描述</h4>
+                    <p>{{desc}}</p>
+                </div>
+
+                <div class="section">
+                    <h4 class="sample">示例1</h4>
+                    <div class="sample-box">
+                        <div class="sample-title">输入</div>
+                        <pre>xxx</pre>
+                    </div>
+                    <div class="sample-box">
+                        <div class="sample-title">输出</div>
+                        <pre>zz</pre>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h4 class="note">备注</h4>
+                    <p>这里用来填充题目备注, 包括特殊情况、注意事项等。</p>
+                </div>
+
+                <div class="section">
+                    <h4 class="links">相关链接</h4>
+                    <a href="#" class="del">题解 (这里可以用js来实时更新)</a>
+                    <a href="#" class="del">讨论 (也是可以更新)</a>
+                </div>
+            </div>
+
+            <!-- 右侧代码编辑区：ACE编辑器 + 辅助控件 -->
+            <div class="right_code">
+                <!-- ACM模式复选框：控制代码执行模式（ACM/核心代码） -->
+                <div class="acm-mode">
+                    <div>
+                        <input type="checkbox" id="acm-mode" checked>
+                        <label for="acm-mode">ACM模式</label>
+                    </div>
+                    <!-- 语言选择器：切换编辑器语法高亮和后端编译语言 -->
+                    <div class="lang-selector">
+                        <select id="lang-select">
+                            <option value="c_cpp">C++ (clang++18)</option>
+                            <option value="c">C (gcc11)</option>
+                            <option value="java">Java (OpenJDK 17)</option>
+                            <option value="python">Python 3.9</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- ACE编辑器容器：pre标签为编辑器提供基础容器 -->
+                <pre id="code" class="ace_editor"><textarea class="ace_text-input">
+#include &lt;iostream&gt;
+using namespace std;
+
+int main() 
+{
+    int n;
+    cin >> n;
+    cout &lt;&lt; n &lt;&lt; endl;
+    return 0;
+}
+                </textarea></pre>
+            </div>
+        </div>
+
+        <!-- 结果展示+提交区：运行结果、自测输入、测试用例 + 操作按钮 -->
+        <div class="part2">
+            <!-- 标签页切换：运行结果/自测输入/测试用例 -->
+            <div class="tabs">
+                <a href="#" class="active" data-tab="result">运行结果</a>
+                <a href="#" data-tab="self-test-input">自测输入</a>
+                <a href="#" data-tab="test-case">测试用例</a>
+            </div>
+            <!-- 结果展示容器：动态渲染运行结果/自测输入框/测试用例 -->
+            <div class="result" id="run-result-display"></div>
+            <!-- 按钮容器：包裹自测和提交按钮，确保对齐 -->
+            <div class="btn-group">
+                <button class="btn-self-test" onclick="selfTest()">自测运行</button>
+                <button class="btn-submit" onclick="submit()">保存并提交</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== ACE编辑器初始化 ==========
+        // 初始化ACE编辑器，绑定到id为code的pre标签
+        var editor = ace.edit("code");
+        editor.setTheme("ace/theme/monokai"); // 设置编辑器主题（monokai深色主题）
+        editor.session.setMode("ace/mode/c_cpp"); // 默认语法模式：C++
+        editor.setFontSize(16); // 设置字体大小
+        editor.getSession().setTabSize(4); // 设置tab缩进为4个空格
+        editor.setReadOnly(false); // 可编辑状态
+        editor.setShowPrintMargin(false); // 新增：隐藏打印边距线，提升视觉体验
+        editor.getSession().setUseWrapMode(true); // 新增：开启代码自动换行
+
+        // 启用ACE编辑器的自动补全和代码片段功能
+        ace.require("ace/ext/language_tools");
+        editor.setOptions({
+            enableBasicAutocompletion: true, // 基础自动补全
+            enableSnippets: true, // 代码片段
+            enableLiveAutocompletion: true, // 实时自动补全
+            showLineNumbers: true // 显示行号（默认开启，显式标注）
+        });
+
+        // ========== 语言选择器切换逻辑 ==========
+        // 监听语言选择器变化，切换编辑器语法模式
+        document.getElementById("lang-select").addEventListener("change", function () {
+            var lang = this.value; // 获取选中的语言值
+            // 根据语言值切换ACE编辑器的语法模式
+            switch (lang) {
+                case "c_cpp":
+                    editor.session.setMode("ace/mode/c_cpp");
+                    break;
+                case "c":
+                    editor.session.setMode("ace/mode/c");
+                    break;
+                case "java":
+                    editor.session.setMode("ace/mode/java");
+                    break;
+                case "python":
+                    editor.session.setMode("ace/mode/python");
+                    break;
+                default:
+                    editor.session.setMode("ace/mode/c_cpp"); // 默认C++
+            }
+            // 可选：切换语言时重置编辑器默认代码（示例）
+            // resetDefaultCode(lang);
+        });
+
+        // ========== 提交代码核心逻辑 ==========
+        /**
+         * 提交代码到后端评测接口
+         * 功能：获取编辑器代码、语言、ACM模式等信息，调用后端/judge/{number}接口
+         */
+        function submit() {
+            // 1. 获取核心参数
+            var code = editor.getSession().getValue(); // 获取编辑器中的代码
+            var number = $("#number").text(); // 获取题号（模板变量渲染）
+            var lang = document.getElementById("lang-select").value; // 获取选中的语言
+            var judgeUrl = "/judge/" + number; // 后端评测接口地址
+
+            // 2. 校验参数（新增：基础校验，避免空代码提交）
+            if (!code.trim()) {
+                show_result({
+                    status: -2,
+                    reason: "提交失败",
+                    stderr: "代码不能为空，请输入有效代码后再提交！"
+                });
+                return;
+            }
+
+            // 3. 构造请求参数
+            var requestData = {
+                'number': number, // 题目编号（从模板变量获取）
+                'code': code, // 用户编写的代码
+                'language': lang, // 编程语言（c_cpp/c/java/python）
+                'input': '', // 提交时无自定义输入（后端用测试用例）
+                'is_self_test': false // 标记为正式提交（非自测）
+            };
+
+            // 4. 发送AJAX请求到后端
+            $.ajax({
+                method: 'POST', // POST请求（提交数据）
+                url: judgeUrl, // 后端接口地址
+                dataType: 'json', // 期望返回JSON格式
+                contentType: 'application/json;charset=utf-8', // 请求体格式：JSON
+                data: JSON.stringify(requestData), // 转换为JSON字符串
+                timeout: 30000, // 新增：超时时间30秒（适配代码运行耗时）
+                success: function (data) {
+                    // 请求成功：展示后端返回的评测结果
+                    show_result(data);
+                },
+                error: function (xhr, status, error) {
+                    // 请求失败：展示错误信息
+                    show_result({
+                        status: -1,
+                        reason: "提交请求失败",
+                        stderr: "网络错误或后端接口不可用：" + error + "（状态码：" + xhr.status + ")"
+                    });
+                }
+            });
+        }
+
+        // ========== 自测运行核心逻辑 ==========
+        /**
+         * 自测运行代码
+         * 功能：获取自定义输入，调用后端接口运行代码，返回运行结果（不参与评测）
+         */
+        function selfTest() {
+            // 1. 获取核心参数
+            var code = editor.getSession().getValue();
+            var number = $("#number").text();
+            var lang = document.getElementById("lang-select").value;
+            // 获取自测输入（兼容未切换到自测标签的情况，避免空指针）
+            //var selfTestInput = document.getElementById("self-test-input-content")?.value || '';
+            var selfTestInputElement = document.getElementById("self-test-input-content");
+            var selfTestInput = selfTestInputElement ? selfTestInputElement.value : '';
+            var judgeUrl = "/judge/" + number;
+
+            // 2. 基础校验
+            if (!code.trim()) {
+                show_result({
+                    status: -2,
+                    reason: "自测失败",
+                    stderr: "代码不能为空，请输入有效代码后再自测！"
+                });
+                return;
+            }
+
+            // 3. 构造请求参数
+            var requestData = {
+                'number': number, // 题目编号（从模板变量获取）
+                'code': code,
+                'language': lang,
+                'input': selfTestInput, // 自测时传入自定义输入
+                'is_self_test': true // 标记为自测（后端仅运行，不评测）
+            };
+
+            // 4. 发送AJAX请求
+            $.ajax({
+                method: 'POST',
+                url: judgeUrl,
+                dataType: 'json',
+                contentType: 'application/json;charset=utf-8',
+                data: JSON.stringify(requestData),
+                timeout: 30000,
+                success: function (data) {
+                    show_result(data);
+                },
+                error: function (xhr, status, error) {
+                    show_result({
+                        status: -1,
+                        reason: "自测请求失败",
+                        stderr: "网络错误或后端接口不可用：" + error + "（状态码：" + xhr.status + "）"
+                    });
+                }
+            });
+        }
+        
+
+        // ========== 结果展示核心逻辑 ==========
+        /**
+         * 展示运行/提交结果
+         * @param {Object} data - 后端返回的结果对象
+         *        data.status: 状态码（-2：前端校验失败；-1：请求失败；0：成功；其他：评测失败）
+         *        data.reason: 状态描述（如"Accepted"/"编译错误"/"提交失败"）
+         *        data.stdout: 代码标准输出
+         *        data.stderr: 代码错误输出/系统错误信息
+         *        data.time_used: 运行时间（ms）
+         *        data.memory_used: 内存使用（KB）
+         */
+        function show_result(data) {
+            var resultDiv = $("#run-result-display");
+            resultDiv.empty(); // 清空原有内容
+
+            // 解构参数（简化代码）
+            var status = data.status || -1;
+            var reason = data.reason || "未知状态";
+            var stdout = data.stdout || '';
+            var stderr = data.stderr || '';
+            var timeUsed = data.time_used || 0;
+            var memoryUsed = data.memory_used || 0;
+
+            // 构造结果文本
+            var resultText = "状态: " + reason + "\n";
+            resultText += "运行时间: " + timeUsed + " ms\n";
+            resultText += "内存使用: " + memoryUsed + " KB\n";
+            if (stdout) {
+                resultText += "\n输出:\n" + stdout + "\n";
+            }
+            if (stderr) {
+                resultText += "\n错误:\n" + stderr + "\n";
+            }
+
+            // 渲染结果（pre标签保留换行和空格）
+            resultDiv.html('<pre>' + resultText + '</pre>');
+        }
+
+        // ========== 标签页切换逻辑 ==========
+        // 监听标签页点击事件，切换展示内容
+        $(".container .part2 .tabs a").click(function (e) {
+            e.preventDefault(); // 阻止默认锚点跳转
+            // 切换active样式
+            $(".container .part2 .tabs a").removeClass("active");
+            $(this).addClass("active");
+            // 获取标签类型
+            var tabType = $(this).attr("data-tab");
+            var resultDiv = $("#run-result-display");
+
+            // 根据标签类型渲染对应内容
+            switch (tabType) {
+                case "self-test-input":
+                    // 自测输入标签：渲染文本框
+                    resultDiv.html('<textarea id="self-test-input-content" style="width:100%;height:200px;padding:10px;font-size:14px;" placeholder="请输入自测输入数据（多个输入用换行分隔）..."></textarea>');
+                    break;
+                case "test-case":
+                    // 测试用例标签：渲染测试用例列表（需后端接口支持）
+                    resultDiv.html('<pre>测试用例列表（需调用 /api/test-case/' + $("#number").text() + ' 接口获取）\n\n示例用例1：\n输入：123\n输出：123\n\n示例用例2：\n输入：456\n输出：456</pre>');
+                    break;
+                case "result":
+                    // 运行结果标签：提示用户操作
+                    resultDiv.html('<pre>请点击"自测运行"或"保存并提交"查看结果</pre>');
+                    break;
+                default:
+                    resultDiv.html('<pre>未知标签类型</pre>');
+            }
+        });
+
+        // ========== 页面初始化 ==========
+        // 页面加载完成后，初始化运行结果标签内容
+        $(document).ready(function () {
+            $("#run-result-display").html('<pre>请点击"自测运行"或"保存并提交"查看结果</pre>');
+        });
+    </script>
+</body>
+
+</html>

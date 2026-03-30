@@ -1,0 +1,8 @@
+{
+    'test_point' = (int)
+    'title' = (text)
+    'desc' = (text)
+    'star' = (text)
+    'time_limit' = (int)
+    'mem_limit' = (int)
+}

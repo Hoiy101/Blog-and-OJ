@@ -40,8 +40,13 @@
 
                             <!-- 题目内容 -->
                             <div v-else>
-                                <!-- 题目标题 -->
-                                <h2 class="problem-title mb-3">{{ problem.title || '加载中...' }}</h2>
+                                <!-- 题目标题和操作按钮 -->
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h2 class="problem-title mb-0">{{ problem.title || '加载中...' }}</h2>
+                                    <button class="btn btn-sm btn-outline-primary" @click="viewAnswer">
+                                        <i class="bi bi-book"></i> 查看题解
+                                    </button>
+                                </div>
                                 
                                 <!-- 题目元信息 -->
                                 <div class="problem-meta mb-4">
@@ -324,7 +329,6 @@ export default {
                 success(resp) {
                     console.log('题目详情API响应:', resp)
                     if (resp && (resp.id || resp.title)) {
-                        console.log(resp)
                         problem.value = {
                             id: resp.id || problemId,
                             title: resp.title || '无标题',
@@ -525,6 +529,11 @@ export default {
             router.push('/ranklist/')
         }
         
+        // 查看题解
+        const viewAnswer = () => {
+            router.push(`/answer/${problem.value.id}`)
+        }
+        
         onMounted(() => {
             getProblemDetail()
             
@@ -561,7 +570,8 @@ export default {
             submitCode,
             getResultAlertClass,
             getTestCaseBadgeClass,
-            backToProblemList
+            backToProblemList,
+            viewAnswer
         }
     }
 }

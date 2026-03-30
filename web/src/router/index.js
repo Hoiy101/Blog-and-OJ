@@ -9,6 +9,7 @@ import UserAccountLoginView from '@/views/user/bot/account/UserAccountLoginView.
 import UserAccountRegisterView from '@/views/user/bot/account/UserAccountRegisterView.vue'
 import store from '@/store/index.js'
 import QuestionDetails from '@/views/ranklist/QuestionDetails.vue'
+import AnswerDetail from '@/views/answer/AnswerDetail.vue'
 
 const routes = [
   {
@@ -64,6 +65,12 @@ const routes = [
     name:"Details",
     component:QuestionDetails,  
     meta: { requiresAuth: false },
+  },
+  {
+    path:"/answer/:id",
+    name:"AnswerDetail",
+    component:AnswerDetail,  
+    meta: { requiresAuth: true },
   },
   {
     path:"/:CatchAll(.*)",

@@ -1,0 +1,3 @@
+/home/zz/Desktop/project/Online_Judge/OJ/build/CMakeFiles/OJ_Server.dir
+/home/zz/Desktop/project/Online_Judge/OJ/build/CMakeFiles/edit_cache.dir
+/home/zz/Desktop/project/Online_Judge/OJ/build/CMakeFiles/rebuild_cache.dir

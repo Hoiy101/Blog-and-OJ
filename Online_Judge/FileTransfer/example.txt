@@ -1,0 +1,21 @@
+下载文件部分
+接受POST请求的json内容
+{
+    "code" = 
+    "number" = 
+    "test_number" = -1
+}
+
+如果test_number为-1没有被修改那么证明AC了
+我们这里要根据test_number和number字段来给用户传文件
+
+message是用来测试的表示输出的信息
+
+我们发送的json格式为
+{
+    message = ""
+}
+
+需要给题号(构造的时候查询)
+上传文件部分:
+用户传入的必须是.in文件和.out文件

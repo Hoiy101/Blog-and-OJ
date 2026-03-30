@@ -138,7 +138,8 @@
                                         <i class="bi bi-star me-1"></i> 难度
                                     </span>
                                 </th>
-                                <th scope="col" style="width: 100px;" class="text-center">操作</th>
+                                <th scope="col" style="width: 100px;" class="text-center">查看</th>
+                                <th scope="col" style="width: 100px;" class="text-remove"> 删除</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -165,6 +166,11 @@
                                         @click="handleView(problem.id)">
                                         查看
                                     </button>
+                                </td>
+                                <td class="text-remove">
+                                    <button class="btn btn-sm btn-outline-danger" @click="removetopic(problem.id)">
+                                        删除
+                                    </button> 
                                 </td>
                             </tr>
                         </tbody>
@@ -197,6 +203,8 @@ export default {
         const searchKeyword = ref('')
         const error = ref(null)
         const router = useRouter();
+
+        const errortopic="";
 
         const topicadd = reactive({
             test_point: "",
@@ -356,6 +364,26 @@ export default {
                 }
             })
         }
+        const removetopic = (id) =>{
+            $.ajax({
+                url: "http://127.0.0.1:3000/oj/topic/remove/",
+                type: "post",
+                headers: {
+                    Authorization: "Bearer " + store.state.user.token,
+                },
+                data: {
+                    topic_id : id,
+                },
+                success(resp){
+                    if(resp.error_message === "success"){
+                        errortopic == "删除成功"
+                    }else{
+                        errortopic == resp.error_message
+                    }
+                }
+            })
+            getProblemList()
+        }
         const handleSearch = () => {
             console.log('搜索关键词:', searchKeyword.value)
             // 搜索功能已通过computed属性filteredProblems实现
@@ -378,6 +406,8 @@ export default {
             handleView,
             topicadd,
             addtopic,
+            removetopic,
+            errortopic
         }
     }
 }
