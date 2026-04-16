@@ -11,6 +11,8 @@
 
 namespace ns_Searcher
 {
+    inline const char *Server_logger_name = "server_model_logger";
+
     //这里我们搜索中会出现一种情况
     //比如我们的关键词是C++ , Boost。那么可能会有两个文档都满足这种结果，然后它们就会出现在两个倒排索引中从而导致我们出现的网址有重复的
     //所以我们要声明一个去重的数据结构
@@ -34,7 +36,7 @@ namespace ns_Searcher
 
     public:
 
-        void initSearcher(const std::string& input);
+        void initSearcher();
         void Search(const std::string& query , std::string* json_string);
         std::string Desc(const std::string& html_content , const std::string& word);
         

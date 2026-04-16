@@ -1,3 +1,0 @@
-/home/zz/Desktop/project/Online_Judge/Search/Http/build/CMakeFiles/Boost_Search.dir
-/home/zz/Desktop/project/Online_Judge/Search/Http/build/CMakeFiles/edit_cache.dir
-/home/zz/Desktop/project/Online_Judge/Search/Http/build/CMakeFiles/rebuild_cache.dir

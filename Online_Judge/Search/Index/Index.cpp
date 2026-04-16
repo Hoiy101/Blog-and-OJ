@@ -47,24 +47,30 @@ ns_Index::InvertedList* ns_Index::Index::  GetInvertedList(const std::string& wo
 }
 
 //根据去标签，格式化后的文档来构建索引
-bool ns_Index::Index::BuildIndex(const std::string& input)
+//这里改为数据库操作来获取数据
+bool ns_Index::Index::BuildIndex()
 {
     //这里我们要用到之前raw.txt里面存入了我们需要的数据，但是同时我们存储数据是以二进制的方式来存储的，所以我们也需要用二进制的方式来打开
-    std::ifstream File(input , std::ios::in | std::ios::binary);
-    if(!File.is_open())
+    ns_clog::Logger::ptr logger = ns_clog::LoggerManager::GetInstance().getLogger(Server_logger_name);
+    // logger->debug("test begin");
+
+    std::vector<ns_model::BlogPost>blog_posts;
+    model.GetAllBlogPosts(&blog_posts);
+
+    //logger->debug("尝试读入数据库成功");
+    if(blog_posts.empty())
     {
-        std::cerr << input << " open error" << std::endl;
-        return false;
+        std::cout << "blog_posts is empty!" << std::endl;
+        return  false;
     }
 
-    //我们的raw.txt的一行代表着一个.html文件，所以我们一行一行读
-    std::string line;
-    int count;
-
-    while(std::getline(File , line))
+    for(auto post : blog_posts)
     {
-        //构建正排索引
-        DocInfo* doc = BuildForwordIndex(line);
+        std::string line = post.title + "\3" + post.content;
+        DocInfo *doc = BuildForwordIndex(line);
+        logger->debug("尝试获取文档信息成功");
+
+
 
         if(doc == nullptr)
         {
@@ -73,13 +79,6 @@ bool ns_Index::Index::BuildIndex(const std::string& input)
         }
 
         BuildInvertedIndex(*doc);
-        count++;
-
-        if(count % 50 == 0)
-        { 
-            LOG(NORMAL , "当前的已经建立的索引文档 : " + std::to_string(count));
-        }
-
     }
 
     return true;
@@ -95,8 +94,8 @@ ns_Index::DocInfo* ns_Index::Index::BuildForwordIndex(const std::string& line)
     std::string Sep = "\3";             //这是需要定义的分隔符
     
     //将字符串进行分割
-    util::StringUtil::Split(line , &results , Sep);
-    if(results.size() != 3)
+    ns_util::StringUtil::SplitString(line , &results , Sep);
+    if(results.size() != 2)
     {
         return nullptr;
     }
@@ -105,7 +104,6 @@ ns_Index::DocInfo* ns_Index::Index::BuildForwordIndex(const std::string& line)
     DocInfo doc;
     doc.title = results[0];
     doc.content = results[1];
-    doc.url = results[2];
     doc.doc_id = Forward_Index.size();       //先保存idx，然后再插入，最后这个size就是我们的下标
 
     //插入到正排索引
@@ -130,7 +128,7 @@ bool ns_Index::Index::BuildInvertedIndex(const DocInfo &Doc)
 
     //对标题进行分词统计
     std::vector<std::string> title_word;
-    util::JiebaUtil::CutString(Doc.title , &title_word);
+    ns_util::JiebaUtil::CutString(Doc.title , &title_word);
 
     for(auto s : title_word)
     {
@@ -140,7 +138,7 @@ bool ns_Index::Index::BuildInvertedIndex(const DocInfo &Doc)
 
     //同理，统计内容的词频
     std::vector<std::string> content_word;
-    util::JiebaUtil::CutString(Doc.content , &content_word);
+    ns_util::JiebaUtil::CutString(Doc.content , &content_word);
 
     for(auto s : content_word)
     {

@@ -1,3 +1,0 @@
-/home/zz/Desktop/project/Online_Judge/Compile/build/CMakeFiles/compile_server.dir
-/home/zz/Desktop/project/Online_Judge/Compile/build/CMakeFiles/edit_cache.dir
-/home/zz/Desktop/project/Online_Judge/Compile/build/CMakeFiles/rebuild_cache.dir

@@ -1,15 +1,17 @@
 #include "Searcher.hpp"
 
 //初始化搜索引擎
-void ns_Searcher::Searcher::initSearcher(const std::string& input)
+void ns_Searcher::Searcher::initSearcher()
 {
+    ns_clog::Logger::ptr logger = ns_clog::LoggerManager::GetInstance().getLogger(Server_logger_name);
+
     //获取单例模式
     index = ns_Index::Index::Getinstance();
-    LOG(NORMAL , "获取单例模式成功");
+    logger->info("获取单例模式成功");
 
     //构建索引
-    index->BuildIndex(input);
-    LOG(NORMAL , "建立索引成功");
+    index->BuildIndex();
+    logger->info("建立索引成功");
 }
 
 //query:我们搜素的关键词 , json_string:我们存放发给客户的内存地址
@@ -17,7 +19,7 @@ void ns_Searcher::Searcher::Search(const std::string& query , std::string* json_
 {
     //对于查询操作，我们要先对查询的词汇进行分词，然后根据每个分过的词进行索引搜索
     std::vector<std::string>words;
-    util::JiebaUtil::CutString(query , &words);
+    ns_util::JiebaUtil::CutString(query , &words);
 
     //在这里的查询操作中，我们要考虑去重的必要性，所以我们这里声明个容器来帮组我们去重
     std::vector<InvertedElemPrint> Inverted_List;
@@ -76,7 +78,7 @@ void ns_Searcher::Searcher::Search(const std::string& query , std::string* json_
         //三个json分别是标题，简述和网址
         elem["title"] = doc->title;
         elem["desc"] = Desc(doc->content , item.words[0]);
-        elem["url"] = doc->url;
+        elem["url"] = "111";
 
         //拼JSON串
         root.append(elem);

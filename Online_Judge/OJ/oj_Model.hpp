@@ -5,10 +5,10 @@
 // 根据题目list文件，加载所有的题目信息到内存中
 // model：主要用来和数据进行交互，对外提供访问数据的接口
 
-#include "../Common/Pool/ThreadPool.hpp"
 #include "../Common/Log/clog.hpp"
 #include "../Common/Util/Tool.hpp"
 
+#include <ctime>
 #include <string>
 #include <vector>
 #include <future>
@@ -43,7 +43,9 @@ namespace ns_model
     {
         int id; // 博文的id
         string title; // 博文的标题
+        std::string desc; // 博文的描述
         string content; // 博文的内容
+        time_t time; // 博文的发布时间
     };
 
     const std::string blog = "blog";                          // 要访问的表名
@@ -62,6 +64,7 @@ namespace ns_model
         // 查询MySQL
         // 参数：sql：sql查询语句，out：输出查询结果
         bool QueryMySql(const std::string &sql, vector<Question> *out);
+        bool QueryMySql(const std::string &sql, vector<BlogPost> *out);
 
         // 获取所有的题目
         bool GetAllQuestions(vector<Question> *out);
@@ -82,6 +85,9 @@ namespace ns_model
         int GetBlogPostMaxID();
 
         ~Model();
+
+    private:
+        bool StringToTime(const std::string &text, time_t &time);
 
     };
 }

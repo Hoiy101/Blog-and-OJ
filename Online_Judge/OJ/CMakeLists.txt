@@ -26,12 +26,17 @@ include_directories(OJ_Server
     /home/zz/Desktop/project/Online_Judge/Common/Util/
     /home/zz/Desktop/project/Online_Judge/Common/Log/
     /home/zz/Desktop/project/Online_Judge/Common/Pool/
+    /home/zz/Desktop/project/Online_Judge/Search/Index/
+    /home/zz/Desktop/library/cppjieba/include/cppjieba
+    /home/zz/Desktop/library/cppjieba/deps/limonp/include/limonp
 )
 
 #添加ctemplate库路径
 link_directories(/usr/lib/x86_64-linux-gnu)
 
 add_executable(OJ_Server
+    /home/zz/Desktop/project/Online_Judge/Search/Index/Index.cpp
+    /home/zz/Desktop/project/Online_Judge/Search/Index/Searcher.cpp
     /home/zz/Desktop/project/Online_Judge/Common/Log/Buffer.cpp
     /home/zz/Desktop/project/Online_Judge/Common/Log/Format.cpp
     /home/zz/Desktop/project/Online_Judge/Common/Log/Logger.cpp
@@ -52,6 +57,8 @@ target_link_libraries(${PROJECT_NAME}
     JsonCpp::JsonCpp
     Boost::headers
     Drogon::Drogon
-    ctemplate
     mysqlclient
+    ctemplate
+    pthread
 )
+

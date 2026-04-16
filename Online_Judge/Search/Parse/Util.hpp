@@ -9,6 +9,8 @@
 
 #include <cppjieba/Jieba.hpp>
 
+//把这个移动到Common/Util.hpp
+
 namespace util
 {  
     class FileUtil

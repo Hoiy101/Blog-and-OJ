@@ -209,7 +209,7 @@ void ns_control::Control::UploadQuestion(const std::string& in_json , std::strin
 
 int ns_control::Control::GetMaxid()
 {
-    return model.GetMaxNumber();
+    return model.GetQuestionMaxID();
 }
 
 void ns_control::Control::RecoveryMachine()

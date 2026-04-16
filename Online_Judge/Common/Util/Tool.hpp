@@ -11,6 +11,7 @@
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <sys/types.h>
+#include <cppjieba/Jieba.hpp>
 #include <boost/algorithm/string.hpp>
 
 #include "../Log/clog.hpp"
@@ -203,6 +204,16 @@ namespace ns_util
             boost::split((*result), str, boost::is_any_of(sep), boost::algorithm::token_compress_on);
         }
     
+    };
+
+
+    class JiebaUtil
+    {
+        private:
+            static cppjieba::Jieba jieba;           //定义静态变量成员
+        public:
+            //分词函数
+            static void CutString(const std::string &src , std::vector<std::string>* output);
     };
 
 };

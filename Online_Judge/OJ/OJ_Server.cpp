@@ -5,6 +5,8 @@
 
 #include "Control.hpp"
 #include "../Common/Util/Tool.hpp"
+#include "../Search/Index/Searcher.hpp"
+
 
 #include <drogon/drogon.h>
 #include <drogon/HttpClient.h>
@@ -28,8 +30,10 @@ void init()
 {
     const char * model_logger_name = "model_logger";
     const char *control_logger_name = "control_logger";
+    const char * Server_logger_name = "server_model_logger";
 
     ns_util::BuildAsyncLogger(model_logger_name);
+    ns_util::BuildAsyncLogger(Server_logger_name);
     ns_util::BuildAsyncLogger(control_logger_name);
 }
 
@@ -47,6 +51,9 @@ int main(int argc , const char *argv[])
     //创建一个服务器和控制器
     ns_control::Control ctrl;
     ctrl_ptr = &ctrl;
+
+    ns_Searcher::Searcher search;
+    search.initSearcher();
 
     //注册路由
     //参数一:URL地址
@@ -96,7 +103,38 @@ int main(int argc , const char *argv[])
         callback(resp);
     } , {drogon::Post});
     
-    drogon::app().setDocumentRoot("wwwroot");
+    drogon::app().registerHandler("/s", 
+        [&search](const drogon::HttpRequestPtr&req , std::function<void (const drogon::HttpResponsePtr &)> && callback){
+
+            std::string word = req->getParameter("word");
+            std::string result_json;
+            search.Search(word , &result_json);
+            auto resp = drogon::HttpResponse::newHttpResponse();
+            resp->setBody(result_json);
+            resp->setContentTypeCode(drogon::CT_APPLICATION_JSON);
+            resp->addHeader("charset" , "utf-8");
+            callback(resp);
+    } , {drogon::Get});
+
+    drogon::app().registerHandler("/search", 
+        [&search](const drogon::HttpRequestPtr&req , std::function<void (const drogon::HttpResponsePtr &)> && callback){
+            std::string html;
+            auto resp = drogon::HttpResponse::newHttpResponse();
+            bool st = ns_util::FileUtil::ReadFile("../wwwroot/search.html" , &html , true);
+            if(!st)
+            {
+                std::cerr << "read file error\n";
+                resp->setBody("read file error");
+            }
+            else
+            {
+                resp->setBody(html);
+            }
+            resp->setBody(html);
+            resp->setContentTypeCode(drogon::CT_TEXT_HTML);
+            resp->addHeader("charset" , "utf-8");
+            callback(resp);
+    } , {drogon::Get});
 
     drogon::app().addListener("0.0.0.0", atoi(argv[1])); // 启动http服务
     drogon::app().run();

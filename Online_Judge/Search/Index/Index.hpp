@@ -4,8 +4,10 @@
 #include <unordered_map>
 #include <fstream>
 #include <mutex>
-#include "../Parse/Util.hpp"
-#include "Log.hpp"
+
+#include "../../OJ/oj_Model.hpp"
+#include "../../Common/Util/Tool.hpp"
+#include "../../Common/Log/clog.hpp"
 
 //这里的代码需要重构一下
 //1.记录当前最大的博文id号码
@@ -14,10 +16,11 @@
 
 namespace ns_Index 
 {
+    inline const char *Server_logger_name = "server_model_logger";
+
     struct DocInfo
     {
         uint64_t doc_id;        //这个是文档的唯一标识符
-        std::string url;        //文档的URL
         std::string title;      //文档的标题
         std::string content;    //文档的内容
     };
@@ -65,7 +68,7 @@ namespace ns_Index
         InvertedList* GetInvertedList(const std::string& word);
 
         //建立索引
-        bool BuildIndex(const std::string& input);
+        bool BuildIndex();
     
     private:   
 
@@ -73,6 +76,9 @@ namespace ns_Index
         // 构建的正排索引，就是填充一个 DocInfo这个数据结构 ，然后将 DocInfo 插入 正排索引的 vector中即可 
         DocInfo* BuildForwordIndex(const std::string& line);
         bool BuildInvertedIndex(const DocInfo &Doc);
+
+    private:
+        ns_model::Model model;
 
     };
 
