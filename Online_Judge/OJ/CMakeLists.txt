@@ -21,12 +21,12 @@ set(MYSQL_LIBRARIES "/usr/lib/x86_64-linux-gnu/libmysqlclient.so")
 #包含头文件
 include_directories(OJ_Server
     /usr/include/ctemplate
-    /home/zz/Desktop/project/Online_Judge/OJ
-    /home/zz/Desktop/project/Online_Judge/Common/Http/
-    /home/zz/Desktop/project/Online_Judge/Common/Util/
-    /home/zz/Desktop/project/Online_Judge/Common/Log/
-    /home/zz/Desktop/project/Online_Judge/Common/Pool/
-    /home/zz/Desktop/project/Online_Judge/Search/Index/
+    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/OJ/
+    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Common/Http/
+    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Common/Util/
+    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Common/Log/
+    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Common/Pool/
+    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Search/Index/
     /home/zz/Desktop/library/cppjieba/include/cppjieba
     /home/zz/Desktop/library/cppjieba/deps/limonp/include/limonp
 )
@@ -35,20 +35,20 @@ include_directories(OJ_Server
 link_directories(/usr/lib/x86_64-linux-gnu)
 
 add_executable(OJ_Server
-    /home/zz/Desktop/project/Online_Judge/Search/Index/Index.cpp
-    /home/zz/Desktop/project/Online_Judge/Search/Index/Searcher.cpp
-    /home/zz/Desktop/project/Online_Judge/Common/Log/Buffer.cpp
-    /home/zz/Desktop/project/Online_Judge/Common/Log/Format.cpp
-    /home/zz/Desktop/project/Online_Judge/Common/Log/Logger.cpp
-    /home/zz/Desktop/project/Online_Judge/Common/Log/Looper.cpp
-    /home/zz/Desktop/project/Online_Judge/Common/Log/Sink.cpp
-    /home/zz/Desktop/project/Online_Judge/Common/Log/util.cpp
-    /home/zz/Desktop/project/Online_Judge/Common/Util/Tool.cpp
-    /home/zz/Desktop/project/Online_Judge/Common/Pool/ThreadPool.cpp
-    /home/zz/Desktop/project/Online_Judge/OJ/Control.cpp
-    /home/zz/Desktop/project/Online_Judge/OJ/oj_Model.cpp
-    /home/zz/Desktop/project/Online_Judge/OJ/OJ_Server.cpp
-    /home/zz/Desktop/project/Online_Judge/OJ/View.cpp
+    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Search/Index/Index.cpp
+    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Search/Index/Searcher.cpp
+    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Common/Log/Buffer.cpp
+    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Common/Log/Format.cpp
+    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Common/Log/Logger.cpp
+    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Common/Log/Looper.cpp
+    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Common/Log/Sink.cpp
+    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Common/Log/util.cpp
+    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Common/Util/Tool.cpp
+    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Common/Pool/ThreadPool.cpp
+    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/OJ/Control.cpp
+    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/OJ/oj_Model.cpp
+    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/OJ/OJ_Server.cpp
+    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/OJ/View.cpp
 )
 
 #链接第三方库
