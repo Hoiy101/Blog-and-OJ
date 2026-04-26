@@ -1,4 +1,9 @@
 cd ~/Desktop
+
+sudo apt-get update
+sudo apt-get install -y cmake g++ libssl-dev uuid-dev zlib1g-dev
+
+
 mkdir library
 sudo apt update
 
@@ -37,4 +42,18 @@ sudo apt install libjsoncpp-dev -y
 #安装ctemplate库
 sudo apt install libctemplate-dev -y
 
+#安装MySQL C Connect库
 sudo apt install libmysqlcppconn-dev -y
+
+#通过源码安装drogon库
+cd ~/Desktop
+cd library
+
+git clone https://github.com/drogonframework/drogon.git
+cd drogon
+
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
