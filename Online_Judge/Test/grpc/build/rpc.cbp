@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="rpc"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\..\;CMake Files\..\..\..\..\..\;CMake Files\..\..\..\..\..\..\;CMake Files\..\..\..\..\..\..\..\;CMake Files\..\..\..\..\..\..\..\..\;CMake Files\..\..\..\..\..\..\..\..\usr\;CMake Files\..\..\..\..\..\..\..\..\usr\local\;CMake Files\..\..\..\..\..\..\..\..\usr\local\lib\;CMake Files\..\..\..\..\..\..\..\..\usr\local\lib\cmake\;CMake Files\..\..\..\..\..\..\..\..\usr\local\lib\cmake\grpc\;CMake Files\..\..\..\..\..\..\..\..\usr\local\lib\cmake\absl\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/build"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -f &quot;/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/build/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/gmake -f &quot;/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -f &quot;/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -f &quot;/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Server">
+				<Option output="/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/build/Server" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/build"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DCARES_STATICLIB"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -f &quot;/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/build/Makefile&quot;  VERBOSE=1 Server"/>
+					<CompileFile command="/usr/bin/gmake -f &quot;/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -f &quot;/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -f &quot;/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Server/fast">
+				<Option output="/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/build/Server" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/build"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DCARES_STATICLIB"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -f &quot;/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/build/Makefile&quot;  VERBOSE=1 Server/fast"/>
+					<CompileFile command="/usr/bin/gmake -f &quot;/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -f &quot;/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -f &quot;/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Client">
+				<Option output="/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/build/Client" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/build"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DCARES_STATICLIB"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -f &quot;/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/build/Makefile&quot;  VERBOSE=1 Client"/>
+					<CompileFile command="/usr/bin/gmake -f &quot;/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -f &quot;/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -f &quot;/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Client/fast">
+				<Option output="/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/build/Client" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/build"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DCARES_STATICLIB"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -f &quot;/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/build/Makefile&quot;  VERBOSE=1 Client/fast"/>
+					<CompileFile command="/usr/bin/gmake -f &quot;/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -f &quot;/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -f &quot;/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/build"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -f &quot;/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/build/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/gmake -f &quot;/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -f &quot;/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -f &quot;/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/build"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -f &quot;/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/build/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/gmake -f &quot;/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -f &quot;/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -f &quot;/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/client.cpp">
+			<Option target="Client"/>
+		</Unit>
+		<Unit filename="/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/rpc.grpc.pb.cc">
+			<Option target="Server"/>
+			<Option target="Client"/>
+		</Unit>
+		<Unit filename="/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/rpc.pb.cc">
+			<Option target="Server"/>
+			<Option target="Client"/>
+		</Unit>
+		<Unit filename="/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/server.cpp">
+			<Option target="Server"/>
+		</Unit>
+		<Unit filename="/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/../../../../../../../../usr/local/lib/cmake/grpc/gRPCConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\..\usr\local\lib\cmake\grpc\"/>
+		</Unit>
+		<Unit filename="/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/../../../../../../../../usr/local/lib/cmake/grpc/gRPCConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\..\usr\local\lib\cmake\grpc\"/>
+		</Unit>
+		<Unit filename="/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/../../../../../../../../usr/local/lib/cmake/grpc/gRPCTargets-noconfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\..\usr\local\lib\cmake\grpc\"/>
+		</Unit>
+		<Unit filename="/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/../../../../../../../../usr/local/lib/cmake/grpc/gRPCTargets.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\..\usr\local\lib\cmake\grpc\"/>
+		</Unit>
+		<Unit filename="/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/../../../../../../../../usr/local/lib/cmake/absl/abslConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\..\usr\local\lib\cmake\absl\"/>
+		</Unit>
+		<Unit filename="/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/../../../../../../../../usr/local/lib/cmake/absl/abslConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\..\usr\local\lib\cmake\absl\"/>
+		</Unit>
+		<Unit filename="/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/../../../../../../../../usr/local/lib/cmake/absl/abslTargets-noconfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\..\usr\local\lib\cmake\absl\"/>
+		</Unit>
+		<Unit filename="/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/grpc/../../../../../../../../usr/local/lib/cmake/absl/abslTargets.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\..\usr\local\lib\cmake\absl\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

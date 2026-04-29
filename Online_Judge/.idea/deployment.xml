@@ -10,10 +10,13 @@
             <mapping deploy="/home/zz/Desktop/project/Blog-and-OJ/Online_Judge" local="$PROJECT_DIR$" web="/" />
           </mappings>
           <excludedPaths>
+            <excludedPath local="true" path="$PROJECT_DIR$/Test/grpc/cmake-build-debug-ubuntu24043" />
             <excludedPath local="true" path="$PROJECT_DIR$/OJ/cmake-build-debug-ubuntu24043" />
+            <excludedPath local="true" path="$PROJECT_DIR$/Test/grpc/build" />
+            <excludedPath local="true" path="$PROJECT_DIR$/Test/grpc/build" />
             <excludedPath local="true" path="$PROJECT_DIR$/Test/grpc_test/cmake-build-debug-ubuntu24043" />
-            <excludedPath local="true" path="$PROJECT_DIR$/OJ/cmake-build-debug-ubuntu24043" />
             <excludedPath local="true" path="$PROJECT_DIR$/Test/cmake-build-debug-ubuntu24043" />
+            <excludedPath local="true" path="$PROJECT_DIR$/Test/grpc/cmake-build-debug-ubuntu24043-event-trace" />
           </excludedPaths>
         </serverdata>
       </paths>

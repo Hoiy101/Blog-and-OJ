@@ -1,25 +1,17 @@
 syntax = "proto3";
 
-// 命名空间
-package test_grpc;
-
-// 定义请求消息
-message Request {
-    string name = 1;
-    int32 id = 2;
+message Request
+{
+    int32 age = 1;
+    string name = 2;
 }
 
-// 定义响应消息
-message Response {
-    string message = 1;
-    bool success = 2;
+message Response
+{
+    string Data = 1;
 }
 
-// 定义服务接口
-service Greeter {
-    // 简单 RPC
+service Greeter
+{
     rpc SayHello (Request) returns (Response) {}
-
-    // 服务器流式 RPC
-    rpc SayHelloStream (Request) returns (stream Response) {}
 }

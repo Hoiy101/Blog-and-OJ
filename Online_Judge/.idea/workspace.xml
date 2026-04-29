@@ -11,44 +11,94 @@
   </component>
   <component name="CMakeRunConfigurationManager">
     <generated>
-      <config projectName="OJ_Server" targetName="OJ_Server" />
+      <config projectName="rpc" targetName="Server" />
+      <config projectName="rpc" targetName="Client" />
     </generated>
   </component>
   <component name="CMakeSettings" AUTO_RELOAD="true">
-    <configurations>
-      <configuration PROFILE_NAME="Debug-Ubuntu24.04.3" ENABLED="true" CONFIG_NAME="Debug" TOOLCHAIN_NAME="Ubuntu24.04.3" />
-    </configurations>
+    <configurations />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e541b79f-c36a-4e20-ab7e-8d484a255923" name="更改" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/Online_Judge.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+    <list default="true" id="e541b79f-c36a-4e20-ab7e-8d484a255923" name="更改" comment="修改了脚本">
+      <change afterPath="$PROJECT_DIR$/.idea/cmake.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/gRpc.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/grpc/CMakeLists.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/grpc/client.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/grpc/rpc.proto" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/grpc/server.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/CMakeLists.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeCache.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/3.28.3/CMakeCCompiler.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/3.28.3/CMakeCXXCompiler.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/3.28.3/CMakeDetermineCompilerABI_C.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/3.28.3/CMakeDetermineCompilerABI_CXX.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/3.28.3/CMakeSystem.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/3.28.3/CompilerIdC/CMakeCCompilerId.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/3.28.3/CompilerIdC/a.out" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/3.28.3/CompilerIdCXX/CMakeCXXCompilerId.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/3.28.3/CompilerIdCXX/a.out" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/CMakeConfigureLog.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/CMakeDirectoryInformation.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/Makefile.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/Makefile2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/TargetDirectories.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/client.dir/DependInfo.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/client.dir/build.make" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/client.dir/clients/client.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/client.dir/clients/client.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/client.dir/cmake_clean.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/client.dir/compiler_depend.make" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/client.dir/compiler_depend.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/client.dir/depend.make" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/client.dir/flags.make" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/client.dir/link.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/client.dir/progress.make" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/client.dir/protos/my_service.grpc.pb.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/client.dir/protos/my_service.grpc.pb.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/client.dir/protos/my_service.pb.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/client.dir/protos/my_service.pb.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/cmake.check_cache" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/progress.marks" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/server.dir/DependInfo.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/server.dir/build.make" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/server.dir/cmake_clean.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/server.dir/compiler_depend.make" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/server.dir/compiler_depend.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/server.dir/depend.make" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/server.dir/flags.make" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/server.dir/link.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/server.dir/progress.make" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/server.dir/protos/my_service.grpc.pb.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/server.dir/protos/my_service.grpc.pb.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/server.dir/protos/my_service.pb.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/server.dir/protos/my_service.pb.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/server.dir/servers/server.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/CMakeFiles/server.dir/servers/server.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/Makefile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/client" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/cmake_install.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/build/server" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/clients/client.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/protos/my_service.grpc.pb.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/protos/my_service.grpc.pb.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/protos/my_service.pb.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/protos/my_service.pb.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/protos/my_service.proto" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/test_grpc/servers/server.cpp" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/runner.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/Blog-and-OJ.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/compiler.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/jarRepositories.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vscode/c_cpp_properties.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vscode/launch.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vscode/settings.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Compile/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Compile/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/OJ/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/OJ/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/OJ/Model.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/OJ/Model.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/OJ/Model.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/OJ/Model.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search/Http/wwwroot/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/Search/Http/wwwroot/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search/Index/Log.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/Search/Index/Log.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/a.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/test_mysql.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/autogen.sh" beforeDir="false" afterPath="$PROJECT_DIR$/autogen.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/main/resources/static/image/img.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/deployment.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/other.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test/test_grcp/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test/test_grcp/client.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test/test_grcp/rpc.proto" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test/test_grcp/run.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test/test_grcp/server.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test/test_grcp/test.sh" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,7 +108,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug-Ubuntu24.04.3" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Ubuntu" />
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
@@ -85,15 +135,20 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;ASKED_MARK_IGNORED_FILES_AS_EXCLUDED&quot;: &quot;true&quot;,
     &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;CMake 应用程序.Client.executor&quot;: &quot;Run&quot;,
+    &quot;CMake 应用程序.Server.executor&quot;: &quot;Run&quot;,
     &quot;CMake 调试.Project.executor&quot;: &quot;Debug&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
     &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;last_opened_file_path&quot;: &quot;F:/c_and_c++_code/CPP/Algorithm&quot;,
+    &quot;last_opened_file_path&quot;: &quot;F:/Java_code/Blog-and-OJ/Online_Judge/Test/grpc/build&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -108,17 +163,34 @@
       <recent name="F:\Java_code\Blog-and-OJ\Online_Judge\Test\grpc_test" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunDashboard">
+    <option name="configurationTypes">
+      <set>
+        <option value="CMakeListConfigurationType" />
+        <option value="CMakeRunConfiguration" />
+      </set>
+    </option>
+  </component>
+  <component name="RunManager" selected="CMake 应用程序.Client">
     <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="CLION.EXTERNAL.BUILD" enabled="true" />
       </method>
     </configuration>
-    <configuration name="OJ_Server" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="OJ_Server" TARGET_NAME="OJ_Server" CONFIG_NAME="Debug-Ubuntu24.04.3" RUN_TARGET_PROJECT_NAME="OJ_Server" RUN_TARGET_NAME="OJ_Server">
+    <configuration name="Client" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="rpc" TARGET_NAME="Client" CONFIG_NAME="Ubuntu" RUN_TARGET_PROJECT_NAME="rpc" RUN_TARGET_NAME="Client">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <configuration name="Server" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="rpc" TARGET_NAME="Server" CONFIG_NAME="Ubuntu" RUN_TARGET_PROJECT_NAME="rpc" RUN_TARGET_NAME="Server">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="CMake 应用程序.Client" />
+      <item itemvalue="CMake 应用程序.Server" />
+    </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="应用程序级" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -134,8 +206,20 @@
       <workItem from="1776949706924" duration="2453000" />
       <workItem from="1776952273669" duration="1264000" />
       <workItem from="1777093849431" duration="90000" />
-      <workItem from="1777180281570" duration="2574000" />
+      <workItem from="1777180281570" duration="3052000" />
+      <workItem from="1777184369113" duration="14790000" />
+      <workItem from="1777345350245" duration="1431000" />
+      <workItem from="1777423817772" duration="14000" />
     </task>
+    <task id="LOCAL-00001" summary="修改了脚本">
+      <option name="closed" value="true" />
+      <created>1777184543279</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1777184543279</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -145,5 +229,10 @@
     <isAutomaticCheckingOnLaunch value="false" />
     <isAutomaticFoundErrors value="true" />
     <isAutomaticReloadCMake value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="修改了自动配置脚本并且加入了grpc的测试部分" />
+    <MESSAGE value="修改了脚本" />
+    <option name="LAST_COMMIT_MESSAGE" value="修改了脚本" />
   </component>
 </project>

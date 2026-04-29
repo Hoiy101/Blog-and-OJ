@@ -1,3 +1,4 @@
 Compile/build
 OJ/build
-OJ/cmake-build-debug-ubuntu24043
+.idea
+Test/test_grpc/build
