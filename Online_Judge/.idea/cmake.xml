@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CMakeSharedSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Ubuntu" ENABLED="true" GENERATION_DIR="build" CONFIG_NAME="Debug" TOOLCHAIN_NAME="Ubuntu24.04.3" />
+    </configurations>
+  </component>
+</project>
