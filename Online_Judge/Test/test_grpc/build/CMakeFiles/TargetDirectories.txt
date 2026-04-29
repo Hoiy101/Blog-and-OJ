@@ -1,4 +1,0 @@
-/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/test_grpc/build/CMakeFiles/server.dir
-/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/test_grpc/build/CMakeFiles/client.dir
-/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/test_grpc/build/CMakeFiles/edit_cache.dir
-/home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Test/test_grpc/build/CMakeFiles/rebuild_cache.dir
