@@ -121,7 +121,7 @@
                 <div v-else class="blog-detail-content">
                     <!-- 博客标题 -->
                     <div class="blog-header mb-4">
-                        <h1 class="blog-title">{{ currentBlog.title }}</h1>
+                        <h2 class="blog-title">{{ currentBlog.title }}</h2>
                         <div class="blog-meta text-muted mb-3">
                             <span class="me-3">
                                 <i class="bi bi-calendar-plus"></i> 创建时间: {{ formatTime(currentBlog.createtime) }}

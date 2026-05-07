@@ -138,8 +138,8 @@
                                         <i class="bi bi-star me-1"></i> 难度
                                     </span>
                                 </th>
-                                <th scope="col" style="width: 100px;" class="text-center">查看</th>
-                                <th scope="col" style="width: 100px;" class="text-remove"> 删除</th>
+                                <th scope="col" style="width: 120px;" class="text-center">查看</th>
+                                <th scope="col" style="width: 120px;" class="text-remove"> 删除</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -237,8 +237,7 @@ export default {
             })
         })
         const handleView = (id) => {
-            store.commit("updatetopicid", id);
-            router.push({ name: 'Details' });
+            router.push({ name: 'Details', params: { id: id } });
         }
         // 获取难度对应的CSS类
         const getDifficultyClass = (star) => {
@@ -274,12 +273,16 @@ export default {
             
             console.log('开始获取题目列表...')
             topicadd.error_message = ""
+            
+            const headers = {}
+            if (store.state.user.token && store.state.user.token.trim().length > 0) {
+                headers.Authorization = "Bearer " + store.state.user.token
+            }
+            
             $.ajax({
                 url: "http://127.0.0.1:3000/oj/topic/getlist/",
                 type: "GET",
-                headers: {
-                    Authorization: "Bearer " + store.state.user.token,
-                },
+                headers: headers,
                 success(resp) {
                     console.log('题目列表API响应:', resp)
                     

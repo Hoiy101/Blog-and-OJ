@@ -11,37 +11,37 @@
             <div class="col-9">
                 <nav class="custom-tabs-nav" style="margin-top: 20px; background-color: white; border-radius: 8px 8px 0 0;">
                     <div class="nav nav-tabs" id="nav-tab" role="tablist" >
-                        <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">blog</button>
+                        <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">博客</button>
                         <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">刷题记录</button>
-                        <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Contact</button>
+                        <!-- <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Contact</button> -->
                     </div>
                 </nav>
                 <div class="tab-content" id="nav-tabContent">
                 <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
                 <div class="card">
                     <div class="card-header">
-                        <span style="font-size: 130%;">我的blog</span>
+                        <span style="font-size: 130%;">我的博客</span>
                         <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#add-bot-btn">
-                            创建blog
+                            创建博客
                         </button>
                             <div class="modal fade" id="add-bot-btn" tabindex="-1">
                             <div class="modal-dialog modal-xl">
                                 <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">创建blog</h5>
+                                    <h5 class="modal-title" id="exampleModalLabel">创建博客</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
                                     <div class="mb-3">
                                         <label for="add-bot-title" class="form-label">名称</label>
-                                        <input v-model="botadd.title" type="text" class="form-control" id="add-bot-title" placeholder="请填写bot名称">
+                                        <input v-model="botadd.title" type="text" class="form-control" id="add-bot-title" placeholder="请填写博客名称">
                                     </div>
                                     <div class="mb-3">
                                         <label for="add-bot-description" class="form-label">简介</label>
-                                        <textarea v-model="botadd.description" class="form-control" id="add-bot-description" placeholder="请填写bot简介" rows="2"></textarea>
+                                        <textarea v-model="botadd.description" class="form-control" id="add-bot-description" placeholder="请填写博客简介" rows="2"></textarea>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="add-bot-code" class="form-label">代码</label>
+                                        <label for="add-bot-code" class="form-label">正文</label>
                                         <VAceEditor
                                                 v-model:value="botadd.content"
                                                 @init="editorInit"
@@ -80,7 +80,7 @@
                                             <div class="modal-dialog modal-xl">
                                                 <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalLabel">创建blog</h5>
+                                                    <h5 class="modal-title" id="exampleModalLabel">修改博客</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
@@ -93,7 +93,7 @@
                                                         <textarea v-model="bot.description" class="form-control" id="add-bot-description" placeholder="请填写bot简介" rows="2"></textarea>
                                                     </div>
                                                     <div class="mb-3">
-                                                        <label for="add-bot-code" class="form-label">代码</label>
+                                                        <label for="add-bot-code" class="form-label">正文</label>
                                                         <VAceEditor
                                                             v-model:value="bot.content"
                                                             @init="editorInit"
@@ -120,11 +120,11 @@
                                         <div class="modal-dialog">
                                             <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">删除blog</h5>
+                                                <h5 class="modal-title" id="exampleModalLabel">删除博客</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
-                                                是否确认删除blog {{ bot.title }}
+                                                是否确认删除博客 {{ bot.title }}
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-primary" @click="remove_bot(bot)">确认</button>

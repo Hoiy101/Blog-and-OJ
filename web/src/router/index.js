@@ -61,7 +61,7 @@ const routes = [
     meta: { requiresAuth: false },
   },
     {
-    path:"/oj/details/",
+    path:"/oj/details/:id",
     name:"Details",
     component:QuestionDetails,  
     meta: { requiresAuth: false },

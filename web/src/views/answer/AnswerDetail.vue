@@ -57,7 +57,7 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import $ from 'jquery'
 import { useStore } from 'vuex'
@@ -108,6 +108,7 @@ export default {
             
             if (!problemId) {
                 error.value = '题目ID不存在'
+                loading.value = false
                 return
             }
 
@@ -117,12 +118,15 @@ export default {
             console.log('获取题解详情，题目ID:', problemId)
             
             // 发送请求获取题解详情
+            const headers = {}
+            if (store.state.user.token && store.state.user.token.trim().length > 0) {
+                headers.Authorization = "Bearer " + store.state.user.token
+            }
+            
             $.ajax({
                 url: "http://127.0.0.1:3000/oj/answer/get/",
                 type: "GET",
-                headers: {
-                    Authorization: "Bearer " + store.state.user.token,
-                },
+                headers: headers,
                 data: {
                     topic_id: problemId,
                 },
@@ -167,12 +171,17 @@ export default {
         // 返回题目详情页
         const backToProblem = () => {
             const problemId = answer.value.problemId || route.params.id
-            store.commit('topic/updatetopicid', problemId)
-            router.push('/oj/details/')
+            router.push('/oj/details/' + problemId)
         }
 
+        // 监听路由参数变化
+        watch(() => route.params.id, (newId) => {
+            if (newId) {
+                getAnswerDetail()
+            }
+        }, { immediate: true })
+
         onMounted(() => {
-            getAnswerDetail()
         })
 
         return {

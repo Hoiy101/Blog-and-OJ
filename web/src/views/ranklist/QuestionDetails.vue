@@ -202,7 +202,7 @@
 
 <script>
 import { ref, onMounted, onUnmounted, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import $ from 'jquery'
 import { useStore } from 'vuex'
 import ace from 'ace-builds'
@@ -218,6 +218,7 @@ export default {
     
     setup() {
         const router = useRouter()
+        const route = useRoute()
         const store = useStore()
         
         // 题目相关状态
@@ -250,6 +251,10 @@ export default {
         const isSubmitting = ref(false)
         const submissionResult = ref(null)
         const testCases = ref([])
+        
+        // WebSocket相关状态
+        const ws = ref(null)
+        const wsConnected = ref(false)
         
         // 默认代码模板
         const codeTemplates = {
@@ -305,10 +310,11 @@ export default {
         
         // 获取题目详情
         const getProblemDetail = () => {
-            const problemId = store.state.topic.topic_id
+            const problemId = route.params.id
             
-            if (problemId === "-1") {
+            if (!problemId) {
                 error.value = '题目不存在或已被删除'
+                loading.value = false
                 console.log(`获取题目详情，ID: ${problemId}`)
                 return
             }
@@ -319,12 +325,15 @@ export default {
             console.log(`获取题目详情，ID: ${problemId}`)
             
             // 发送请求获取题目详情
+            const headers = {}
+            if (store.state.user.token && store.state.user.token.trim().length > 0) {
+                headers.Authorization = "Bearer " + store.state.user.token
+            }
+            
             $.ajax({
                 url: "http://127.0.0.1:3000/oj/topic/get/",
                 type: "GET",
-                headers: {
-                    Authorization: "Bearer " + store.state.user.token,
-                },
+                headers: headers,
                 data: { id: problemId },
                 success(resp) {
                     console.log('题目详情API响应:', resp)
@@ -371,8 +380,6 @@ export default {
                     }
                     
                     error.value = errorMsg
-                    
-                    error.value = null
                 },
                 complete() {
                     loading.value = false
@@ -476,32 +483,27 @@ export default {
             isSubmitting.value = true
             submissionResult.value = null
             
-            // 实际提交代码到后端的示例
-            /*
+
             $.ajax({
-                url: "http://127.0.0.1:3000/oj/submit/",
+                url: "http://127.0.0.1:3000/oj/evaluate/add/",
                 type: "POST",
                 headers: {
                     Authorization: "Bearer " + store.state.user.token,
                 },
                 data: {
-                    problemId: problem.value.id,
+                    evaluateId: problem.value.id,
                     language: selectedLanguage.value,
                     code: code
                 },
                 success(resp) {
                     console.log('提交成功:', resp)
+                    console.log(resp);
                     submissionResult.value = resp
-                },
-                error(jqXHR, textStatus, errorThrown) {
-                    console.error('提交失败:', errorThrown)
-                    alert('提交失败: ' + errorThrown)
                 },
                 complete() {
                     isSubmitting.value = false
                 }
             })
-            */
         }
         
         // 获取结果提示框的类
@@ -534,13 +536,74 @@ export default {
             router.push(`/answer/${problem.value.id}`)
         }
         
-        onMounted(() => {
-            getProblemDetail()
+        // 建立WebSocket连接
+        const connectWebSocket = () => {
+            const userId = store.state.user.id
+            if (!userId) {
+                console.log('用户未登录，无法建立WebSocket连接')
+                return
+            }
             
+            const wsUrl = `ws://127.0.0.1:3000/websocket/${userId}`
+            console.log('尝试建立WebSocket连接:', wsUrl)
+            
+            ws.value = new WebSocket(wsUrl)
+            
+            ws.value.onopen = () => {
+                console.log('WebSocket连接已建立')
+                wsConnected.value = true
+            }
+            
+            ws.value.onmessage = (event) => {
+                console.log('收到WebSocket消息:', event.data)
+                // 处理服务器发送的消息
+                try {
+                    const data = JSON.parse(event.data)
+                    // 可以在这里处理判题结果等消息
+                    if (data.type === 'submission_result') {
+                        submissionResult.value = data.payload
+                    }
+                } catch (error) {
+                    console.error('解析WebSocket消息失败:', error)
+                }
+            }
+            
+            ws.value.onerror = (error) => {
+                console.error('WebSocket连接错误:', error)
+                wsConnected.value = false
+            }
+            
+            ws.value.onclose = (event) => {
+                console.log('WebSocket连接已关闭:', event.code, event.reason)
+                wsConnected.value = false
+            }
+        }
+        
+        // 断开WebSocket连接
+        const disconnectWebSocket = () => {
+            if (ws.value) {
+                console.log('断开WebSocket连接')
+                ws.value.close()
+                ws.value = null
+                wsConnected.value = false
+            }
+        }
+        
+        // 监听路由参数变化
+        watch(() => route.params.id, (newId) => {
+            if (newId) {
+                getProblemDetail()
+            }
+        }, { immediate: true })
+
+        onMounted(() => {
             // 延迟初始化编辑器，确保DOM已渲染
             setTimeout(() => {
                 initAceEditor()
             }, 100)
+            
+            // 建立WebSocket连接
+            connectWebSocket()
         })
         
         onUnmounted(() => {
@@ -549,6 +612,9 @@ export default {
                 aceEditor.value.destroy()
                 aceEditor.value = null
             }
+            
+            // 断开WebSocket连接
+            disconnectWebSocket()
         })
         
         return {
