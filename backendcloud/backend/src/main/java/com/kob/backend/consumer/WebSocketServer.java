@@ -83,11 +83,12 @@ public class WebSocketServer {
         }
     }
 
-    public static void startEvaluate(Integer user_id, Integer evaluation_id, Integer score) {
+    public static void startEvaluate(Integer user_id, Integer evaluation_id, Integer score, String state) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("user_id", user_id);
         jsonObject.put("evaluation_id", evaluation_id);
         jsonObject.put("score", score);
+        jsonObject.put("state", state);
         System.out.println(jsonObject);
         users.get(user_id).sendMessage(jsonObject.toJSONString());
     }

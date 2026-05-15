@@ -15,10 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class AddEvaluateServiceImpl implements AddEvaluateService {
@@ -49,11 +46,19 @@ public class AddEvaluateServiceImpl implements AddEvaluateService {
 
         List<Evaluate> list = evaluateMapper.selectList(queryWrapper);
 
+        List<String> inputList = new ArrayList<>();
+        List<String> outputList = new ArrayList<>();
+        for(Evaluate evaluate : list){
+            inputList.add(evaluate.getInput());
+            outputList.add(evaluate.getOutput());
+        }
+
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("code",code);
         jsonObject.put("language",language);
         jsonObject.put("user_id",userId);
-        jsonObject.put("list",list);
+        jsonObject.put("inputList",inputList);
+        jsonObject.put("outputList",outputList);
         jsonObject.put("evaluate_id",evaluateId);
         restTemplate.postForObject(evaluateUrl,jsonObject,String.class);
         System.out.println(userId + "add evaluate success");
