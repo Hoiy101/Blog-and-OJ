@@ -66,7 +66,7 @@ public class EvaluatePool {
     }
 
     public EvaluateMessage compileFile(File userCodeFile) {
-        String compileCmp = String.format("javac -encoding utf-8 %s",  userCodeFile.getAbsolutePath());
+        String compileCmp = String.format("javac -encoding utf-8 -source 8 -target 8 %s",  userCodeFile.getAbsolutePath());
 
         try {
             Process compileProcess = Runtime.getRuntime().exec(compileCmp);
@@ -130,6 +130,7 @@ public class EvaluatePool {
                 .withAttachStdin(true)
                 .withAttachStderr(true)
                 .withAttachStdout(true)
+                .withCmd("sh", "-c", "while true; do sleep 3600; done")
                 .withTty(true)
                 .exec();
         String container_id = createContainerResponse.getId();
@@ -139,17 +140,19 @@ public class EvaluatePool {
 
     private List<EvaluateMessage> addEvaluate(List<String> inputList, String container_id){
         List<EvaluateMessage> evaluateList = new ArrayList<>();
-
         for(String input : inputList) {
             StopWatch stopWatch = new StopWatch();
+            String escapedInput = input
+                    .replace("\\", "\\\\")
+                    .replace("'", "'\"'\"'")
+                    + "\\n";
 
-            String[] inputArr = input.split(" ");
-
-            String[] cmpArr = ArrayUtil.append(new String[]{"java", "-cp", "/app", "Main"}, inputArr);
+            String runCommand = "printf '" + escapedInput + "' | java -cp /app Main";
             DockerClient dockerClient = DockerClientBuilder.getInstance().build();
             ExecCreateCmdResponse execCreateCmdResponse = dockerClient.execCreateCmd(container_id)
-                    .withCmd(cmpArr)
+                    .withCmd("sh", "-c", runCommand)
                     .withAttachStderr(true)
+                    .withAttachStdout(true)
                     .withAttachStdin(true)
                     .withAttachStdout(true)
                     .exec();
@@ -217,7 +220,6 @@ public class EvaluatePool {
             }finally {
                 statsCmd.close();
             }
-
             EvaluateMessage evaluateMessage = new EvaluateMessage();
             evaluateMessage.setErrorMessage(errorMessage[0]);
             evaluateMessage.setMessage(Message[0]);
@@ -246,7 +248,6 @@ public class EvaluatePool {
         String userCodeParenPath =  EvaluateFile(code);//将用户代码打包成文件
 
         File userCodeFile = new File(userCodeParenPath + File.separator + "Main.java");
-
         EvaluateMessage evaluateMessage = compileFile(userCodeFile);//将用户代码进行编译
         if(evaluateMessage.getErrorMessage().equals("编译错误")){
             message.put("state", "Compile Error");
@@ -268,8 +269,10 @@ public class EvaluatePool {
             String error = evaluateMessage1.getErrorMessage();
             Long time = evaluateMessage1.getTime();
             Long memory = evaluateMessage1.getMemory();
+            input = input.replace("\n","");
 
-            if(error != null){
+            System.out.println("input: " + input + " " + "output: " + output + " " + "error: " + error);
+            if(error != null && !error.equals("")){
                 message.put("state", "Runtime Error");
                 message.put("score", 0);
                 EvaluatePass(message);

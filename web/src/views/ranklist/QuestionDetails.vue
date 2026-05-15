@@ -1,5 +1,13 @@
 <template>
     <div class="container content-field">
+        <!-- 结果提示窗 -->
+        <ResultModal 
+            :visible="showResultModal" 
+            :resultData="websocketResult"
+            @close="closeResultModal"
+            @viewSolution="goToAnswer"
+        />
+        
         <!-- 题目详情和编辑界面 -->
         <div class="card oj-detail-card">
             <!-- 头部：返回按钮和题目信息 -->
@@ -212,9 +220,14 @@ import 'ace-builds/src-noconflict/mode-python'
 import 'ace-builds/src-noconflict/mode-javascript'
 import 'ace-builds/src-noconflict/theme-monokai'
 import 'ace-builds/src-noconflict/ext-language_tools'
+import ResultModal from '../../components/ResultModal.vue'
 
 export default {
     name: 'OJProblemDetail',
+    
+    components: {
+        ResultModal
+    },
     
     setup() {
         const router = useRouter()
@@ -255,6 +268,15 @@ export default {
         // WebSocket相关状态
         const ws = ref(null)
         const wsConnected = ref(false)
+        
+        // 结果提示窗状态
+        const showResultModal = ref(false)
+        const websocketResult = ref({
+            user_id: null,
+            evaluation_id: null,
+            score: 0,
+            state: ''
+        })
         
         // 默认代码模板
         const codeTemplates = {
@@ -536,6 +558,29 @@ export default {
             router.push(`/answer/${problem.value.id}`)
         }
         
+        // 获取结果消息
+        const getResultMessage = (state) => {
+            const messages = {
+                accepted: '通过',
+                wrong_answer: '答案错误',
+                time_limit: '超时',
+                runtime_error: '运行错误',
+                compile_error: '编译错误'
+            }
+            return messages[state] || state
+        }
+        
+        // 关闭结果提示窗
+        const closeResultModal = () => {
+            showResultModal.value = false
+        }
+        
+        // 跳转到题解页面
+        const goToAnswer = (evaluationId) => {
+            showResultModal.value = false
+            router.push(`/answer/${evaluationId}`)
+        }
+        
         // 建立WebSocket连接
         const connectWebSocket = () => {
             const userId = store.state.user.id
@@ -556,12 +601,21 @@ export default {
             
             ws.value.onmessage = (event) => {
                 console.log('收到WebSocket消息:', event.data)
-                // 处理服务器发送的消息
                 try {
                     const data = JSON.parse(event.data)
-                    // 可以在这里处理判题结果等消息
-                    if (data.type === 'submission_result') {
-                        submissionResult.value = data.payload
+                    if (data.score !== undefined && data.state !== undefined) {
+                        websocketResult.value = {
+                            user_id: data.user_id,
+                            evaluation_id: data.evaluation_id,
+                            score: data.score,
+                            state: data.state
+                        }
+                        showResultModal.value = true
+                        submissionResult.value = {
+                            status: data.state,
+                            message: getResultMessage(data.state),
+                            score: data.score
+                        }
                     }
                 } catch (error) {
                     console.error('解析WebSocket消息失败:', error)
@@ -628,6 +682,8 @@ export default {
             isSubmitting,
             submissionResult,
             testCases,
+            showResultModal,
+            websocketResult,
             getDifficultyClass,
             getDifficultyText,
             formatContent,
@@ -637,7 +693,9 @@ export default {
             getResultAlertClass,
             getTestCaseBadgeClass,
             backToProblemList,
-            viewAnswer
+            viewAnswer,
+            closeResultModal,
+            goToAnswer
         }
     }
 }

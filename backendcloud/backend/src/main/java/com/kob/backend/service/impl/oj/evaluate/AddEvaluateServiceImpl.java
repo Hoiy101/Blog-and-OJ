@@ -42,7 +42,7 @@ public class AddEvaluateServiceImpl implements AddEvaluateService {
         Integer userId = user.getId();
 
         QueryWrapper<Evaluate> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("id",evaluateId);
+        queryWrapper.eq("topic_id",evaluateId);
 
         List<Evaluate> list = evaluateMapper.selectList(queryWrapper);
 
@@ -52,7 +52,6 @@ public class AddEvaluateServiceImpl implements AddEvaluateService {
             inputList.add(evaluate.getInput());
             outputList.add(evaluate.getOutput());
         }
-
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("code",code);
         jsonObject.put("language",language);
