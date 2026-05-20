@@ -5,16 +5,13 @@ import com.evaluatesystem.service.EvaluateService;
 import com.evaluatesystem.service.utils.EvaluatePool;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Service
 public class EvaluateServiceImpl implements EvaluateService {
-    private EvaluatePool evaluatePool = new EvaluatePool();
+    public static final EvaluatePool evaluatePool = new EvaluatePool();
 
     @Override
     public String Evaluate(JSONObject jsonObject) {
-        evaluatePool.startEvaluate(jsonObject);
+        evaluatePool.addEvaluate(jsonObject);
         System.out.println("add evaluatePool success");
         return "success";
     }
