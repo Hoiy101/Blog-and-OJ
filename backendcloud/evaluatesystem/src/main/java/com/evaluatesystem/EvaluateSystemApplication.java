@@ -1,14 +1,14 @@
 package com.evaluatesystem;
 
 
-import com.evaluatesystem.service.Impl.EvaluateServiceImpl;
+import com.evaluatesystem.service.utils.EvaluatePool;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class EvaluateSystemApplication {
     public static void main(String[] args) {
-        EvaluateServiceImpl.evaluatePool.start();
         SpringApplication.run(EvaluateSystemApplication.class, args);
     }
 }

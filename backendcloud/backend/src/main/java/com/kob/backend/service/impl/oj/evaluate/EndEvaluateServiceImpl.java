@@ -7,22 +7,58 @@ import com.kob.backend.mapper.TopicMapper;
 import com.kob.backend.pojo.RecordOfQuestion;
 import com.kob.backend.service.oj.evaluate.EndEvaluateService;
 import lombok.Data;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
 import java.util.Date;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
-@Service
-public class EndEvaluateServiceImpl implements EndEvaluateService {
+@Component
+public class EndEvaluateServiceImpl extends Thread {
     @Autowired
     private RecordOfQuestionMapper recordOfQuestionMapper;
     @Autowired
     private TopicMapper topicMapper;
     @Autowired
-    private DataSource dataSource;
+    RabbitTemplate rabbitTemplate;
+
+    BlockingQueue<JSONObject> queue = new LinkedBlockingQueue<>();
+
+    @RabbitListener (queues = "evaluate.result.queue")
+    public void EvaluateResult(JSONObject message) {
+        try {
+            queue.put(message);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @EventListener(ApplicationReadyEvent.class)
+    public void startThread(){
+        this.start();
+    }
 
     @Override
+    public void run() {
+        while (true) {
+            JSONObject message;
+            try {
+                message = queue.take();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println("End: " + message);
+            EndEvaluate(message);
+        }
+    }
+
     public String EndEvaluate(JSONObject jsonObject) {
         System.out.println(jsonObject.getString("score"));
         Integer user_id = Integer.parseInt(jsonObject.getString("user_id"));

@@ -5,12 +5,14 @@ import cn.hutool.core.date.StopWatch;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ArrayUtil;
 import com.alibaba.fastjson2.JSONObject;
+import com.evaluatesystem.config.RabbitMqConfiguration;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.command.*;
 import com.github.dockerjava.api.model.*;
 import com.github.dockerjava.core.DockerClientBuilder;
 import com.github.dockerjava.core.command.ExecStartResultCallback;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -28,17 +30,17 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class Consumer {
 
-    public static RestTemplate restTemplate;
+    public static RabbitTemplate rabbitTemplate;
 
     @Autowired
-    public void setEvaluatePool(RestTemplate restTemplate) {
-        Consumer.restTemplate = restTemplate;
+    public void setRabbitTemplate(RabbitTemplate rabbitTemplate) {
+        Consumer.rabbitTemplate = rabbitTemplate;
     }
 
     private final String EvaluatePassUrl = "http://127.0.0.1:3000/oj/evaluate/end/";
 
     private void EvaluatePass(JSONObject jsonObject) {
-        restTemplate.postForObject(EvaluatePassUrl, jsonObject, String.class);
+        rabbitTemplate.convertAndSend("evaluate.result.exchange", "evaluate.result", jsonObject);
         System.out.println(jsonObject.get("user_id") + "EvaluatePass Success");
     }
 
@@ -134,6 +136,7 @@ public class Consumer {
     }
 
     private List<EvaluateMessage> addEvaluate(List<String> inputList, String container_id){
+        DockerClient dockerClient = DockerClientBuilder.getInstance().build();
         List<EvaluateMessage> evaluateList = new ArrayList<>();
         for(String input : inputList) {
             StopWatch stopWatch = new StopWatch();
@@ -143,7 +146,6 @@ public class Consumer {
                     + "\\n";
 
             String runCommand = "printf '" + escapedInput + "' | java -cp /app Main";
-            DockerClient dockerClient = DockerClientBuilder.getInstance().build();
             ExecCreateCmdResponse execCreateCmdResponse = dockerClient.execCreateCmd(container_id)
                     .withCmd("sh", "-c", runCommand)
                     .withAttachStderr(true)
@@ -223,6 +225,8 @@ public class Consumer {
 
             evaluateList.add(evaluateMessage);
         }
+        dockerClient.stopContainerCmd(container_id).exec();
+        dockerClient.removeContainerCmd(container_id).exec();
         return evaluateList;
     }
 

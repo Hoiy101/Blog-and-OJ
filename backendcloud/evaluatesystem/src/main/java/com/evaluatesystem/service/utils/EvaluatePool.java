@@ -1,48 +1,62 @@
 package com.evaluatesystem.service.utils;
 
 import com.alibaba.fastjson2.JSONObject;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.stereotype.Component;
 
 import java.util.Queue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+@Component
 public class EvaluatePool extends Thread {
-    private final ReentrantLock lock = new ReentrantLock();
-    private final Condition condition = lock.newCondition();
-    private Queue<JSONObject> jsonObjectsQueue = new ConcurrentLinkedQueue<>();
-    public void addEvaluate(JSONObject evaluate) {
-        lock.lock();
-        try {
-            jsonObjectsQueue.add(evaluate);
-            condition.signalAll();
-        }finally {
-            lock.unlock();
-        }
+    public RabbitTemplate rabbitTemplate;
+
+    private BlockingQueue<JSONObject> queue = new LinkedBlockingQueue<>();
+
+    @Autowired
+    private Consumer consumer;
+
+    @Autowired
+    public void setRabbitTemplate(RabbitTemplate rabbitTemplate) {
+        this.rabbitTemplate = rabbitTemplate;
     }
 
-    private void consumer(JSONObject jsonObject) {
-        Consumer consumer = new Consumer();
-        consumer.startEvaluate(jsonObject);
+    @EventListener(ApplicationReadyEvent.class)
+    public void startThread(){
+        this.start();
     }
+
+    @RabbitListener (queues = "evaluate.task.queue")
+    public void EvaluateTask(JSONObject message) {
+        try {
+            queue.put(message);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
 
     @Override
     public void run() {
         while (true) {
-            lock.lock();
-            if(jsonObjectsQueue.isEmpty()) {
-                try {
-                    condition.await();
-                } catch (InterruptedException e) {
-                    lock.unlock();
-                    throw new RuntimeException(e);
-                }
+            JSONObject message = null;
+            try {
+                message = queue.take();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
-            else{
-                JSONObject evaluate = jsonObjectsQueue.remove();
-                lock.unlock();
-                consumer(evaluate);
-            }
+            System.out.println("EvaluatePool: " + message);
+            consumer.startEvaluate(message);
         }
     }
 }
