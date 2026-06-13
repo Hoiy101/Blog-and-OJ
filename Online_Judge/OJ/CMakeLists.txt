@@ -18,38 +18,45 @@ set(MYSQL_INCLUDE_DIRS "/usr/include/mysql")
 set(MYSQL_LIBRARIES "/usr/lib/x86_64-linux-gnu/libmysqlclient.so")
 
 
+#获取环境变量
+set(ROOT_DIR $ENV{ONLINE_JUDGE})
+set(LIB_DIR $ENV{LIBRARY})
+
 #包含头文件
 include_directories(OJ_Server
     /usr/include/ctemplate
-    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/OJ/
-    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Common/Http/
-    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Common/Util/
-    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Common/Log/
-    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Common/Pool/
-    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Search/Index/
-    /home/zz/Desktop/library/cppjieba/include/cppjieba
-    /home/zz/Desktop/library/cppjieba/deps/limonp/include/limonp
+    ${ROOT_DIR}/OJ/
+    ${ROOT_DIR}/Common/Http/
+    ${ROOT_DIR}/Common/Util/
+    ${ROOT_DIR}/Common/Log/
+    ${ROOT_DIR}/Common/Pool/
+    ${ROOT_DIR}/Search/Index/
+    ${LIB_DIR}/cppjieba/include/cppjieba
+    ${LIB_DIR}/cppjieba/deps/limonp/include/limonp
 )
 
 #添加ctemplate库路径
 link_directories(/usr/lib/x86_64-linux-gnu)
 
-add_executable(OJ_Server
-    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Search/Index/Index.cpp
-    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Search/Index/Searcher.cpp
-    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Common/Log/Buffer.cpp
-    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Common/Log/Format.cpp
-    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Common/Log/Logger.cpp
-    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Common/Log/Looper.cpp
-    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Common/Log/Sink.cpp
-    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Common/Log/util.cpp
-    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Common/Util/Tool.cpp
-    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Common/Pool/ThreadPool.cpp
-    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/OJ/Control.cpp
-    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/OJ/oj_Model.cpp
-    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/OJ/OJ_Server.cpp
-    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/OJ/View.cpp
+#添加源文件
+set(SOURCES
+    ${ROOT_DIR}/Search/Index/Index.cpp
+    ${ROOT_DIR}/Search/Index/Searcher.cpp
+    ${ROOT_DIR}/Common/Log/Buffer.cpp
+    ${ROOT_DIR}/Common/Log/Format.cpp
+    ${ROOT_DIR}/Common/Log/Logger.cpp
+    ${ROOT_DIR}/Common/Log/Looper.cpp
+    ${ROOT_DIR}/Common/Log/Sink.cpp
+    ${ROOT_DIR}/Common/Log/util.cpp
+    ${ROOT_DIR}/Common/Util/Tool.cpp
+    ${ROOT_DIR}/Common/Pool/ThreadPool.cpp
+    ${ROOT_DIR}/OJ/Control.cpp
+    ${ROOT_DIR}/OJ/oj_Model.cpp
+    ${ROOT_DIR}/OJ/OJ_Server.cpp
+    ${ROOT_DIR}/OJ/View.cpp
 )
+
+add_executable(${PROJECT_NAME} ${SOURCES})
 
 #链接第三方库
 target_link_libraries(${PROJECT_NAME}

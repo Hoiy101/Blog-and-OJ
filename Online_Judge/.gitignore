@@ -1,2 +1,6 @@
-Compile/build
-OJ/build
+Compile/build/
+OJ/build/
+.idea/
+Test/
+OJ/cmake-build-debug-ubuntu24043
+.vscode/

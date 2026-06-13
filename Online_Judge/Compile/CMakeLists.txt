@@ -11,29 +11,35 @@ find_package(jsoncpp CONFIG REQUIRED)
 find_package(Boost REQUIRED)
 find_package(Drogon REQUIRED COMPONENTS json)
 
+#获取环境变量
+set(ROOT_DIR $ENV{ONLINE_JUDGE})
+
 #包含头文件目录
 include_directories(compile_server 
-    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Compile/
-    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Common/Http/
-    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Common/Util/
-    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Common/Log/
-    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Common/Pool/
+    ${ROOT_DIR}/Compile/
+    ${ROOT_DIR}/Common/Http/
+    ${ROOT_DIR}/Common/Util/
+    ${ROOT_DIR}/Common/Log/
+    ${ROOT_DIR}/Common/Pool/
 )
 
-add_executable(compile_server 
-    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Common/Log/Buffer.cpp
-    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Common/Log/Format.cpp
-    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Common/Log/Logger.cpp
-    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Common/Log/Looper.cpp
-    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Common/Log/Sink.cpp
-    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Common/Log/util.cpp
-    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Common/Util/Tool.cpp
-    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Common/Pool/ThreadPool.cpp
-    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Compile/Compile_Run.cpp
-    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Compile/Compile_Server.cpp
-    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Compile/Compiler.cpp
-    /home/zz/Desktop/project/Blog-and-OJ/Online_Judge/Compile/Runner.cpp
+#添加源文件
+set(SOURCES
+    ${ROOT_DIR}/Common/Log/Buffer.cpp
+    ${ROOT_DIR}/Common/Log/Format.cpp
+    ${ROOT_DIR}/Common/Log/Logger.cpp
+    ${ROOT_DIR}/Common/Log/Looper.cpp
+    ${ROOT_DIR}/Common/Log/Sink.cpp
+    ${ROOT_DIR}/Common/Log/util.cpp
+    ${ROOT_DIR}/Common/Util/Tool.cpp
+    ${ROOT_DIR}/Common/Pool/ThreadPool.cpp
+    ${ROOT_DIR}/Compile/Compile_Run.cpp
+    ${ROOT_DIR}/Compile/Compile_Server.cpp
+    ${ROOT_DIR}/Compile/Compiler.cpp
+    ${ROOT_DIR}/Compile/Runner.cpp
 )
+
+add_executable(${PROJECT_NAME} ${SOURCES})
 
 #链接库
 target_link_libraries(${PROJECT_NAME}
