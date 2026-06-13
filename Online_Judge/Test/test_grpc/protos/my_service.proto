@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package myservice;
+
+// 定义一个简单的消息
+message MyRequest {
+  string name = 1;
+}
+
+message MyResponse {
+  string greeting = 1;
+}
+
+// 定义服务
+service MyService {
+  // 定义一个RPC方法
+  rpc SayHello (MyRequest) returns (MyResponse);
+}

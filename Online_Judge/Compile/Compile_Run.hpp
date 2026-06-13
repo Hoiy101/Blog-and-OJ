@@ -4,7 +4,7 @@
 #include <future>
 #include <signal.h>
 #include <unistd.h>
-#include <jsoncpp/json/json.h>
+#include <json/json.h>
 
 #include "Runner.hpp"
 #include "Compiler.hpp"

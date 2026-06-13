@@ -6,11 +6,14 @@ project(OJ_Server)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(Drogon_DIR "//usr/local/lib/cmake/Drogon/DrogonConfig.cmake")
+set(jsoncpp_DIR "/usr/local/lib/cmake/jsoncpp")
+
 #设置第三方库
 find_package(Threads REQUIRED)
 find_package(jsoncpp CONFIG REQUIRED)
 find_package(Boost REQUIRED)
-find_package(Drogon REQUIRED COMPONENTS json)
+find_package(Drogon REQUIRED)
 #find_package(ctemplate REQUIRED)
 #find_package(mysqlclient REQUIRED)
 
@@ -21,34 +24,35 @@ set(MYSQL_LIBRARIES "/usr/lib/x86_64-linux-gnu/libmysqlclient.so")
 #包含头文件
 include_directories(OJ_Server
     /usr/include/ctemplate
-    /home/zz/Desktop/project/Online_Judge/OJ
-    /home/zz/Desktop/project/Online_Judge/Common/Http/
-    /home/zz/Desktop/project/Online_Judge/Common/Util/
-    /home/zz/Desktop/project/Online_Judge/Common/Log/
-    /home/zz/Desktop/project/Online_Judge/Common/Pool/
-    /home/zz/Desktop/project/Online_Judge/Search/Index/
-    /home/zz/Desktop/library/cppjieba/include/cppjieba
-    /home/zz/Desktop/library/cppjieba/deps/limonp/include/limonp
+    ../
+    ../OJ/
+    ../Common/Http/
+    ../Common/Util/
+    ../Common/Log/
+    ../Common/Pool/
+    ../Search/Index/
+    ../../../../library/cppjieba/include/cppjieba
+    ../../../../library/cppjieba/deps/limonp/include/limonp
 )
 
 #添加ctemplate库路径
 link_directories(/usr/lib/x86_64-linux-gnu)
 
 add_executable(OJ_Server
-    /home/zz/Desktop/project/Online_Judge/Search/Index/Index.cpp
-    /home/zz/Desktop/project/Online_Judge/Search/Index/Searcher.cpp
-    /home/zz/Desktop/project/Online_Judge/Common/Log/Buffer.cpp
-    /home/zz/Desktop/project/Online_Judge/Common/Log/Format.cpp
-    /home/zz/Desktop/project/Online_Judge/Common/Log/Logger.cpp
-    /home/zz/Desktop/project/Online_Judge/Common/Log/Looper.cpp
-    /home/zz/Desktop/project/Online_Judge/Common/Log/Sink.cpp
-    /home/zz/Desktop/project/Online_Judge/Common/Log/util.cpp
-    /home/zz/Desktop/project/Online_Judge/Common/Util/Tool.cpp
-    /home/zz/Desktop/project/Online_Judge/Common/Pool/ThreadPool.cpp
-    /home/zz/Desktop/project/Online_Judge/OJ/Control.cpp
-    /home/zz/Desktop/project/Online_Judge/OJ/oj_Model.cpp
-    /home/zz/Desktop/project/Online_Judge/OJ/OJ_Server.cpp
-    /home/zz/Desktop/project/Online_Judge/OJ/View.cpp
+    ../Search/Index/Index.cpp
+    ../Search/Index/Searcher.cpp
+    ../Common/Log/Buffer.cpp
+    ../Common/Log/Format.cpp
+    ../Common/Log/Logger.cpp
+    ../Common/Log/Looper.cpp
+    ../Common/Log/Sink.cpp
+    ../Common/Log/util.cpp
+    ../Common/Util/Tool.cpp
+    ../Common/Pool/ThreadPool.cpp
+    ../OJ/Control.cpp
+    ../OJ/oj_Model.cpp
+    ../OJ/OJ_Server.cpp
+    ../OJ/View.cpp
 )
 
 #链接第三方库
