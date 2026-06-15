@@ -4,7 +4,7 @@
 set -e
 
 #注册异常抛出任务
-trap echo "脚本在$LINENO行出错"
+trap 'echo "脚本在$LINENO行出错"' ERR
 
 #设置颜色
 readonly GREEN='\033[0;32m'
@@ -37,40 +37,11 @@ cd ~/Desktop
 
 echo_step "安装CPP依赖"
 sudo apt-get update
-sudo apt-get install -y cmake g++ libssl-dev uuid-dev zlib1g-dev
+sudo apt-get install -y cmake g++ git libssl-dev uuid-dev zlib1g-dev
 
 echo_step "创建库目录"
-mkdir library
-sudo apt update
-
-#安装cppjieba库
-if [ ! -d "cppjieba" ]; then
-  git clone https://github.com/yanyiwu/cppjieba.git
-fi
-cd cppjieba
-
-# 2. 初始化并更新子模块（重要！）
-echo -e "${GREEN}[INIT]${NC} $1"
-git submodule init
-git submodule update
-
-# 3. 创建构建目录并编译
-mkdir build
-cd build
-cmake ..
-make -j$(nproc)
-
-# 4. 安装到系统目录（可选）
-sudo make install
-
-#之后进入到limonp目录
-cd limonp
-sudo cp -r include/limonp /usr/local/include/
-#或者进入目录后
-mkdir build && cd build
-cmake ..
-make -j$(nproc)
-sudo make install
+mkdir -p library
+cd library
 
 #安装Boost库
 sudo apt install libboost-all-dev -y
@@ -96,9 +67,9 @@ if [ ! -d "drogon" ]; then
   git clone https://github.com/drogonframework/drogon.git
 fi
 cd drogon
-
-mkdir build
+git submodule update --init --recursive
+mkdir -p build
 cd build
 cmake ..
-make
+make -j$(npoc)
 sudo make install
