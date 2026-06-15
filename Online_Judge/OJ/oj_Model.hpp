@@ -50,7 +50,7 @@ namespace ns_model
 
     const std::string blog = "blog";                          // 要访问的表名
     const std::string oj_questions = "Ques";                 // 要访问的表名
-    const std::string host = "60.205.125.90";               // ip为本地服务器
+    const std::string host = "47.105.40.164";               // ip为本地服务器
     const std::string user = "bao";                        // MySQL用户名
     const std::string passwd = "18026472002p";            // MySQL密码
     const std::string db = "bao";                        // 要连接的数据库名

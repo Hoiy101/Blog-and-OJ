@@ -5,9 +5,12 @@ project(compile_server)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(Drogon_DIR "//usr/local/lib/cmake/Drogon/DrogonConfig.cmake")
+set(jsoncpp_DIR "/usr/local/lib/cmake/jsoncpp")
+
 #设置第三方库
 find_package(Threads REQUIRED)
-find_package(jsoncpp CONFIG REQUIRED)
+find_package(jsoncpp REQUIRED)
 find_package(Boost REQUIRED)
 find_package(Drogon REQUIRED COMPONENTS json)
 
