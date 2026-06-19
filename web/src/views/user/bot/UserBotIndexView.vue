@@ -4,7 +4,51 @@
             <div class="col-3">
                 <div class="card" style="margin-top: 20px; margin-left: 40px;">
                     <div class="card-body">
-                        <img :src = "$store.state.user.photo" alt = "" style="width: 100%;">
+                        <img :src = "$store.state.user.photo" alt = "" class="user-photo">
+                        <button type="button" class="btn btn-outline-primary w-100 avatar-edit-btn" data-bs-toggle="modal" data-bs-target="#avatar-upload-modal" @click="clearSelectedAvatar">
+                            修改头像
+                        </button>
+
+                        <div class="modal fade" id="avatar-upload-modal" tabindex="-1">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">修改头像</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="avatar-preview">
+                                            <img v-if="avatarSrc" :src="avatarSrc" alt="头像预览">
+                                            <div v-else class="avatar-placeholder">
+                                                {{ usernameInitial }}
+                                            </div>
+                                        </div>
+
+                                        <label for="avatar-file" class="form-label">选择新头像</label>
+                                        <input
+                                            id="avatar-file"
+                                            class="form-control"
+                                            type="file"
+                                            accept="image/png,image/jpeg,image/webp"
+                                            @change="selectAvatar"
+                                        >
+
+                                        <div v-if="avatarErrorMessage" class="avatar-message error-message">
+                                            {{ avatarErrorMessage }}
+                                        </div>
+                                        <div v-if="avatarSuccessMessage" class="avatar-message success-message">
+                                            {{ avatarSuccessMessage }}
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" :disabled="avatarUploading">取消</button>
+                                        <button type="button" class="btn btn-primary" :disabled="!avatarFile || avatarUploading" @click="uploadAvatar">
+                                            {{ avatarUploading ? "上传中..." : "确认修改" }}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -177,7 +221,7 @@
 </template>
 
 <script>
-import { ref , reactive} from 'vue'
+import { computed, ref , reactive} from 'vue'
 import $ from 'jquery'
 import { useStore } from 'vuex';
 import { Modal } from 'bootstrap/dist/js/bootstrap';
@@ -206,6 +250,11 @@ export default{
         const store = useStore();
         let bots = ref([]);
         let records = ref([]);
+        const avatarFile = ref(null);
+        const avatarPreviewUrl = ref("");
+        const avatarUploading = ref(false);
+        const avatarErrorMessage = ref("");
+        const avatarSuccessMessage = ref("");
 
         const botadd = reactive({
             title: "",  
@@ -213,6 +262,94 @@ export default{
             content: "",
             error_message: "",
         });
+
+        const avatarSrc = computed(() => avatarPreviewUrl.value || store.state.user.photo);
+        const usernameInitial = computed(() => {
+            const username = store.state.user.username || "U";
+            return username.substring(0, 1).toUpperCase();
+        });
+
+        const clearAvatarPreviewUrl = () => {
+            if(avatarPreviewUrl.value) {
+                URL.revokeObjectURL(avatarPreviewUrl.value);
+                avatarPreviewUrl.value = "";
+            }
+        };
+
+        const clearSelectedAvatar = () => {
+            avatarFile.value = null;
+            avatarErrorMessage.value = "";
+            avatarSuccessMessage.value = "";
+            clearAvatarPreviewUrl();
+            const input = document.getElementById("avatar-file");
+            if(input) {
+                input.value = "";
+            }
+        };
+
+        const selectAvatar = (event) => {
+            const file = event.target.files[0];
+            avatarErrorMessage.value = "";
+            avatarSuccessMessage.value = "";
+            clearAvatarPreviewUrl();
+
+            if(!file) {
+                avatarFile.value = null;
+                return;
+            }
+
+            const allowedTypes = ["image/png", "image/jpeg", "image/webp"];
+            if(!allowedTypes.includes(file.type)) {
+                avatarFile.value = null;
+                avatarErrorMessage.value = "请选择 PNG、JPG 或 WebP 图片";
+                event.target.value = "";
+                return;
+            }
+
+            if(file.size > 5 * 1024 * 1024) {
+                avatarFile.value = null;
+                avatarErrorMessage.value = "头像不能超过 5MB";
+                event.target.value = "";
+                return;
+            }
+
+            avatarFile.value = file;
+            avatarPreviewUrl.value = URL.createObjectURL(file);
+        };
+
+        const uploadAvatar = () => {
+            if(!avatarFile.value || avatarUploading.value) {
+                return;
+            }
+
+            avatarUploading.value = true;
+            avatarErrorMessage.value = "";
+            avatarSuccessMessage.value = "";
+
+            store.dispatch("uploadAvatar", {
+                file: avatarFile.value,
+                success(resp) {
+                    avatarUploading.value = false;
+                    if(resp.photo) {
+                        clearAvatarPreviewUrl();
+                    }
+                    avatarFile.value = null;
+                    avatarSuccessMessage.value = "头像修改成功";
+                    const input = document.getElementById("avatar-file");
+                    if(input) {
+                        input.value = "";
+                    }
+                    const modal = Modal.getInstance(document.getElementById("avatar-upload-modal"));
+                    if(modal) {
+                        modal.hide();
+                    }
+                },
+                error(resp) {
+                    avatarUploading.value = false;
+                    avatarErrorMessage.value = resp.responseJSON?.error_message || resp.error_message || "头像上传失败";
+                }
+            })
+        };
 
         const refresh_bots = () => {
             $.ajax({
@@ -324,6 +461,15 @@ export default{
             update_bot,
             getlist_record,
             records,
+            avatarFile,
+            avatarSrc,
+            avatarUploading,
+            avatarErrorMessage,
+            avatarSuccessMessage,
+            usernameInitial,
+            selectAvatar,
+            uploadAvatar,
+            clearSelectedAvatar,
         }
 
     }
@@ -331,7 +477,54 @@ export default{
 </script>
 
 <style scoped>
+img.user-photo {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.avatar-edit-btn {
+    margin-top: 12px;
+}
+
+.avatar-preview {
+    width: 128px;
+    height: 128px;
+    margin: 0 auto 18px;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #f8f9fa;
+}
+
+.avatar-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.avatar-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #495057;
+    font-size: 42px;
+    font-weight: 600;
+}
+
+.avatar-message {
+    margin-top: 12px;
+}
+
 div.error-message{
     color: red;
+}
+
+div.success-message {
+    color: #198754;
 }
 </style>

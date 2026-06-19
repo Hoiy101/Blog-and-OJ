@@ -21,6 +21,9 @@ export default {
         updateToken(state, token) {
             state.token = token;
         },
+        updatePhoto(state, photo) {
+            state.photo = photo;
+        },
         logout(state) {
             state.id = "";
             state.username = "";
@@ -78,6 +81,40 @@ export default {
                 error(resp){
                     data.error(resp);
                 } 
+            })
+        },
+        uploadAvatar(context, data) {
+            let formData = new FormData();
+            formData.append("file", data.file);
+
+            $.ajax({
+                url: "http://127.0.0.1:3000/user/account/avatar/upload/",
+                type: "post",
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    Authorization: "Bearer " + context.state.token,
+                },
+                success(resp) {
+                    const photo = resp.photo || resp.url || resp.avatar || (resp.data && (resp.data.photo || resp.data.url));
+
+                    if(resp.error_message === "success" || resp.success === true || photo){
+                        if(photo) {
+                            context.commit("updatePhoto", photo);
+                        }
+                        data.success({
+                            ...resp,
+                            photo,
+                        });
+                    }
+                    else{
+                        data.error(resp);
+                    }
+                },
+                error(resp){
+                    data.error(resp);
+                }
             })
         },
         logout(context) {
