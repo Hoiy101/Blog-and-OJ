@@ -23,3 +23,18 @@ test('protects IME composition and stale asynchronous image work', () => {
   assert.match(source, /renderGeneration/)
   assert.match(source, /generation !== renderGeneration/)
 })
+
+test('supports image selection resizing and whole-image keyboard deletion', () => {
+  assert.match(source, /@click="handleEditorClick"/)
+  assert.match(source, /beginResize/)
+  assert.match(source, /continueResize/)
+  assert.match(source, /finishResize/)
+  assert.match(source, /adjacentImageFromSelection/)
+  assert.match(source, /event\.key === 'Backspace'/)
+  assert.match(source, /event\.key === 'Delete'/)
+  assert.match(source, /data-editor-ui/)
+})
+
+test('removing an image reference never calls a MinIO deletion API', () => {
+  assert.doesNotMatch(source, /deleteBlogImage|removeObject|image\/delete/)
+})

@@ -19,7 +19,7 @@ const element = (tagName, children = [], attrs = {}) => {
     style: { setProperty(name, value) { this[name] = value } },
     appendChild(child) {
       if (child.nodeType === 11) {
-        ;[...child.childNodes].forEach(item => this.appendChild(item))
+        [...child.childNodes].forEach(item => this.appendChild(item))
         return child
       }
       child.parentNode = this

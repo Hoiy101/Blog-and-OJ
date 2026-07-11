@@ -21,6 +21,7 @@
       aria-multiline="true"
       data-placeholder="请输入博客正文"
       @input="syncMarkdown"
+      @click="handleEditorClick"
       @paste="handlePaste"
       @keydown="handleKeydown"
       @focus="saveSelection"
@@ -38,7 +39,13 @@ import { useStore } from 'vuex'
 import { uploadBlogImage } from '../api/blogImages.mjs'
 import { renderMarkdown } from '../utils/markdown.mjs'
 import { hydrateMarkdownImages, loadImageUrl } from '../utils/markdownImages.mjs'
-import { isSafeEditorUrl, sanitizeEditorFragment, serializeEditor } from '../utils/wysiwygMarkdown.mjs'
+import {
+  adjacentImageFromSelection,
+  calculateImageWidth,
+  isSafeEditorUrl,
+  sanitizeEditorFragment,
+  serializeEditor
+} from '../utils/wysiwygMarkdown.mjs'
 import violationImage from '../assets/images/violation-del.png'
 
 export default {
@@ -55,9 +62,29 @@ export default {
     const error = ref('')
     const composing = ref(false)
     const linkUrl = ref('https://')
+    const selectedImage = ref(null)
     let emittedMarkdown = null
     let savedRange = null
     let renderGeneration = 0
+    let imageControls = null
+    let resizeState = null
+
+    const positionImageControls = () => {
+      if (!imageControls || !selectedImage.value || !editorRoot.value) return
+      const editorRect = editorRoot.value.getBoundingClientRect()
+      const imageRect = selectedImage.value.getBoundingClientRect()
+      imageControls.style.left = `${imageRect.left - editorRect.left + editorRoot.value.scrollLeft}px`
+      imageControls.style.top = `${imageRect.top - editorRect.top + editorRoot.value.scrollTop}px`
+      imageControls.style.width = `${imageRect.width}px`
+      imageControls.style.height = `${imageRect.height}px`
+    }
+
+    const clearImageSelection = () => {
+      selectedImage.value?.classList.remove('is-selected')
+      selectedImage.value = null
+      imageControls?.remove()
+      imageControls = null
+    }
 
     const selectionBelongsToEditor = selection => Boolean(
       selection?.rangeCount && editorRoot.value?.contains(selection.anchorNode)
@@ -88,6 +115,7 @@ export default {
       const generation = ++renderGeneration
       await nextTick()
       if (generation !== renderGeneration || !editorRoot.value) return
+      clearImageSelection()
       editorRoot.value.innerHTML = renderMarkdown(markdown, { imagePlaceholder: violationImage })
       await hydrateMarkdownImages(editorRoot.value, () => generation === renderGeneration)
     }
@@ -229,8 +257,120 @@ export default {
       }
     }
 
+    const continueResize = event => {
+      if (!resizeState || event.pointerId !== resizeState.pointerId) return
+      const distance = Math.abs(event.clientX - resizeState.centerX) * 2
+      const virtualPointerX = resizeState.editorLeft + distance
+      const width = calculateImageWidth(virtualPointerX, resizeState.editorLeft, resizeState.editorWidth)
+      resizeState.image.dataset.imageWidth = String(width)
+      resizeState.image.style.setProperty('--markdown-image-width', `${width}%`)
+      positionImageControls()
+    }
+
+    const removeResizeListeners = () => {
+      window.removeEventListener('pointermove', continueResize)
+      window.removeEventListener('pointerup', finishResize)
+      window.removeEventListener('pointercancel', finishResize)
+    }
+
+    const finishResize = event => {
+      if (!resizeState || (event?.pointerId != null && event.pointerId !== resizeState.pointerId)) return
+      removeResizeListeners()
+      resizeState = null
+      positionImageControls()
+      syncMarkdown()
+    }
+
+    const beginResize = (event, side) => {
+      if (!selectedImage.value || !editorRoot.value) return
+      event.preventDefault()
+      event.stopPropagation()
+      const editorRect = editorRoot.value.getBoundingClientRect()
+      resizeState = {
+        image: selectedImage.value,
+        side,
+        pointerId: event.pointerId,
+        editorLeft: editorRect.left,
+        editorWidth: editorRect.width,
+        centerX: editorRect.left + editorRect.width / 2
+      }
+      window.addEventListener('pointermove', continueResize)
+      window.addEventListener('pointerup', finishResize)
+      window.addEventListener('pointercancel', finishResize)
+    }
+
+    const createResizeHandle = (side, label) => {
+      const handle = document.createElement('button')
+      handle.type = 'button'
+      handle.className = `image-resize-handle image-resize-handle-${side}`
+      handle.dataset.editorUi = 'resize-handle'
+      handle.contentEditable = 'false'
+      handle.setAttribute('aria-label', label)
+      handle.addEventListener('pointerdown', event => beginResize(event, side))
+      handle.addEventListener('click', event => event.stopPropagation())
+      return handle
+    }
+
+    const selectImage = image => {
+      clearImageSelection()
+      selectedImage.value = image
+      image.classList.add('is-selected')
+      imageControls = document.createElement('span')
+      imageControls.className = 'image-resize-controls'
+      imageControls.dataset.editorUi = 'image-controls'
+      imageControls.contentEditable = 'false'
+      imageControls.appendChild(createResizeHandle('left', '从左侧调整图片大小'))
+      imageControls.appendChild(createResizeHandle('right', '从右侧调整图片大小'))
+      editorRoot.value.appendChild(imageControls)
+      positionImageControls()
+    }
+
+    const handleEditorClick = event => {
+      if (event.target.closest?.('[data-editor-ui]')) return
+      const image = event.target.closest?.('img[data-original-src]')
+      if (image && editorRoot.value?.contains(image)) {
+        event.preventDefault()
+        selectImage(image)
+      } else clearImageSelection()
+    }
+
+    const placeCaretAtRemovalPoint = (parent, index) => {
+      if (!parent || !editorRoot.value?.contains(parent) && parent !== editorRoot.value) return
+      const range = document.createRange()
+      range.setStart(parent, Math.min(index, parent.childNodes.length))
+      range.collapse(true)
+      const selection = window.getSelection()
+      selection.removeAllRanges()
+      selection.addRange(range)
+      savedRange = range.cloneRange()
+    }
+
+    const removeImageFromEditor = image => {
+      const parent = image.parentNode
+      const index = [...parent.childNodes].indexOf(image)
+      clearImageSelection()
+      image.remove()
+      placeCaretAtRemovalPoint(parent, index)
+      syncMarkdown()
+    }
+
     const handleKeydown = event => {
-      if (event.key === 'Escape') savedRange = null
+      if (event.key === 'Escape') {
+        clearImageSelection()
+        savedRange = null
+        return
+      }
+      const deletingBackward = event.key === 'Backspace'
+      const deletingForward = event.key === 'Delete'
+      if (!deletingBackward && !deletingForward) return
+      const selection = window.getSelection()
+      const image = selectedImage.value || adjacentImageFromSelection(
+        selection,
+        deletingBackward ? 'backward' : 'forward'
+      )
+      if (!image || !editorRoot.value?.contains(image)) return
+      event.preventDefault()
+      removeImageFromEditor(image)
     }
 
     const finishComposition = () => {
@@ -242,6 +382,8 @@ export default {
     document.addEventListener('selectionchange', onSelectionChange)
     onBeforeUnmount(() => {
       renderGeneration += 1
+      removeResizeListeners()
+      clearImageSelection()
       document.removeEventListener('selectionchange', onSelectionChange)
     })
 
@@ -255,7 +397,11 @@ export default {
       createLink,
       syncMarkdown,
       handlePaste,
+      handleEditorClick,
       handleKeydown,
+      beginResize,
+      continueResize,
+      finishResize,
       finishComposition,
       saveSelection,
       upload
@@ -268,7 +414,13 @@ export default {
 .markdown-editor-toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem; margin-bottom: .75rem; }
 .markdown-link-input { width: min(260px, 100%); }
 .wysiwyg-editor { min-height: 350px; padding: 1rem; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 4px; background: white; outline: none; }
+.wysiwyg-editor { position: relative; }
 .wysiwyg-editor:focus { border-color: #86b7fe; box-shadow: 0 0 0 .2rem rgba(13, 110, 253, .15); }
 .wysiwyg-editor:empty::before { color: #adb5bd; content: attr(data-placeholder); pointer-events: none; }
 .wysiwyg-editor :deep(img) { display: block; width: var(--markdown-image-width, 25%); max-width: 100%; height: auto; margin: 1rem auto; cursor: pointer; }
+.wysiwyg-editor :deep(img.is-selected) { outline: 3px solid #0d6efd; outline-offset: 3px; }
+.wysiwyg-editor :deep(.image-resize-controls) { position: absolute; z-index: 2; display: block; pointer-events: none; }
+.wysiwyg-editor :deep(.image-resize-handle) { position: absolute; top: 50%; width: 16px; height: 32px; padding: 0; border: 2px solid #fff; border-radius: 4px; background: #0d6efd; box-shadow: 0 1px 4px rgba(0, 0, 0, .35); cursor: ew-resize; pointer-events: auto; transform: translateY(-50%); }
+.wysiwyg-editor :deep(.image-resize-handle-left) { left: -8px; }
+.wysiwyg-editor :deep(.image-resize-handle-right) { right: -8px; }
 </style>
