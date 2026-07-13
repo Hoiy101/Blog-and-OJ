@@ -119,3 +119,30 @@ test('sanitizes pasted nodes into a new allowlisted fragment', () => {
   assert.equal(clean.childNodes[2].dataset.imageWidth, '25')
   assert.equal(clean.childNodes[2].getAttribute('onerror'), null)
 })
+
+test('escapes literal markdown text and preserves structural metadata', () => {
+  const root = element('div', [
+    element('p', [text('*普通* # 文本 | 单元格')]),
+    element('hr'),
+    element('pre', [element('code', [text('class Main {}')], { class: 'language-java' })], { dataset: { markdownLanguage: 'java' } }),
+    element('ol', [element('li', [text('第三项')])], { start: '3', dataset: { markdownStart: '3' } }),
+    element('p', [element('a', [text('官网')], { href: 'https://a.test', dataset: { markdownTitle: '站点' } })])
+  ])
+
+  const markdown = serializeEditor(root)
+  assert.match(markdown, /\\\*普通\\\* \\# 文本 \\| 单元格/)
+  assert.match(markdown, /\n\n---\n\n/)
+  assert.match(markdown, /```java\nclass Main \{\}\n```/)
+  assert.match(markdown, /3\. 第三项/)
+  assert.match(markdown, /\[官网\]\(https:\/\/a.test "站点"\)/)
+})
+
+test('does not compact whitespace inside fenced code blocks', () => {
+  const root = element('div', [
+    element('p', [text('前文')]),
+    element('pre', [element('code', [text('line  \n\n\nnext')], { class: 'language-text' })], { dataset: { markdownLanguage: 'text' } }),
+    element('p', [text('后文')])
+  ])
+
+  assert.equal(serializeEditor(root), '前文\n\n```text\nline  \n\n\nnext\n```\n\n后文')
+})

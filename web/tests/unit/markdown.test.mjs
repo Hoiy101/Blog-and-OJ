@@ -33,3 +33,28 @@ test('renders persisted image width and defaults invalid widths to 25 percent', 
   assert.equal(normalizeImageWidth('9'), 25)
   assert.equal(normalizeImageWidth('calc(100)'), 25)
 })
+
+test('preserves escaped markdown text and editable metadata', () => {
+  const escaped = renderMarkdown('\\*普通星号\\*')
+  assert.doesNotMatch(escaped, /<em>/)
+  assert.match(escaped, /\*普通星号\*/)
+
+  const link = renderMarkdown('[官网](https://a.test "站点")')
+  assert.match(link, /data-markdown-title="站点"/)
+  const image = renderMarkdown('![图](https://a.test/a.png "说明"){width=40%}')
+  assert.match(image, /data-markdown-title="说明"/)
+  assert.match(image, /data-image-width="40"/)
+
+  const list = renderMarkdown('3. 第三项\n4. 第四项')
+  assert.match(list, /<ol start="3" data-markdown-start="3">/)
+  const table = renderMarkdown('| 左 | 右 |\n| :--- | ---: |\n| 1 | 2 |')
+  assert.match(table, /data-markdown-align="left"/)
+  assert.match(table, /data-markdown-align="right"/)
+
+  const escapedPipeTable = renderMarkdown('| A\\|B | C |\n| --- | --- |\n| 1 | 2 |')
+  assert.equal((escapedPipeTable.match(/<th(?:\s|>)/g) || []).length, 2)
+  assert.match(escapedPipeTable, /<th>A\|B<\/th>/)
+
+  const code = renderMarkdown('```java\nclass Main {}\n```')
+  assert.match(code, /<pre data-markdown-language="java">/)
+})

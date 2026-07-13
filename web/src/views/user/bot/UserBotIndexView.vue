@@ -86,15 +86,7 @@
                                     </div>
                                     <div class="mb-3">
                                         <label for="add-bot-code" class="form-label">正文</label>
-                                        <VAceEditor
-                                                v-model:value="botadd.content"
-                                                @init="editorInit"
-                                                lang="c_cpp"
-                                                theme="textmate"
-                                                :options="{
-                                                    fontSize: '16px'
-                                                }"
-                                                style="height: 350px"/>
+                                        <MarkdownEditor v-model="botadd.content" />
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -138,15 +130,7 @@
                                                     </div>
                                                     <div class="mb-3">
                                                         <label for="add-bot-code" class="form-label">正文</label>
-                                                        <VAceEditor
-                                                            v-model:value="bot.content"
-                                                            @init="editorInit"
-                                                            lang="c_cpp"
-                                                            theme="textmate"
-                                                            :options="{
-                                                                fontSize: '16px'
-                                                            }"
-                                                            style="height: 350px"/>
+                                                        <MarkdownEditor v-model="bot.content" :blog-id="bot.id" />
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
@@ -225,26 +209,11 @@ import { computed, ref , reactive} from 'vue'
 import $ from 'jquery'
 import { useStore } from 'vuex';
 import { Modal } from 'bootstrap/dist/js/bootstrap';
-import { VAceEditor } from 'vue3-ace-editor';
-import ace from 'ace-builds';
-
-import 'ace-builds/src-noconflict/mode-c_cpp';
-import 'ace-builds/src-noconflict/theme-textmate';
-
-import modeCppUrl from 'ace-builds/src-noconflict/mode-c_cpp?url';
-import themeTextmateUrl from 'ace-builds/src-noconflict/theme-textmate?url';
-
-// 在顶层执行配置
-ace.config.set(
-  "basePath", 
-  "https://cdn.jsdelivr.net/npm/ace-builds@" + require('ace-builds').version + "/src-noconflict/"
-);
-ace.config.setModuleUrl('ace/mode/c_cpp', modeCppUrl);
-ace.config.setModuleUrl('ace/theme/textmate', themeTextmateUrl);
+import MarkdownEditor from '../../../components/MarkdownEditor.vue';
 
 export default{
     components: {
-        VAceEditor,
+        MarkdownEditor,
     },
     setup(){
         const store = useStore();

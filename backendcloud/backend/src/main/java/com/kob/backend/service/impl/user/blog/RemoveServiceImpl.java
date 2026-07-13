@@ -5,18 +5,28 @@ import com.kob.backend.pojo.Blog;
 import com.kob.backend.pojo.User;
 import com.kob.backend.service.impl.utils.UserDetailsImpl;
 import com.kob.backend.service.user.blog.RemoveService;
+import com.kob.backend.service.impl.user.blog.storage.BlogImageStorage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Service
 public class RemoveServiceImpl implements RemoveService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RemoveServiceImpl.class);
+    private final BlogMapper blogMapper;
+    private final BlogImageStorage blogImageStorage;
+
     @Autowired
-    private BlogMapper blogMapper;
+    public RemoveServiceImpl(BlogMapper blogMapper, BlogImageStorage blogImageStorage) {
+        this.blogMapper = blogMapper;
+        this.blogImageStorage = blogImageStorage;
+    }
 
     @Override
     public Map<String, String> remove(Map<String, String> data) {
@@ -40,6 +50,11 @@ public class RemoveServiceImpl implements RemoveService {
         }
 
         blogMapper.deleteById(bot_id);
+        try {
+            blogImageStorage.deletePrefix("blog-images/" + user.getId() + "/" + bot_id + "/");
+        } catch (Exception cleanupError) {
+            LOGGER.warn("博客 {} 已删除，但 MinIO 图片清理失败", bot_id, cleanupError);
+        }
         map.put("error_message", "success");
 
         return map;

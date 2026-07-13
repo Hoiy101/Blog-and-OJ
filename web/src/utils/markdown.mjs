@@ -14,24 +14,41 @@ export function normalizeImageWidth(value, fallback = 25) {
   return width >= 10 && width <= 100 ? width : fallback
 }
 
+const splitTableRow = line => {
+  let value = String(line || '').trim()
+  if (value.startsWith('|')) value = value.slice(1)
+  if (value.endsWith('|')) value = value.slice(0, -1)
+  const cells = ['']
+  let consecutiveSlashes = 0
+  for (const character of value) {
+    if (character === '|' && consecutiveSlashes % 2 === 0) cells.push('')
+    else cells[cells.length - 1] += character
+    consecutiveSlashes = character === '\\' ? consecutiveSlashes + 1 : 0
+  }
+  return cells
+}
+
 const inline = (source, options) => {
   let text = escapeHtml(source)
   const tokens = []
   const keep = html => { const key = `@@MDTOKEN${tokens.length}@@`; tokens.push(html); return key }
+  text = text.replace(/\\([\\`*_[\]{}()#+\-.!|>])/g, (_, character) => keep(character))
   text = text.replace(/`([^`]+)`/g, (_, code) => keep(`<code>${code}</code>`))
-  text = text.replace(/!\[([^\]]*)\]\(([^\s)]+)(?:\s+[&quot;][^&quot;]*[&quot;])?\)(?:\{width=([^}%]+)%\})?/g, (_, alt, rawUrl, rawWidth) => {
+  text = text.replace(/!\[([^\]]*)\]\(([^\s)]+)(?:\s+&quot;(.*?)&quot;)?\)(?:\{width=([^}%]+)%\})?/g, (_, alt, rawUrl, title, rawWidth) => {
     const url = safeUrl(rawUrl)
     if (!url) return alt
     const width = normalizeImageWidth(rawWidth, 25)
-    const imageAttributes = `data-image-width="${width}" style="--markdown-image-width:${width}%"`
+    const titleAttributes = title ? ` title="${title}" data-markdown-title="${title}"` : ''
+    const imageAttributes = `data-image-width="${width}" style="--markdown-image-width:${width}%"${titleAttributes}`
     const placeholder = safeUrl(options.imagePlaceholder)
     return keep(placeholder
       ? `<img src="${escapeHtml(placeholder)}" data-original-src="${escapeHtml(url)}" data-image-state="loading" ${imageAttributes} alt="${alt}" loading="lazy">`
       : `<img src="${escapeHtml(url)}" ${imageAttributes} alt="${alt}" loading="lazy">`)
   })
-  text = text.replace(/\[([^\]]+)\]\(([^\s)]+)(?:\s+[&quot;][^&quot;]*[&quot;])?\)/g, (_, label, rawUrl) => {
+  text = text.replace(/\[([^\]]+)\]\(([^\s)]+)(?:\s+&quot;(.*?)&quot;)?\)/g, (_, label, rawUrl, title) => {
     const url = safeUrl(rawUrl)
-    return url ? keep(`<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${label}</a>`) : label
+    const titleAttributes = title ? ` title="${title}" data-markdown-title="${title}"` : ''
+    return url ? keep(`<a href="${escapeHtml(url)}"${titleAttributes} target="_blank" rel="noopener noreferrer">${label}</a>`) : label
   })
   text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
     .replace(/__([^_]+)__/g, '<strong>$1</strong>')
@@ -58,7 +75,8 @@ export function renderMarkdown(source, options = {}) {
     const fence = line.match(/^```\s*([\w-]*)/)
     if (fence) {
       if (inCode) {
-        output.push(`<pre><code${language ? ` class="language-${escapeHtml(language)}"` : ''}>${escapeHtml(code.join('\n'))}</code></pre>`)
+        const languageAttribute = language ? ` data-markdown-language="${escapeHtml(language)}"` : ''
+        output.push(`<pre${languageAttribute}><code${language ? ` class="language-${escapeHtml(language)}"` : ''}>${escapeHtml(code.join('\n'))}</code></pre>`)
         inCode = false; code = []; language = ''
       } else { flushParagraph(); closeList(); inCode = true; language = fence[1] }
       continue
@@ -73,20 +91,35 @@ export function renderMarkdown(source, options = {}) {
     const item = line.match(/^\s*([-+*]|\d+\.)\s+(.+)$/)
     if (item) {
       flushParagraph(); const type = /\d/.test(item[1]) ? 'ol' : 'ul'
-      if (list !== type) { closeList(); list = type; output.push(`<${type}>`) }
+      if (list !== type) {
+        closeList(); list = type
+        const start = type === 'ol' ? Number(item[1].slice(0, -1)) : null
+        output.push(type === 'ol' ? `<ol start="${start}" data-markdown-start="${start}">` : '<ul>')
+      }
       output.push(`<li>${inline(item[2], options)}</li>`); continue
     }
     if (line.includes('|') && index + 1 < lines.length && /^\s*\|?\s*:?-+/.test(lines[index + 1])) {
       flushParagraph(); closeList()
-      const headers = line.replace(/^\||\|$/g, '').split('|')
+      const headers = splitTableRow(line)
+      const alignments = splitTableRow(lines[index + 1]).map(cell => {
+        const value = cell.trim()
+        if (value.startsWith(':') && value.endsWith(':')) return 'center'
+        if (value.endsWith(':')) return 'right'
+        if (value.startsWith(':')) return 'left'
+        return ''
+      })
       index += 1; const rows = []
       while (index + 1 < lines.length && lines[index + 1].includes('|') && lines[index + 1].trim()) rows.push(lines[++index])
-      output.push(`<table><thead><tr>${headers.map(cell => `<th>${inline(cell.trim(), options)}</th>`).join('')}</tr></thead><tbody>${rows.map(row => `<tr>${row.replace(/^\||\|$/g, '').split('|').map(cell => `<td>${inline(cell.trim(), options)}</td>`).join('')}</tr>`).join('')}</tbody></table>`)
+      const alignAttribute = alignment => alignment ? ` data-markdown-align="${alignment}"` : ''
+      output.push(`<table><thead><tr>${headers.map((cell, cellIndex) => `<th${alignAttribute(alignments[cellIndex])}>${inline(cell.trim(), options)}</th>`).join('')}</tr></thead><tbody>${rows.map(row => `<tr>${splitTableRow(row).map((cell, cellIndex) => `<td${alignAttribute(alignments[cellIndex])}>${inline(cell.trim(), options)}</td>`).join('')}</tr>`).join('')}</tbody></table>`)
       continue
     }
     paragraph.push(line)
   }
-  if (inCode) output.push(`<pre><code>${escapeHtml(code.join('\n'))}</code></pre>`)
+  if (inCode) {
+    const languageAttribute = language ? ` data-markdown-language="${escapeHtml(language)}"` : ''
+    output.push(`<pre${languageAttribute}><code${language ? ` class="language-${escapeHtml(language)}"` : ''}>${escapeHtml(code.join('\n'))}</code></pre>`)
+  }
   flushParagraph(); closeList()
   return output.join('\n')
 }

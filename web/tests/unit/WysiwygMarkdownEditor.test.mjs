@@ -38,3 +38,22 @@ test('supports image selection resizing and whole-image keyboard deletion', () =
 test('removing an image reference never calls a MinIO deletion API', () => {
   assert.doesNotMatch(source, /deleteBlogImage|removeObject|image\/delete/)
 })
+
+test('defers external rendering while focused or composing without permanently hiding historical values', () => {
+  assert.match(source, /pendingExternalMarkdown/)
+  assert.match(source, /editorHasFocus/)
+  assert.match(source, /handleBlur/)
+  assert.match(source, /if \(composing\.value \|\| editorHasFocus\.value\)/)
+  assert.doesNotMatch(source, /recentLocalMarkdown/)
+})
+
+test('does not silently discard a completed upload after a same-blog rerender', () => {
+  assert.match(source, /blogIdAtStart/)
+  assert.match(source, /props\.blogId !== blogIdAtStart/)
+  assert.match(source, /generation === renderGeneration \? range : null/)
+})
+
+test('prevents unsupported native file drops', () => {
+  assert.match(source, /@dragover\.prevent/)
+  assert.match(source, /@drop\.prevent="handleDrop"/)
+})

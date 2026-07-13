@@ -23,8 +23,11 @@
       @input="syncMarkdown"
       @click="handleEditorClick"
       @paste="handlePaste"
+      @dragover.prevent
+      @drop.prevent="handleDrop"
       @keydown="handleKeydown"
-      @focus="saveSelection"
+      @focus="handleFocus"
+      @blur="handleBlur"
       @keyup="saveSelection"
       @mouseup="saveSelection"
       @compositionstart="composing = true"
@@ -63,7 +66,9 @@ export default {
     const composing = ref(false)
     const linkUrl = ref('https://')
     const selectedImage = ref(null)
+    const editorHasFocus = ref(false)
     let emittedMarkdown = null
+    let pendingExternalMarkdown = null
     let savedRange = null
     let renderGeneration = 0
     let imageControls = null
@@ -125,8 +130,20 @@ export default {
         emittedMarkdown = null
         return
       }
+      if (composing.value || editorHasFocus.value) {
+        pendingExternalMarkdown = value
+        return
+      }
+      pendingExternalMarkdown = null
       renderExternalMarkdown(value)
     }, { immediate: true })
+
+    watch(() => props.blogId, (value, previous) => {
+      if (previous === undefined || value === previous) return
+      emittedMarkdown = null
+      pendingExternalMarkdown = null
+      renderExternalMarkdown(props.modelValue)
+    })
 
     const wrapSelection = tagName => {
       const selection = window.getSelection()
@@ -212,7 +229,7 @@ export default {
     }
 
     const insertUploadedImage = async (file, url, range, generation) => {
-      if (generation !== renderGeneration || !editorRoot.value) return
+      if (!editorRoot.value) return
       const image = document.createElement('img')
       image.src = violationImage
       image.alt = file.name.replace(/\.[^.]+$/, '') || '图片'
@@ -245,11 +262,16 @@ export default {
       saveSelection()
       const range = savedRange?.cloneRange() || null
       const generation = renderGeneration
+      const blogIdAtStart = props.blogId
       uploading.value = true
       error.value = ''
       try {
-        const url = await uploadBlogImage(props.blogId, file, store.state.user.token)
-        await insertUploadedImage(file, url, range, generation)
+        const url = await uploadBlogImage(blogIdAtStart, file, store.state.user.token)
+        if (props.blogId !== blogIdAtStart) {
+          error.value = '文章已切换，上传的图片未插入正文'
+          return
+        }
+        await insertUploadedImage(file, url, generation === renderGeneration ? range : null, renderGeneration)
       } catch (uploadError) {
         error.value = uploadError.message || '图片上传失败'
       } finally {
@@ -362,7 +384,10 @@ export default {
       }
       const deletingBackward = event.key === 'Backspace'
       const deletingForward = event.key === 'Delete'
-      if (!deletingBackward && !deletingForward) return
+      if (!deletingBackward && !deletingForward) {
+        clearImageSelection()
+        return
+      }
       const selection = window.getSelection()
       const image = selectedImage.value || adjacentImageFromSelection(
         selection,
@@ -376,6 +401,23 @@ export default {
     const finishComposition = () => {
       composing.value = false
       syncMarkdown()
+    }
+
+    const handleFocus = () => {
+      editorHasFocus.value = true
+      saveSelection()
+    }
+
+    const handleBlur = () => {
+      editorHasFocus.value = false
+      if (pendingExternalMarkdown === null || !editorRoot.value) return
+      const value = props.modelValue
+      pendingExternalMarkdown = null
+      if (value !== serializeEditor(editorRoot.value)) renderExternalMarkdown(value)
+    }
+
+    const handleDrop = () => {
+      error.value = '请使用“上传图片”按钮添加本地图片'
     }
 
     const onSelectionChange = () => saveSelection()
@@ -392,17 +434,21 @@ export default {
       uploading,
       error,
       composing,
+      editorHasFocus,
       linkUrl,
       formatBlock,
       createLink,
       syncMarkdown,
       handlePaste,
+      handleDrop,
       handleEditorClick,
       handleKeydown,
       beginResize,
       continueResize,
       finishResize,
       finishComposition,
+      handleFocus,
+      handleBlur,
       saveSelection,
       upload
     }

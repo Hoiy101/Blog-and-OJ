@@ -1,9 +1,12 @@
 import { normalizeImageWidth } from './markdown.mjs'
 
-export const imageMarkdown = (alt, url, width = 25) => {
+export const imageMarkdown = (alt, url, width = 25, title = '') => {
   const normalized = normalizeImageWidth(width)
+  const safeAlt = String(alt || '图片').replace(/\]|\[|\r|\n/g, '') || '图片'
+  const safeTitle = String(title || '').replace(/["\r\n]/g, '')
   const suffix = normalized === 25 ? '' : `{width=${normalized}%}`
-  return `\n![${alt || '图片'}](${url})${suffix}\n`
+  const titleSuffix = safeTitle ? ` "${safeTitle}"` : ''
+  return `\n![${safeAlt}](${url}${titleSuffix})${suffix}\n`
 }
 export function insertAtSelection(value, snippet, start, end) {
   const text = String(value ?? '')

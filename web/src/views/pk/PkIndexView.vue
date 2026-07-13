@@ -137,7 +137,7 @@
 
                     <!-- 博客内容 -->
                     <div class="blog-body">
-                        <div class="blog-content" v-html="formatContent(currentBlog.content)"></div>
+                        <MarkdownContent class="blog-content" :source="currentBlog.content" />
                     </div>
 
                     <!-- 操作按钮 -->
@@ -156,9 +156,11 @@
 import { ref, onMounted, computed } from 'vue'
 import $ from 'jquery'
 import { useStore } from 'vuex'
+import MarkdownContent from '../../components/MarkdownContent.vue'
 
 export default {
     name: 'BlogHome',
+    components: { MarkdownContent },
     
     setup() {
         const store = useStore()
@@ -215,27 +217,6 @@ export default {
                 console.error('时间格式化错误:', e)
                 return '时间格式错误'
             }
-        }
-
-        // 格式化博客内容
-        const formatContent = (content) => {
-            if (!content) return '<p class="text-muted fst-italic">暂无内容</p>'
-            
-            // 将换行符转换为HTML换行
-            let formattedContent = content.replace(/\n/g, '<br>')
-            
-            // 将连续的多个换行转换为段落
-            formattedContent = formattedContent.replace(/(<br>\s*){2,}/g, '</p><p>')
-            
-            // 确保内容被包裹在段落中
-            if (!formattedContent.startsWith('<p>')) {
-                formattedContent = '<p>' + formattedContent
-            }
-            if (!formattedContent.endsWith('</p>')) {
-                formattedContent = formattedContent + '</p>'
-            }
-            
-            return formattedContent
         }
 
         // 查看博客详情
@@ -411,7 +392,6 @@ export default {
             detailLoading,
             detailError,
             formatTime,
-            formatContent,
             viewBlogDetail,
             backToList,
             getBlogList,

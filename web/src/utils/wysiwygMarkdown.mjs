@@ -6,7 +6,7 @@ const NODE_TEXT = 3
 const ALLOWED_TAGS = new Set([
   'P', 'BR', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'UL', 'OL', 'LI',
   'BLOCKQUOTE', 'STRONG', 'EM', 'DEL', 'A', 'CODE', 'PRE', 'TABLE',
-  'THEAD', 'TBODY', 'TR', 'TH', 'TD', 'IMG'
+  'THEAD', 'TBODY', 'TR', 'TH', 'TD', 'IMG', 'HR'
 ])
 const DROPPED_TAGS = new Set(['SCRIPT', 'STYLE', 'IFRAME', 'OBJECT'])
 
@@ -20,13 +20,40 @@ export function calculateImageWidth(pointerX, containerLeft, containerWidth) {
 
 const children = node => [...(node?.childNodes || [])]
 const childrenMarkdown = node => children(node).map(serializeEditorNode).join('')
-const compact = value => String(value || '').replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim()
+const rawText = node => node?.nodeType === NODE_TEXT ? (node.textContent || '') : children(node).map(rawText).join('')
+const compactCell = value => String(value || '').replace(/\s+/g, ' ').trim()
+const normalizeBlockSpacing = value => {
+  const output = []
+  let inFence = false
+  for (const line of String(value || '').split('\n')) {
+    const fence = /^```/.test(line)
+    if (inFence) {
+      output.push(line)
+      if (fence) inFence = false
+      continue
+    }
+    if (fence) {
+      inFence = true
+      output.push(line)
+      continue
+    }
+    if (/^\s*$/.test(line)) {
+      if (output.length && output[output.length - 1] !== '') output.push('')
+    } else output.push(line)
+  }
+  while (output[0] === '') output.shift()
+  while (output[output.length - 1] === '') output.pop()
+  return output.join('\n')
+}
+const escapeMarkdownText = value => String(value || '').replace(/([\\`*_[\]{}()#+\-.!|>])/g, '\\$1')
+const safeMarkdownUrl = value => encodeURI(String(value || '').trim()).replace(/\(/g, '%28').replace(/\)/g, '%29')
+const safeMarkdownTitle = value => String(value || '').replace(/["\r\n]/g, '')
 
 const tableMarkdown = table => {
   const rows = []
   const visit = node => {
     if (node?.tagName === 'TR') {
-      rows.push(children(node).filter(cell => ['TH', 'TD'].includes(cell.tagName)).map(cell => compact(childrenMarkdown(cell))))
+      rows.push(children(node).filter(cell => ['TH', 'TD'].includes(cell.tagName)).map(cell => compactCell(childrenMarkdown(cell))))
       return
     }
     children(node).forEach(visit)
@@ -34,13 +61,20 @@ const tableMarkdown = table => {
   visit(table)
   if (!rows.length) return ''
   const header = rows[0]
-  const separator = header.map(() => '---')
+  const headerCells = children(table).flatMap(section => section.tagName === 'THEAD' ? children(section).flatMap(row => children(row)) : [])
+  const separator = header.map((_, index) => {
+    const alignment = headerCells[index]?.dataset?.markdownAlign
+    if (alignment === 'left') return ':---'
+    if (alignment === 'right') return '---:'
+    if (alignment === 'center') return ':---:'
+    return '---'
+  })
   return [header, separator, ...rows.slice(1)].map(row => `| ${row.join(' | ')} |`).join('\n') + '\n\n'
 }
 
 export function serializeEditorNode(node) {
   if (!node) return ''
-  if (node.nodeType === NODE_TEXT) return node.textContent || ''
+  if (node.nodeType === NODE_TEXT) return escapeMarkdownText(node.textContent || '')
   if (node.nodeType !== NODE_ELEMENT) return ''
   if (node.dataset?.editorUi) return ''
   const tag = String(node.tagName || '').toLowerCase()
@@ -49,23 +83,34 @@ export function serializeEditorNode(node) {
     const url = node.dataset?.originalSrc || node.getAttribute?.('src') || ''
     if (!isSafeEditorUrl(url)) return ''
     const alt = node.getAttribute?.('alt') || node.attributes?.alt || '图片'
-    return imageMarkdown(alt, url, normalizeImageWidth(node.dataset?.imageWidth)).trim()
+    return imageMarkdown(alt, safeMarkdownUrl(url), normalizeImageWidth(node.dataset?.imageWidth), node.dataset?.markdownTitle).trim()
   }
   if (tag === 'br') return '\n'
   if (tag === 'strong' || tag === 'b') return `**${inner}**`
   if (tag === 'em' || tag === 'i') return `*${inner}*`
   if (tag === 'del' || tag === 's') return `~~${inner}~~`
-  if (tag === 'code' && node.parentNode?.tagName !== 'PRE') return `\`${inner}\``
+  if (tag === 'code' && node.parentNode?.tagName !== 'PRE') return `\`${rawText(node)}\``
   if (tag === 'a') {
     const href = node.getAttribute?.('href') || ''
-    return isSafeEditorUrl(href) ? `[${inner}](${href})` : inner
+    const title = safeMarkdownTitle(node.dataset?.markdownTitle)
+    const titleSuffix = title ? ` "${title}"` : ''
+    return isSafeEditorUrl(href) ? `[${inner}](${safeMarkdownUrl(href)}${titleSuffix})` : inner
   }
   if (/^h[1-6]$/.test(tag)) return `${'#'.repeat(Number(tag[1]))} ${inner}\n\n`
   if (tag === 'blockquote') return `${inner.split('\n').filter(Boolean).map(line => `> ${line}`).join('\n')}\n\n`
   if (tag === 'li') return `${inner}\n`
   if (tag === 'ul') return `${inner.split('\n').filter(Boolean).map(line => `- ${line}`).join('\n')}\n\n`
-  if (tag === 'ol') return `${inner.split('\n').filter(Boolean).map((line, index) => `${index + 1}. ${line}`).join('\n')}\n\n`
-  if (tag === 'pre') return `\`\`\`\n${node.textContent || inner}\n\`\`\`\n\n`
+  if (tag === 'ol') {
+    const start = Number(node.dataset?.markdownStart || node.getAttribute?.('start')) || 1
+    return `${inner.split('\n').filter(Boolean).map((line, index) => `${start + index}. ${line}`).join('\n')}\n\n`
+  }
+  if (tag === 'pre') {
+    const codeClass = children(node).find(child => child.tagName === 'CODE')?.getAttribute?.('class') || ''
+    const className = node.getAttribute?.('class') || codeClass
+    const language = node.dataset?.markdownLanguage || String(className).match(/(?:^|\s)language-([\w-]+)/)?.[1] || ''
+    return `\`\`\`${language}\n${rawText(node)}\n\`\`\`\n\n`
+  }
+  if (tag === 'hr') return '---\n\n'
   if (tag === 'table') return tableMarkdown(node)
   if (['thead', 'tbody', 'tr', 'th', 'td'].includes(tag)) return inner
   if (tag === 'p' || tag === 'div') return `${inner}\n\n`
@@ -73,7 +118,7 @@ export function serializeEditorNode(node) {
 }
 
 export function serializeEditor(root) {
-  return compact(children(root).map(serializeEditorNode).join(''))
+  return normalizeBlockSpacing(children(root).map(serializeEditorNode).join(''))
 }
 
 const adjacentFromText = (node, offset, direction) => {
@@ -112,6 +157,8 @@ const sanitizeNode = (node, documentRef) => {
       return fragment
     }
     clean.setAttribute('href', href)
+    const title = safeMarkdownTitle(node.dataset?.markdownTitle || node.getAttribute?.('title'))
+    if (title) clean.dataset.markdownTitle = title
   }
   if (node.tagName === 'IMG') {
     const original = node.dataset?.originalSrc || node.getAttribute?.('src') || ''
@@ -121,8 +168,24 @@ const sanitizeNode = (node, documentRef) => {
     clean.setAttribute('alt', node.getAttribute?.('alt') || '图片')
     clean.dataset.originalSrc = original
     clean.dataset.imageWidth = String(width)
+    const title = safeMarkdownTitle(node.dataset?.markdownTitle || node.getAttribute?.('title'))
+    if (title) clean.dataset.markdownTitle = title
     clean.style.setProperty('--markdown-image-width', `${width}%`)
     return clean
+  }
+  if (node.tagName === 'PRE') {
+    const codeClass = children(node).find(child => child.tagName === 'CODE')?.getAttribute?.('class') || ''
+    const language = node.dataset?.markdownLanguage || String(node.getAttribute?.('class') || codeClass).match(/(?:^|\s)language-([\w-]+)/)?.[1]
+    if (language) clean.dataset.markdownLanguage = language
+  }
+  if (node.tagName === 'OL') {
+    const start = Number(node.dataset?.markdownStart || node.getAttribute?.('start')) || 1
+    clean.setAttribute('start', String(start))
+    clean.dataset.markdownStart = String(start)
+  }
+  if (['TH', 'TD'].includes(node.tagName)) {
+    const alignment = node.dataset?.markdownAlign
+    if (['left', 'right', 'center'].includes(alignment)) clean.dataset.markdownAlign = alignment
   }
   cleanChildren.forEach(child => clean.appendChild(child))
   return clean
