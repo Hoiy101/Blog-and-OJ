@@ -170,17 +170,6 @@
                                     </button>
                                 </div>
                                 
-                                <!-- 提交结果 -->
-                                <div v-if="submissionResult" class="mt-3">
-                                    <div class="alert" :class="getResultAlertClass(submissionResult.status)">
-                                        <h6 class="alert-heading">提交结果</h6>
-                                        <p class="mb-1">状态: <strong>{{ submissionResult.message || '未知' }}</strong></p>
-                                        <p v-if="submissionResult.time" class="mb-1 small">运行时间: {{ submissionResult.time }}ms</p>
-                                        <p v-if="submissionResult.memory" class="mb-1 small">内存使用: {{ submissionResult.memory }}KB</p>
-                                        <p v-if="submissionResult.passRate" class="mb-0 small">通过率: {{ submissionResult.passRate }}</p>
-                                    </div>
-                                </div>
-
                                 <!-- 测试用例区域 -->
                                 <div v-if="testCases && testCases.length > 0" class="mt-3">
                                     <h6 class="mb-2">测试用例</h6>
@@ -221,6 +210,12 @@ import 'ace-builds/src-noconflict/mode-javascript'
 import 'ace-builds/src-noconflict/theme-monokai'
 import 'ace-builds/src-noconflict/ext-language_tools'
 import ResultModal from '../../components/ResultModal.vue'
+import {
+    extractSubmissionError,
+    isJudgeResult,
+    toJudgeModalResult,
+    toSubmissionErrorResult
+} from '../../utils/judgeSubmission.mjs'
 
 export default {
     name: 'OJProblemDetail',
@@ -262,7 +257,6 @@ export default {
         
         // 提交相关状态
         const isSubmitting = ref(false)
-        const submissionResult = ref(null)
         const testCases = ref([])
         
         // WebSocket相关状态
@@ -274,8 +268,9 @@ export default {
         const websocketResult = ref({
             user_id: null,
             evaluation_id: null,
-            score: 0,
-            state: ''
+            score: null,
+            state: '',
+            message: ''
         })
         
         // 默认代码模板
@@ -503,8 +498,6 @@ export default {
             console.log('代码:', code)
             
             isSubmitting.value = true
-            submissionResult.value = null
-            
 
             $.ajax({
                 url: "http://127.0.0.1:3000/oj/evaluate/add/",
@@ -518,27 +511,14 @@ export default {
                     code: code
                 },
                 success(resp) {
-                    console.log('提交成功:', resp)
-                    console.log(resp);
-                    submissionResult.value = resp
+                    console.log('提交成功，等待判题结果:', resp)
                 },
-                complete() {
+                error(xhr) {
                     isSubmitting.value = false
+                    websocketResult.value = toSubmissionErrorResult(extractSubmissionError(xhr))
+                    showResultModal.value = true
                 }
             })
-        }
-        
-        // 获取结果提示框的类
-        const getResultAlertClass = (status) => {
-            const classes = {
-                accepted: 'alert-success',
-                wrong_answer: 'alert-warning',
-                time_limit: 'alert-danger',
-                runtime_error: 'alert-danger',
-                default: 'alert-info'
-            }
-            
-            return classes[status] || classes.default
         }
         
         // 获取测试用例标签的类
@@ -556,18 +536,6 @@ export default {
         // 查看题解
         const viewAnswer = () => {
             router.push(`/answer/${problem.value.id}`)
-        }
-        
-        // 获取结果消息
-        const getResultMessage = (state) => {
-            const messages = {
-                accepted: '通过',
-                wrong_answer: '答案错误',
-                time_limit: '超时',
-                runtime_error: '运行错误',
-                compile_error: '编译错误'
-            }
-            return messages[state] || state
         }
         
         // 关闭结果提示窗
@@ -603,19 +571,10 @@ export default {
                 console.log('收到WebSocket消息:', event.data)
                 try {
                     const data = JSON.parse(event.data)
-                    if (data.score !== undefined && data.state !== undefined) {
-                        websocketResult.value = {
-                            user_id: data.user_id,
-                            evaluation_id: data.evaluation_id,
-                            score: data.score,
-                            state: data.state
-                        }
+                    if (isJudgeResult(data)) {
+                        isSubmitting.value = false
+                        websocketResult.value = toJudgeModalResult(data)
                         showResultModal.value = true
-                        submissionResult.value = {
-                            status: data.state,
-                            message: getResultMessage(data.state),
-                            score: data.score
-                        }
                     }
                 } catch (error) {
                     console.error('解析WebSocket消息失败:', error)
@@ -680,7 +639,6 @@ export default {
             editorLines,
             editorChars,
             isSubmitting,
-            submissionResult,
             testCases,
             showResultModal,
             websocketResult,
@@ -690,7 +648,6 @@ export default {
             resetCode,
             copyCode,
             submitCode,
-            getResultAlertClass,
             getTestCaseBadgeClass,
             backToProblemList,
             viewAnswer,
@@ -865,37 +822,6 @@ export default {
     background-color: rgba(108, 117, 125, 0.1);
     color: #6c757d;
     border: 1px solid rgba(108, 117, 125, 0.3);
-}
-
-/* 提交结果样式 */
-.alert {
-    padding: 1rem;
-    border-radius: 0.5rem;
-    border: 1px solid transparent;
-}
-
-.alert-success {
-    background-color: rgba(40, 167, 69, 0.1);
-    border-color: rgba(40, 167, 69, 0.3);
-    color: #155724;
-}
-
-.alert-warning {
-    background-color: rgba(255, 193, 7, 0.1);
-    border-color: rgba(255, 193, 7, 0.3);
-    color: #856404;
-}
-
-.alert-danger {
-    background-color: rgba(220, 53, 69, 0.1);
-    border-color: rgba(220, 53, 69, 0.3);
-    color: #721c24;
-}
-
-.alert-info {
-    background-color: rgba(23, 162, 184, 0.1);
-    border-color: rgba(23, 162, 184, 0.3);
-    color: #0c5460;
 }
 
 /* 测试用例样式 */

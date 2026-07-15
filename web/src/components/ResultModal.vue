@@ -15,14 +15,14 @@
         <h3 class="result-title">{{ resultTitle }}</h3>
         <p class="result-desc">{{ resultDesc }}</p>
         
-        <div class="result-score">
+        <div v-if="!isSubmissionError" class="result-score">
           <div class="score-circle">
             <span class="score-value">{{ resultData.score }}</span>
             <span class="score-label">分</span>
           </div>
         </div>
         
-        <div class="result-details">
+        <div v-if="!isSubmissionError" class="result-details">
           <div class="detail-item">
             <span class="detail-label">题目ID</span>
             <span class="detail-value">#{{ resultData.evaluation_id }}</span>
@@ -36,9 +36,9 @@
       
       <div class="modal-footer">
         <button class="btn btn-primary" @click="closeModal">
-          {{ resultData.state === 'accepted' ? '继续挑战' : '修改代码' }}
+          {{ isSubmissionError ? '返回修改' : (resultData.state === 'accepted' ? '继续挑战' : '修改代码') }}
         </button>
-        <button v-if="resultData.state !== 'accepted'" class="btn btn-outline-secondary" @click="viewSolution">
+        <button v-if="resultData.state !== 'accepted' && !isSubmissionError" class="btn btn-outline-secondary" @click="viewSolution">
           查看题解
         </button>
       </div>
@@ -62,8 +62,9 @@ export default {
       default: () => ({
         user_id: null,
         evaluation_id: null,
-        score: 0,
-        state: ''
+        score: null,
+        state: '',
+        message: ''
       })
     }
   },
@@ -78,13 +79,15 @@ export default {
     const viewSolution = () => {
       emit('viewSolution', props.resultData.evaluation_id)
     }
+
+    const isSubmissionError = computed(() => props.resultData.state === 'submission_error')
     
     const resultClass = computed(() => {
       const classes = {
         'result-success': props.resultData.state === 'accepted',
         'result-warning': props.resultData.state === 'wrong_answer',
-        'result-danger': props.resultData.state === 'time_limit' || props.resultData.state === 'runtime_error',
-        'result-info': !['accepted', 'wrong_answer', 'time_limit', 'runtime_error'].includes(props.resultData.state)
+        'result-danger': ['time_limit', 'runtime_error', 'submission_error'].includes(props.resultData.state),
+        'result-info': !['accepted', 'wrong_answer', 'time_limit', 'runtime_error', 'submission_error'].includes(props.resultData.state)
       }
       return classes
     })
@@ -95,12 +98,17 @@ export default {
         wrong_answer: '答案错误',
         time_limit: '超时',
         runtime_error: '运行错误',
-        compile_error: '编译错误'
+        compile_error: '编译错误',
+        submission_error: '提交失败'
       }
       return titles[props.resultData.state] || '判题完成'
     })
     
     const resultDesc = computed(() => {
+      if (isSubmissionError.value) {
+        return props.resultData.message || '提交失败，请稍后重试'
+      }
+
       const descs = {
         accepted: '你的代码通过了所有测试用例，表现出色！',
         wrong_answer: '你的代码输出与预期不符，请检查逻辑',
@@ -125,6 +133,7 @@ export default {
     return {
       closeModal,
       viewSolution,
+      isSubmissionError,
       resultClass,
       resultTitle,
       resultDesc,
