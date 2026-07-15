@@ -13,6 +13,7 @@ test('removes problem add, view, and delete controls and their dead logic', () =
   assert.doesNotMatch(source, />\s*删除\s*</)
   assert.doesNotMatch(source, /topicadd|addtopic|removetopic|errortopic/)
   assert.doesNotMatch(source, /bootstrap\/dist\/js\/bootstrap|\breactive\b/)
+  assert.doesNotMatch(source, /error-message/)
 })
 
 test('navigates to problem details from the whole row by mouse or keyboard', () => {

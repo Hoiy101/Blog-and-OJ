@@ -468,11 +468,6 @@ export default {
     animation: spin 1s linear infinite;
     margin: 2rem auto;
 }
-div.error-message{
-    color: red;
-}
-
-
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
