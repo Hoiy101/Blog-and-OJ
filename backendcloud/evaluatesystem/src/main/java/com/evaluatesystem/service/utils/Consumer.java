@@ -239,6 +239,7 @@ public class Consumer {
         String language =  jsonObject.getString("language");
         List<String> inputList = jsonObject.getJSONArray("inputList").toJavaList(String.class);
         List<String> outputList = jsonObject.getJSONArray("outputList").toJavaList(String.class);
+        Integer quantity = inputList.size();
 
         JSONObject message = new JSONObject();
         message.put("user_id", user_id);
@@ -277,8 +278,9 @@ public class Consumer {
                 EvaluatePass(message);
                 return;
             }
-            if(output.equals(input)) score += 10;
+            if(output.equals(input)) score += 1;
         }
+        score = (score / quantity) * 100;
         if (score == 100) {
             message.put("state", "Accepted");
             message.put("score", score);

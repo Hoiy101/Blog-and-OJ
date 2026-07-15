@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="883ca786-845b-471c-8bde-e3b70ce800cf" name="更改" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 3
+}</component>
+  <component name="ProjectId" id="3GM6b0zHPsOalW4hCgnu6Z53A59" />
+  <component name="ProjectViewState">
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "Spring Boot.BackendApplication.executor": "Run",
+    "Spring Boot.EvaluateSystemApplication.executor": "Run",
+    "git-widget-placeholder": "dxy",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/Users/mac/Blog-and-OJ/backendcloud/pom.xml",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.lookFeel",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunManager">
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="backendcloud" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="backendcloud" />
+      <option name="filePath" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="默认任务">
+      <changelist id="883ca786-845b-471c-8bde-e3b70ce800cf" name="更改" comment="" />
+      <created>1783769159484</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1783769159484</updated>
+      <workItem from="1783769160796" duration="132000" />
+      <workItem from="1783775764279" duration="2304000" />
+      <workItem from="1783940180820" duration="2000" />
+      <workItem from="1783940240407" duration="83000" />
+      <workItem from="1783940326566" duration="537000" />
+      <workItem from="1783940878532" duration="862000" />
+      <workItem from="1783942106628" duration="28000" />
+      <workItem from="1783942138475" duration="19000" />
+      <workItem from="1783942170406" duration="44000" />
+      <workItem from="1783942221802" duration="9000" />
+      <workItem from="1783942260705" duration="16000" />
+      <workItem from="1783942352547" duration="31000" />
+      <workItem from="1783942397570" duration="122000" />
+      <workItem from="1783942524647" duration="413000" />
+      <workItem from="1783948912000" duration="1411000" />
+      <workItem from="1783950396052" duration="132000" />
+      <workItem from="1783950539593" duration="23000" />
+      <workItem from="1783950585854" duration="46000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
