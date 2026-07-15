@@ -4,11 +4,11 @@
             <!-- 卡片头部 -->
             <div class="card-header border-bottom bg-light">
                 <div class="row align-items-center">
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <h5 class="mb-0">题库列表</h5>
                         <p class="text-muted mb-0 small">共 {{ problems.length }} 道题目</p>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="input-group">
                             <input 
                                 type="text" 
@@ -21,72 +21,6 @@
                             <button class="btn btn-outline-primary" type="button" @click="handleSearch">
                                 搜索
                             </button>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <button type="button" class="btn btn-primary" style="margin-left: auto; right: 0;" 
-                                data-bs-toggle="modal" data-bs-target="#add-bot-btn">
-                            添加题目
-                        </button>
-                        <div class="modal fade" id="add-bot-btn" tabindex="-1">
-                            <div class="modal-dialog modal-xl">
-                                <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">创建题目</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="mb-3">
-                                        <label for="add-bot-title" class="form-label">测试点数量</label>
-                                        <input v-model="topicadd.test_point" type="text" class="form-control" id="add-bot-title" placeholder="请填写测试点数量">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="add-bot-description" class="form-label">题目标题</label>
-                                        <textarea v-model="topicadd.title" class="form-control" id="add-bot-description" placeholder="请填写题目标题" rows="2"></textarea>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="add-bot-description" class="form-label">题目简介</label>
-                                        <textarea v-model="topicadd.description" class="form-control" id="add-bot-description" placeholder="请填写题目简介" rows="2"></textarea>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="add-bot-description" class="form-label">题目难度</label>
-                                        <textarea v-model="topicadd.star" class="form-control" id="add-bot-description" placeholder="难度为1-5星，1为简单，5为困难" rows="2"></textarea>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="add-bot-description" class="form-label">时间限制</label>
-                                        <textarea v-model="topicadd.time_limit" class="form-control" id="add-bot-description" placeholder="请填写时间限制" rows="2"></textarea>
-                                    </div>
-                                   <div class="mb-3">
-                                        <label for="add-bot-description" class="form-label">内存限制</label>
-                                        <textarea v-model="topicadd.mem_limit" class="form-control" id="add-bot-description" placeholder="请填写内存限制" rows="2"></textarea>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="add-bot-description" class="form-label">输入格式</label>
-                                        <textarea v-model="topicadd.input_format" class="form-control" id="add-bot-description" placeholder="请填写输入格式" rows="2"></textarea>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="add-bot-description" class="form-label">输出格式</label>
-                                        <textarea v-model="topicadd.output_format" class="form-control" id="add-bot-description" placeholder="请填写输出格式" rows="2"></textarea>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="add-bot-description" class="form-label">样例输入</label>
-                                        <textarea v-model="topicadd.sample_input" class="form-control" id="add-bot-description" placeholder="请填写样例输入" rows="2"></textarea>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="add-bot-description" class="form-label">样例输出</label>
-                                        <textarea v-model="topicadd.sample_output" class="form-control" id="add-bot-description" placeholder="请填写样例输出" rows="2"></textarea>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="add-bot-description" class="form-label">题目提示</label>
-                                        <textarea v-model="topicadd.hint" class="form-control" id="add-bot-description" placeholder="请填写样例输出" rows="2"></textarea>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <div class="error-message">{{topicadd.error_message}}</div>
-                                    <button type="button" class="btn btn-primary btn-lg" @click="addtopic">创建</button>
-                                    <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">取消</button>
-                                </div>
-                                </div>
                         </div>
                     </div>
                 </div>
@@ -138,12 +72,19 @@
                                         <i class="bi bi-star me-1"></i> 难度
                                     </span>
                                 </th>
-                                <th scope="col" style="width: 120px;" class="text-center">查看</th>
-                                <th scope="col" style="width: 120px;" class="text-remove"> 删除</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="problem in filteredProblems" :key="problem.id" class="problem-row">
+                            <tr
+                                v-for="problem in filteredProblems"
+                                :key="problem.id"
+                                class="problem-row"
+                                role="link"
+                                tabindex="0"
+                                @click="handleView(problem.id)"
+                                @keydown.enter="handleView(problem.id)"
+                                @keydown.space.prevent="handleView(problem.id)"
+                            >
                                 <td class="text-center">
                                     <span class="badge bg-light text-dark fw-normal problem-id">#{{ problem.id }}</span>
                                 </td>
@@ -160,18 +101,6 @@
                                         {{ getDifficultyText(problem.star) }}
                                     </span>
                                 </td>
-                                <td class="text-center">  
-                                    <button 
-                                        class="btn btn-sm btn-outline-primary"
-                                        @click="handleView(problem.id)">
-                                        查看
-                                    </button>
-                                </td>
-                                <td class="text-remove">
-                                    <button class="btn btn-sm btn-outline-danger" @click="removetopic(problem.id)">
-                                        删除
-                                    </button> 
-                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -187,9 +116,8 @@
 </template>
 
 <script>
-import { ref, onMounted, computed, reactive} from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import $ from 'jquery'
-import { Modal } from 'bootstrap/dist/js/bootstrap';
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router';
 
@@ -203,23 +131,6 @@ export default {
         const searchKeyword = ref('')
         const error = ref(null)
         const router = useRouter();
-
-        const errortopic="";
-
-        const topicadd = reactive({
-            test_point: "",
-            title: "",  
-            description: "",
-            star:"",
-            time_limit:"",
-            mem_limit:"",
-            input_format:"",
-            output_format:"",
-            sample_input:"",
-            sample_output:"",
-            hint:"",
-            error_message: "",
-        });
 
         // 计算属性：根据搜索关键词过滤题目
         const filteredProblems = computed(() => {
@@ -272,8 +183,6 @@ export default {
             error.value = null
             
             console.log('开始获取题目列表...')
-            topicadd.error_message = ""
-            
             const headers = {}
             if (store.state.user.token && store.state.user.token.trim().length > 0) {
                 headers.Authorization = "Bearer " + store.state.user.token
@@ -325,68 +234,6 @@ export default {
             })
         }
 
-        const addtopic = () =>{
-            $.ajax({
-                url: "http://127.0.0.1:3000/oj/topic/add/",
-                type: "post",
-                headers: {
-                    Authorization: "Bearer " + store.state.user.token,
-                },
-                data: {
-                    test_point: topicadd.test_point,
-                    title: topicadd.title,
-                    description: topicadd.description,
-                    star:topicadd.star,
-                    time_limit:topicadd.time_limit,
-                    mem_limit:topicadd.mem_limit,
-                    input_format:topicadd.input_format,
-                    output_format:topicadd.output_format,
-                    sample_input:topicadd.sample_input,
-                    sample_output:topicadd.sample_output,
-                    hint:topicadd.hint,
-                },
-                success(resp){
-                    if(resp.error_message == "success"){
-                      topicadd.test_point = "",
-                      topicadd.title = "",
-                      topicadd.description = "",
-                      topicadd.star = "",
-                      topicadd.time_limit = "",
-                      topicadd.mem_limit = "",
-                      topicadd.input_format = "",
-                      topicadd.output_format = "",
-                      topicadd.sample_input = "",
-                      topicadd.sample_output = "",
-                      topicadd.hint = "",
-                      Modal.getInstance("#add-bot-btn").hide();  
-                      getProblemList()
-                    }
-                    else{
-                        topicadd.error_message = resp.error_message
-                    }
-                }
-            })
-        }
-        const removetopic = (id) =>{
-            $.ajax({
-                url: "http://127.0.0.1:3000/oj/topic/remove/",
-                type: "post",
-                headers: {
-                    Authorization: "Bearer " + store.state.user.token,
-                },
-                data: {
-                    topic_id : id,
-                },
-                success(resp){
-                    if(resp.error_message === "success"){
-                        errortopic == "删除成功"
-                    }else{
-                        errortopic == resp.error_message
-                    }
-                }
-            })
-            getProblemList()
-        }
         const handleSearch = () => {
             console.log('搜索关键词:', searchKeyword.value)
             // 搜索功能已通过computed属性filteredProblems实现
@@ -406,11 +253,7 @@ export default {
             getDifficultyText,
             getProblemList,
             handleSearch,
-            handleView,
-            topicadd,
-            addtopic,
-            removetopic,
-            errortopic
+            handleView
         }
     }
 }
@@ -508,6 +351,15 @@ export default {
     border-bottom: 1px solid #f0f0f0;
 }
 
+.problem-row {
+    cursor: pointer;
+}
+
+.problem-row:focus-visible {
+    outline: 2px solid #0d6efd;
+    outline-offset: -2px;
+}
+
 .problem-table-container tbody tr:hover {
     background-color: #f8fafc;
     transform: translateX(2px);
@@ -583,19 +435,6 @@ export default {
     background-color: rgba(108, 117, 125, 0.1);
     color: #6c757d;
     border: 1px solid rgba(108, 117, 125, 0.3);
-}
-
-/* 查看按钮样式 */
-.problem-table-container .btn-outline-primary {
-    padding: 0.25rem 0.75rem;
-    font-size: 0.85rem;
-    border-radius: 20px;
-    transition: all 0.2s;
-}
-
-.problem-table-container .btn-outline-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* 空状态样式 */
