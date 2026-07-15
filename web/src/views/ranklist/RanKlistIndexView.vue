@@ -25,7 +25,6 @@
                     </div>
                 </div>
             </div>
-        </div>
             <!-- 题目列表 -->
             <div class="card-body p-0 problem-list-container">
                 <!-- 加载状态 -->
