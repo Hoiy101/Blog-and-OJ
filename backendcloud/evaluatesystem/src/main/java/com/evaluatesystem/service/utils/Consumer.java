@@ -280,7 +280,12 @@ public class Consumer {
             }
             if(output.equals(input)) score += 1;
         }
-        score = (score / quantity) * 100;
+        if(quantity != 0) {
+            score = (score / quantity) * 100;
+        }
+        else {
+            score = 0;
+        }
         if (score == 100) {
             message.put("state", "Accepted");
             message.put("score", score);
