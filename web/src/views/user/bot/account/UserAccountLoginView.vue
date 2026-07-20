@@ -66,8 +66,10 @@ export default{
                         }
                     });
                 },
-                error(){
-                    error_message.value = "用户名或密码错误";
+                error(resp){
+                    error_message.value = resp?.error_message
+                        || resp?.responseJSON?.error_message
+                        || "登录失败，请稍后重试";
                 }
             })
         }
