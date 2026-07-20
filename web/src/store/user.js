@@ -60,6 +60,12 @@ export default {
             })
         }, 
         getinfo(context, data) {
+            const handleError = (resp) => {
+                localStorage.removeItem("jwt_token");
+                context.commit("logout");
+                data.error(resp);
+            };
+
             $.ajax({
                 url: "http://127.0.0.1:3000/user/account/info/",
                 type: "get",
@@ -75,11 +81,11 @@ export default {
                     data.success(resp);
                     }
                     else{
-                        data.error(resp);
+                        handleError(resp);
                     }
                 }, 
                 error(resp){
-                    data.error(resp);
+                    handleError(resp);
                 } 
             })
         },

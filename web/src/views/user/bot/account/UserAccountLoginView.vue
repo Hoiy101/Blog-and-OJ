@@ -37,6 +37,14 @@ export default{
         let password = ref('');
         let error_message = ref('');
 
+        const handleGetInfoError = (resp) => {
+            store.commit("updatePullingInfo", false);
+            error_message.value = resp?.error_message
+                || resp?.responseJSON?.error_message
+                || "登录状态已失效，请重新登录";
+            router.replace({ name: 'user_account_login' });
+        };
+
         const jwt_token = localStorage.getItem("jwt_token");
         if(jwt_token){
             store.commit("updateToken", jwt_token);
@@ -45,9 +53,7 @@ export default{
                     router.push({ name: 'home' });
                     store.commit("updatePullingInfo", false);
                 },
-                error(){
-                    store.commit("updatePullingInfo", false);
-                }
+                error: handleGetInfoError
             });
         }
         else{
@@ -63,7 +69,8 @@ export default{
                         success(){
                             router.push({ name: 'home' });
                             console.log(store.state.user);
-                        }
+                        },
+                        error: handleGetInfoError
                     });
                 },
                 error(resp){
