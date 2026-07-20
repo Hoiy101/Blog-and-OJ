@@ -55,7 +55,16 @@
 
                 <!-- 博客列表 -->
                 <div v-else class="blog-list">
-                    <div v-for="record in filteredRecords" :key="record.id" class="blog-item border-bottom p-4">
+                    <div
+                        v-for="record in filteredRecords"
+                        :key="record.id"
+                        class="blog-item border-bottom p-4"
+                        role="link"
+                        tabindex="0"
+                        @click="viewBlogDetail(record.id)"
+                        @keydown.enter="viewBlogDetail(record.id)"
+                        @keydown.space.prevent="viewBlogDetail(record.id)"
+                    >
                         <div class="d-flex justify-content-between align-items-start mb-2">
                             <h5 class="card-title mb-0">{{ record.title || '无标题' }}</h5>
                             <span class="badge bg-light text-dark small">#{{ record.id || '未知' }}</span>
@@ -67,14 +76,6 @@
                             </small>
                         </h6>
                         <p class="card-text text-secondary mb-3">{{ record.description || '暂无简介' }}</p>
-                        <div class="d-flex justify-content-end">
-                            <button 
-                                class="btn btn-sm btn-outline-primary me-2"
-                                @click="viewBlogDetail(record.id)"
-                            >
-                                查看详情
-                            </button>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -487,6 +488,11 @@ export default {
 .blog-item:hover {
     background-color: #f8fafc;
     transform: translateX(4px);
+}
+
+.blog-item:focus-visible {
+    outline: 2px solid #0d6efd;
+    outline-offset: -2px;
 }
 
 .blog-item:last-child {
