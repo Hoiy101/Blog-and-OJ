@@ -1,6 +1,6 @@
-package com.kob.backend.controller.oj.topic;
+package com.kob.backend.controller.manage.topic;
 
-import com.kob.backend.service.oj.topic.RemoveTopicService;
+import com.kob.backend.service.manage.topic.RemoveTopicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;

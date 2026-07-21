@@ -18,11 +18,14 @@ public class InfoServiceImp implements InfoService {
     public Map<String, String> getinfo() {
         UsernamePasswordAuthenticationToken authentication =
                 (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         User user = userDetails.getUser();
 
         Map<String, String> map = new HashMap<>();
+        if(user.getBanned().equals("true")){
+            map.put("error_message", "该账号已被封禁");
+            return map;
+        }
         map.put("error_message", "success");
         map.put("id", user.getId().toString());
         map.put("username", user.getUsername());

@@ -1,10 +1,10 @@
-package com.kob.backend.service.impl.oj.topic;
+package com.kob.backend.service.impl.manage.topic;
 
 import com.kob.backend.mapper.TopicMapper;
 import com.kob.backend.pojo.Topic;
 import com.kob.backend.pojo.User;
 import com.kob.backend.service.impl.utils.UserDetailsImpl;
-import com.kob.backend.service.oj.topic.AddTopicService;
+import com.kob.backend.service.manage.topic.AddTopicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;

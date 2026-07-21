@@ -1,16 +1,11 @@
-package com.kob.backend.service.impl.oj.topic;
+package com.kob.backend.service.impl.manage.topic;
 
 import com.kob.backend.mapper.TopicMapper;
 import com.kob.backend.pojo.Topic;
-import com.kob.backend.pojo.User;
-import com.kob.backend.service.impl.utils.UserDetailsImpl;
-import com.kob.backend.service.oj.topic.GetTopicService;
+import com.kob.backend.service.manage.topic.GetTopicService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 

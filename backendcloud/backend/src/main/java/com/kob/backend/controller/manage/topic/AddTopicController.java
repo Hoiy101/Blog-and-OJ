@@ -1,10 +1,8 @@
-package com.kob.backend.controller.oj.topic;
+package com.kob.backend.controller.manage.topic;
 
-import com.kob.backend.pojo.Topic;
-import com.kob.backend.service.oj.topic.AddTopicService;
+import com.kob.backend.service.manage.topic.AddTopicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 

@@ -34,6 +34,14 @@ public class LoginServiceImpl implements LoginService {
         String jwt = JwtUtil.createJWT(user.getId().toString());
 
         Map<String, String> map = new HashMap<>();
+        if(user.getBanned().equals("true")){
+            map.put("error_message", "该账号已被封禁");
+            return map;
+        }
+        if(jwt == null){
+            map.put("error_message", "账号或密码错误");
+            return map;
+        }
         map.put("error_message", "success");
         map.put("token", jwt);
         System.out.println(jwt);
