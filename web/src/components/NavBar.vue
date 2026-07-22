@@ -13,6 +13,23 @@
         <li class="nav-item">
               <router-link :class="route_name == 'RanKlist_index' ? 'nav-link active' : 'nav-link'" :to="{name:'RanKlist_index'}">题库</router-link>
         </li>
+        <li class="nav-item dropdown" v-if="admin">
+          <a
+            class="nav-link dropdown-toggle"
+            :class="route_name && route_name.toString().startsWith('manage_') ? 'active' : ''"
+            href="#"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            后台管理
+          </a>
+          <ul class="dropdown-menu">
+            <li><router-link class="dropdown-item" :to="{name:'manage_users'}">用户管理</router-link></li>
+            <li><router-link class="dropdown-item" :to="{name:'manage_login_records'}">用户登录信息</router-link></li>
+            <li><router-link class="dropdown-item" :to="{name:'manage_topics'}">题库管理</router-link></li>
+          </ul>
+        </li>
         <!-- <li class="nav-item">
               <router-link :class="route_name == 'record_index' ? 'nav-link active' : 'nav-link'" :to="{name:'record_index'}">排行榜</router-link>
         </li> -->
@@ -57,12 +74,14 @@
 import { useRoute } from 'vue-router';
 import { computed } from 'vue';
 import { useStore } from 'vuex';
+import { isAdmin } from '@/utils/admin.mjs';
 
 export default{
     setup(){
       const store = useStore();
       const route = useRoute();
       let route_name = computed(() => route.name)
+      const admin = computed(() => isAdmin(store.state.user.root))
 
       const logout = () => {
         store.dispatch("logout");
@@ -70,6 +89,7 @@ export default{
 
       return{
         route_name,
+        admin,
         logout,
       }
     }

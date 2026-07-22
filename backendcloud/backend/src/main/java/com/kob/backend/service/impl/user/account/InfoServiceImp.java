@@ -30,6 +30,7 @@ public class InfoServiceImp implements InfoService {
         map.put("id", user.getId().toString());
         map.put("username", user.getUsername());
         map.put("photo", user.getPhoto());
+        map.put("root", user.getRoot());
         return map;
     }
 }

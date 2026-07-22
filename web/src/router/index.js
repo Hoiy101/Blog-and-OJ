@@ -10,6 +10,10 @@ import UserAccountRegisterView from '@/views/user/bot/account/UserAccountRegiste
 import store from '@/store/index.js'
 import QuestionDetails from '@/views/ranklist/QuestionDetails.vue'
 import AnswerDetail from '@/views/answer/AnswerDetail.vue'
+import ManageUsersView from '@/views/manage/ManageUsersView.vue'
+import ManageLoginRecordsView from '@/views/manage/ManageLoginRecordsView.vue'
+import ManageTopicsView from '@/views/manage/ManageTopicsView.vue'
+import { isAdmin } from '@/utils/admin.mjs'
 
 const routes = [
   {
@@ -73,6 +77,24 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
+    path:"/manage/users/",
+    name:"manage_users",
+    component:ManageUsersView,
+    meta: { requiresAuth: true, requiresAdmin: true },
+  },
+  {
+    path:"/manage/login-records/",
+    name:"manage_login_records",
+    component:ManageLoginRecordsView,
+    meta: { requiresAuth: true, requiresAdmin: true },
+  },
+  {
+    path:"/manage/topics/",
+    name:"manage_topics",
+    component:ManageTopicsView,
+    meta: { requiresAuth: true, requiresAdmin: true },
+  },
+  {
     path:"/:CatchAll(.*)",
     name:"NotFound_index",
     component:NotFound,
@@ -86,11 +108,17 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   if(to.meta.requiresAuth && !store.state.user.is_login){
-    next({name:"user_account_login"})
+    next({
+      name:"user_account_login",
+      query: { redirect: to.fullPath },
+    })
+    return
   }
-  else{
-    next()
+  if(to.meta.requiresAdmin && !isAdmin(store.state.user.root)){
+    next({ name: "home" })
+    return
   }
+  next()
 })
 
 export default router

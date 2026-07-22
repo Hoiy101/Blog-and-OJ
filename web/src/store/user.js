@@ -5,6 +5,7 @@ export default {
         id: "",
         username: "",
         photo: "",
+        root: "",
         token: "",
         is_login: false,
         pulling_info: true,
@@ -16,6 +17,7 @@ export default {
             state.id = user.id;
             state.username = user.username;
             state.photo = user.photo;
+            state.root = user.root;
             state.is_login = user.is_login;
         },
         updateToken(state, token) {
@@ -28,6 +30,7 @@ export default {
             state.id = "";
             state.username = "";
             state.photo = "";
+            state.root = "";
             state.token = "";
             state.is_login = false;
         },

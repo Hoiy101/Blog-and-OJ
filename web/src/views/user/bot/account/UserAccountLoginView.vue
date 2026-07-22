@@ -25,6 +25,7 @@
 import ContentField from '@/components/ContentField.vue';
 import { useStore } from 'vuex';
 import { ref } from 'vue';
+import { useRoute } from 'vue-router';
 import router from '@/router/index.js';
 
 export default{
@@ -33,9 +34,18 @@ export default{
     },
     setup(){
         const store = useStore();
+        const route = useRoute();
         let username = ref('');
         let password = ref('');
         let error_message = ref('');
+
+        const goAfterLogin = () => {
+            const redirect = typeof route.query.redirect === 'string'
+                && route.query.redirect.startsWith('/')
+                ? route.query.redirect
+                : null;
+            router.push(redirect || { name: 'home' });
+        };
 
         const handleGetInfoError = (resp) => {
             store.commit("updatePullingInfo", false);
@@ -50,7 +60,7 @@ export default{
             store.commit("updateToken", jwt_token);
             store.dispatch("getinfo", {
                 success(){
-                    router.push({ name: 'home' });
+                    goAfterLogin();
                     store.commit("updatePullingInfo", false);
                 },
                 error: handleGetInfoError
@@ -67,7 +77,7 @@ export default{
                 success(){
                     store.dispatch("getinfo", {
                         success(){
-                            router.push({ name: 'home' });
+                            goAfterLogin();
                             console.log(store.state.user);
                         },
                         error: handleGetInfoError

@@ -1,0 +1,40 @@
+import test from 'node:test'
+import assert from 'node:assert/strict'
+import { readFile } from 'node:fs/promises'
+
+const usersSource = await readFile(
+  new URL('../../src/views/manage/ManageUsersView.vue', import.meta.url),
+  'utf8'
+)
+const recordsSource = await readFile(
+  new URL('../../src/views/manage/ManageLoginRecordsView.vue', import.meta.url),
+  'utf8'
+)
+
+test('loads users and refreshes after ban state changes', () => {
+  assert.match(usersSource, /adminApi\.listUsers\(store\.state\.user\.token\)/)
+  assert.match(usersSource, /statusForBannedState\(banned\)/)
+  assert.match(usersSource, /adminApi\.updateBanned\([\s\S]*user\.username[\s\S]*status/)
+  assert.match(usersSource, /resp\.error_message !== 'success'/)
+  assert.match(usersSource, /await loadUsers\(\)/)
+  assert.match(usersSource, /:disabled="updatingUsername === user\.username"/)
+})
+
+test('renders user role, status, errors, empty state, and retry control', () => {
+  assert.match(usersSource, /用户管理/)
+  assert.match(usersSource, /user\.root === 'true'/)
+  assert.match(usersSource, /user\.banned === 'true'/)
+  assert.match(usersSource, /v-else-if="error"/)
+  assert.match(usersSource, /@click="loadUsers"/)
+  assert.match(usersSource, /暂无用户数据/)
+})
+
+test('loads and limits login records through the domain helper', () => {
+  assert.match(recordsSource, /adminApi\.listLoginRecords\(store\.state\.user\.token\)/)
+  assert.match(recordsSource, /latestLoginRecords\(resp, 100\)/)
+  assert.match(recordsSource, /用户登录信息/)
+  assert.match(recordsSource, /登录 IP/)
+  assert.match(recordsSource, /登录时间/)
+  assert.match(recordsSource, /@click="loadRecords"/)
+  assert.match(recordsSource, /暂无登录记录/)
+})
