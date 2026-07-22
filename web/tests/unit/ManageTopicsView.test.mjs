@@ -7,6 +7,14 @@ const source = await readFile(
   'utf8'
 )
 
+test('frames topic management in a spaced card', () => {
+  assert.match(source, /<main class="admin-page-shell">/)
+  assert.match(source, /<div class="container admin-page-container">[\s\S]*<section class="card admin-card">/)
+  assert.match(source, /\.admin-page-shell\s*\{[\s\S]*background:\s*#f4f7fb/)
+  assert.match(source, /\.admin-page-container\s*\{[\s\S]*padding-top:\s*1\.5rem/)
+  assert.match(source, /\.admin-card\s*\{[\s\S]*border:\s*1px solid/)
+})
+
 test('renders searchable topic rows with create, edit, evaluate, and delete actions', () => {
   assert.match(source, /题库管理/)
   assert.match(source, /v-model="searchKeyword"/)

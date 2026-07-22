@@ -1,6 +1,7 @@
 <template>
-  <main class="container admin-page">
-    <section class="card admin-card">
+  <main class="admin-page-shell">
+    <div class="container admin-page-container">
+      <section class="card admin-card">
       <header class="card-header d-flex justify-content-between align-items-center">
         <div>
           <h1 class="h5 mb-1">用户管理</h1>
@@ -67,7 +68,8 @@
           </tbody>
         </table>
       </div>
-    </section>
+      </section>
+    </div>
   </main>
 </template>
 
@@ -131,9 +133,13 @@ export default {
 </script>
 
 <style scoped>
-.admin-page { padding-top: 2rem; padding-bottom: 3rem; }
-.admin-card { border: 0; border-radius: 14px; box-shadow: 0 10px 30px rgba(15, 23, 42, .08); overflow: hidden; }
+.admin-page-shell { min-height: calc(100vh - 56px); background: #f4f7fb; }
+.admin-page-container { padding-top: 1.5rem; padding-bottom: 2.5rem; }
+.admin-card { border: 1px solid rgba(148, 163, 184, .24); border-radius: 14px; box-shadow: 0 10px 30px rgba(15, 23, 42, .08); overflow: hidden; }
 .card-header { padding: 1.25rem 1.5rem; background: #fff; }
 .state-panel { padding: 4rem 1.5rem; text-align: center; }
 th, td { padding: 1rem 1.25rem; }
+@media (max-width: 575.98px) {
+  .admin-page-container { padding-top: .75rem; padding-bottom: 1.25rem; }
+}
 </style>

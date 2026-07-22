@@ -1,6 +1,7 @@
 <template>
-  <main class="container admin-page">
-    <section class="card admin-card">
+  <main class="admin-page-shell">
+    <div class="container admin-page-container">
+      <section class="card admin-card">
       <header class="card-header">
         <div class="d-flex flex-column flex-lg-row gap-3 justify-content-between align-items-lg-center">
           <div>
@@ -65,7 +66,8 @@
       <footer class="card-footer text-muted small">
         显示 {{ filteredTopics.length }} / {{ topics.length }} 道题目
       </footer>
-    </section>
+      </section>
+    </div>
 
     <TopicFormModal
       :visible="showTopicModal"
@@ -327,10 +329,14 @@ export default {
 </script>
 
 <style scoped>
-.admin-page { padding-top: 2rem; padding-bottom: 3rem; }
-.admin-card { border: 0; border-radius: 14px; box-shadow: 0 10px 30px rgba(15, 23, 42, .08); overflow: hidden; }
+.admin-page-shell { min-height: calc(100vh - 56px); background: #f4f7fb; }
+.admin-page-container { padding-top: 1.5rem; padding-bottom: 2.5rem; }
+.admin-card { border: 1px solid rgba(148, 163, 184, .24); border-radius: 14px; box-shadow: 0 10px 30px rgba(15, 23, 42, .08); overflow: hidden; }
 .card-header { padding: 1.25rem 1.5rem; background: #fff; }
 .card-footer { padding: .85rem 1.25rem; background: #fff; }
 .state-panel { padding: 4rem 1.5rem; text-align: center; }
 th, td { padding: 1rem 1.25rem; }
+@media (max-width: 575.98px) {
+  .admin-page-container { padding-top: .75rem; padding-bottom: 1.25rem; }
+}
 </style>

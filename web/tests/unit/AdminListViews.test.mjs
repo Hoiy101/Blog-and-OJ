@@ -11,6 +11,19 @@ const recordsSource = await readFile(
   'utf8'
 )
 
+const assertAdminCardShell = source => {
+  assert.match(source, /<main class="admin-page-shell">/)
+  assert.match(source, /<div class="container admin-page-container">[\s\S]*<section class="card admin-card">/)
+  assert.match(source, /\.admin-page-shell\s*\{[\s\S]*background:\s*#f4f7fb/)
+  assert.match(source, /\.admin-page-container\s*\{[\s\S]*padding-top:\s*1\.5rem/)
+  assert.match(source, /\.admin-card\s*\{[\s\S]*border:\s*1px solid/)
+}
+
+test('frames user and login-record management in spaced cards', () => {
+  assertAdminCardShell(usersSource)
+  assertAdminCardShell(recordsSource)
+})
+
 test('loads users and refreshes after ban state changes', () => {
   assert.match(usersSource, /adminApi\.listUsers\(store\.state\.user\.token\)/)
   assert.match(usersSource, /statusForBannedState\(banned\)/)
