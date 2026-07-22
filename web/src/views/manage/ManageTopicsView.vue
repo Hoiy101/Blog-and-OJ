@@ -329,7 +329,7 @@ export default {
 </script>
 
 <style scoped>
-.admin-page-shell { min-height: calc(100vh - 56px); background: #f4f7fb; }
+.admin-page-shell { min-height: calc(100vh - 56px); }
 .admin-page-container { padding-top: 1.5rem; padding-bottom: 2.5rem; }
 .admin-card { border: 1px solid rgba(148, 163, 184, .24); border-radius: 14px; box-shadow: 0 10px 30px rgba(15, 23, 42, .08); overflow: hidden; }
 .card-header { padding: 1.25rem 1.5rem; background: #fff; }

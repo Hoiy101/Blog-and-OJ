@@ -10,7 +10,9 @@ const source = await readFile(
 test('frames topic management in a spaced card', () => {
   assert.match(source, /<main class="admin-page-shell">/)
   assert.match(source, /<div class="container admin-page-container">[\s\S]*<section class="card admin-card">/)
-  assert.match(source, /\.admin-page-shell\s*\{[\s\S]*background:\s*#f4f7fb/)
+  const shellRule = source.match(/\.admin-page-shell\s*\{([^}]*)\}/)?.[1] || ''
+  assert.match(shellRule, /min-height:\s*calc\(100vh - 56px\)/)
+  assert.doesNotMatch(shellRule, /background(?:-color)?\s*:/)
   assert.match(source, /\.admin-page-container\s*\{[\s\S]*padding-top:\s*1\.5rem/)
   assert.match(source, /\.admin-card\s*\{[\s\S]*border:\s*1px solid/)
 })
