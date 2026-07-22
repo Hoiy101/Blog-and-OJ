@@ -25,7 +25,7 @@ class RemoveServiceImplTests {
     void setUp() {
         mapper = mock(BlogMapper.class);
         storage = mock(BlogImageStorage.class);
-        User user = new User(7, "tester", "password", "photo", "user");
+        User user = new User(7, "tester", "password", "photo", "user", "false");
         SecurityContextHolder.getContext().setAuthentication(
                 new UsernamePasswordAuthenticationToken(new UserDetailsImpl(user), null));
     }

@@ -29,7 +29,7 @@ class BlogImageServiceImplTests {
         blogMapper = mock(BlogMapper.class);
         storage = mock(BlogImageStorage.class);
         service = new BlogImageServiceImpl(blogMapper, storage);
-        User user = new User(7, "tester", "password", "photo", "user");
+        User user = new User(7, "tester", "password", "photo", "user", "false");
         SecurityContextHolder.getContext().setAuthentication(
                 new UsernamePasswordAuthenticationToken(new UserDetailsImpl(user), null));
     }
