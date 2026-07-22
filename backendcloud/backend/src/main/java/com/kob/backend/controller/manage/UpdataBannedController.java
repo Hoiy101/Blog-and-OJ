@@ -1,6 +1,6 @@
-package com.kob.backend.controller.user.account;
+package com.kob.backend.controller.manage;
 
-import com.kob.backend.service.user.account.UpdataBannedService;
+import com.kob.backend.service.manage.UpdataBannedService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;

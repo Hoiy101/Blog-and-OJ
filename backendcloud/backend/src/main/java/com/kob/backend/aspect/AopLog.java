@@ -38,23 +38,13 @@ public class AopLog {
         Object result = pjp.proceed();
         String methodName = pjp.getSignature().getName();
         LoginRecord loginRecord = new LoginRecord();
-        if(methodName.equals("getToken")) {
-            if (result instanceof Map) {
-                Map<String, String> map_output = (Map<String, String>) result;
-                Map<String, String> map_input = (Map<String, String>) args[0];
-                if (map_output.get("token") != null) {
-                    Date date = new Date();
-                    loginRecord = new LoginRecord(null, map_input.get("username"), request.getRemoteAddr(), date);
-                }
-            }
-        }
         if(methodName.equals("getinfo")) {
             if(result instanceof Map) {
                 Map<String, String> map_input = (Map<String, String>) result;
                 loginRecord = new LoginRecord(null, map_input.get("username"), request.getRemoteAddr(), new Date());
             }
+            loginRecordMapper.insert(loginRecord);
         }
-        loginRecordMapper.insert(loginRecord);
         return result;
     }
 }
