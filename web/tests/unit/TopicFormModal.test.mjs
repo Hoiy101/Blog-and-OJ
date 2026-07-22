@@ -38,3 +38,11 @@ test('keeps loading, submitting, and errors inside the modal', () => {
   assert.match(source, /modal d-block/)
   assert.match(source, /modal-backdrop/)
 })
+
+test('keeps actions visible while long topic content scrolls', () => {
+  assert.match(source, /<form class="admin-modal-form"/)
+  assert.match(source, /<div class="modal-body admin-modal-body">/)
+  assert.match(source, /\.modal-content\s*\{[\s\S]*max-height:\s*calc\(100vh - 2rem\)/)
+  assert.match(source, /\.admin-modal-form\s*\{[\s\S]*min-height:\s*0/)
+  assert.match(source, /\.admin-modal-body\s*\{[\s\S]*overflow-y:\s*auto/)
+})

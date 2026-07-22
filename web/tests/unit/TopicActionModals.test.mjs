@@ -28,6 +28,14 @@ test('keeps evaluate loading, errors, and submission state in the modal', () => 
   assert.match(evaluateSource, /modal-backdrop/)
 })
 
+test('keeps actions visible while long judge-case content scrolls', () => {
+  assert.match(evaluateSource, /<form class="admin-modal-form"/)
+  assert.match(evaluateSource, /<div class="modal-body admin-modal-body">/)
+  assert.match(evaluateSource, /\.modal-content\s*\{[\s\S]*max-height:\s*calc\(100vh - 2rem\)/)
+  assert.match(evaluateSource, /\.admin-modal-form\s*\{[\s\S]*min-height:\s*0/)
+  assert.match(evaluateSource, /\.admin-modal-body\s*\{[\s\S]*overflow-y:\s*auto/)
+})
+
 test('requires a dedicated destructive confirmation for topic deletion', () => {
   assert.match(deleteSource, /确认删除题目/)
   assert.match(deleteSource, /topic\.id/)

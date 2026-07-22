@@ -13,8 +13,8 @@
             <button type="button" class="btn-close" :disabled="submitting" aria-label="关闭" @click="requestClose"></button>
           </div>
 
-          <form @submit.prevent="submitForm">
-            <div class="modal-body">
+          <form class="admin-modal-form" @submit.prevent="submitForm">
+            <div class="modal-body admin-modal-body">
               <div v-if="loading" class="modal-state">
                 <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
                 正在加载题目信息...
@@ -136,6 +136,11 @@ export default {
 <style scoped>
 .modal { z-index: 1060; }
 .modal-backdrop { z-index: 1055; }
+.modal-dialog { margin-top: 1rem; margin-bottom: 1rem; }
+.modal-content { max-height: calc(100vh - 2rem); overflow: hidden; }
+.admin-modal-form { display: flex; min-height: 0; flex: 1 1 auto; flex-direction: column; }
+.admin-modal-body { min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+.modal-header, .modal-footer { flex: 0 0 auto; }
 .modal-state { min-height: 18rem; display: grid; place-items: center; color: #64748b; }
 textarea { resize: vertical; }
 </style>
