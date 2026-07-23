@@ -36,6 +36,16 @@ test('keeps actions visible while long judge-case content scrolls', () => {
   assert.match(evaluateSource, /\.admin-modal-body\s*\{[\s\S]*overflow-y:\s*auto/)
 })
 
+test('removes a judge case locally before batch submission', () => {
+  assert.match(evaluateSource, /class="btn btn-sm btn-link text-danger p-0 case-remove"/)
+  assert.match(evaluateSource, /:aria-label="`删除判例 \$\{index \+ 1\}`"/)
+  assert.match(evaluateSource, /:disabled="submitting \|\| loading"/)
+  assert.match(evaluateSource, /@click="removeRow\(index\)"/)
+  assert.match(evaluateSource, /const removeRow = index => \{[\s\S]*rows\.value\.splice\(index, 1\)/)
+  assert.match(evaluateSource, /return \{ rows, addRow, removeRow, requestClose, submitRows \}/)
+  assert.match(evaluateSource, /emit\('submit', rows\.value\.map\(row => \(\{ \.\.\.row \}\)\)\)/)
+})
+
 test('requires a dedicated destructive confirmation for topic deletion', () => {
   assert.match(deleteSource, /确认删除题目/)
   assert.match(deleteSource, /topic\.id/)

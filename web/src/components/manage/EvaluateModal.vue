@@ -28,8 +28,19 @@
                 <article v-for="(row, index) in rows" :key="row.id || `new-${index}`" class="case-card">
                   <div class="d-flex justify-content-between align-items-center mb-3">
                     <h3 class="h6 mb-0">判例 {{ index + 1 }}</h3>
-                    <span v-if="row.id" class="badge bg-light text-dark">ID: {{ row.id }}</span>
-                    <span v-else class="badge bg-info text-dark">新增</span>
+                    <div class="d-flex align-items-center gap-2">
+                      <span v-if="row.id" class="badge bg-light text-dark">ID: {{ row.id }}</span>
+                      <span v-else class="badge bg-info text-dark">新增</span>
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-link text-danger p-0 case-remove"
+                        :aria-label="`删除判例 ${index + 1}`"
+                        :disabled="submitting || loading"
+                        @click="removeRow(index)"
+                      >
+                        &times;
+                      </button>
+                    </div>
                   </div>
                   <div class="row g-3">
                     <div class="col-md-6">
@@ -109,6 +120,10 @@ export default {
       rows.value.push({ id: '', input: '', output: '' })
     }
 
+    const removeRow = index => {
+      rows.value.splice(index, 1)
+    }
+
     const requestClose = () => {
       if (!props.submitting) emit('close')
     }
@@ -119,7 +134,7 @@ export default {
       }
     }
 
-    return { rows, addRow, requestClose, submitRows }
+    return { rows, addRow, removeRow, requestClose, submitRows }
   }
 }
 </script>
@@ -134,5 +149,6 @@ export default {
 .modal-header, .modal-footer { flex: 0 0 auto; }
 .modal-state, .empty-cases { padding: 4rem 1rem; text-align: center; color: #64748b; }
 .case-card { padding: 1rem; margin-bottom: 1rem; border: 1px solid #e2e8f0; border-radius: 12px; background: #f8fafc; }
+.case-remove { width: 1.75rem; height: 1.75rem; font-size: 1.6rem; line-height: 1; text-decoration: none; }
 textarea { resize: vertical; }
 </style>
