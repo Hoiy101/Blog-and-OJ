@@ -34,6 +34,17 @@ public class UpdataEvaluateServiceImpl implements UpdataEvaluateService {
             }
         }
 
+        List<Evaluate> list = evaluateMapper.selectList(null);
+        for(Evaluate evaluate : list){
+            Integer sw = 0;
+            for(Map<String, String> map : data){
+                if(Integer.parseInt(map.get("id")) == evaluate.getId()){
+                    sw = 1;
+                    break;
+                }
+            }
+            if(sw == 0) evaluateMapper.deleteById(evaluate.getId());
+        }
         for (Map<String, String> map : data) {
             Integer id = null;
             if(map.get("id") != null) id = Integer.parseInt(map.get("id"));
