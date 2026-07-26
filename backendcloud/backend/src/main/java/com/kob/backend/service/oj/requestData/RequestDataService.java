@@ -7,5 +7,5 @@ import org.springframework.stereotype.Service;
 @Service
 public interface RequestDataService {
 
-    void addRequestData(RequestData requestData);
+    Result addRequestData(RequestData requestData);
 }

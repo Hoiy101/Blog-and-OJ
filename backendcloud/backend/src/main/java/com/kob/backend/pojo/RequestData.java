@@ -12,5 +12,8 @@ public class RequestData {
     private String code;
     private String language;
     private String input;
-    private boolean is_self_text;
+    private boolean isSelfTest;
+    private Integer cpu_limit;
+    private Integer mem_limit;
+    private Integer test_count;
 }

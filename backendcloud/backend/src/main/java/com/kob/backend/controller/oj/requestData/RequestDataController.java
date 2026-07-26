@@ -17,7 +17,7 @@ public class RequestDataController {
 
     @PostMapping("/compile_and_run")
     public Result addRequestData(RequestData data) {
-        requestDataService.addRequestData(data);
-        return Result.success();
+        return requestDataService.addRequestData(data);
+
     }
 }
