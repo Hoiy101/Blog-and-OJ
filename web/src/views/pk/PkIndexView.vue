@@ -7,7 +7,7 @@
                 <div class="row align-items-center">
                     <div class="col-md-8">
                         <h5 class="mb-0">博客文章</h5>
-                        <p class="text-muted mb-0 small">共 {{ records.length }} 篇文章</p>
+                        <p class="text-muted mb-0 small">共 {{ total }} 篇文章</p>
                     </div>
                     <div class="col-md-4">
                         <div class="input-group">
@@ -40,7 +40,7 @@
                     <div class="error-state text-danger">
                         <i class="bi bi-exclamation-triangle display-4"></i>
                         <p class="mt-3">加载失败: {{ error }}</p>
-                        <button class="btn btn-primary mt-2" @click="getBlogList">重试</button>
+                        <button class="btn btn-primary mt-2" @click="retryBlogList">重试</button>
                     </div>
                 </div>
 
@@ -49,14 +49,14 @@
                     <div class="empty-state">
                         <i class="bi bi-journal-text display-4 text-muted"></i>
                         <p class="mt-3 text-muted">暂无博客文章</p>
-                        <button class="btn btn-outline-primary mt-2" @click="getBlogList">刷新</button>
+                        <button class="btn btn-outline-primary mt-2" @click="getBlogList(1)">刷新</button>
                     </div>
                 </div>
 
                 <!-- 博客列表 -->
                 <div v-else class="blog-list">
                     <div
-                        v-for="record in filteredRecords"
+                        v-for="record in records"
                         :key="record.id"
                         class="blog-item border-bottom p-4"
                         role="link"
@@ -81,8 +81,34 @@
             </div>
 
             <!-- 卡片底部 -->
-            <div class="card-footer text-muted text-center">
-                共 {{ filteredRecords.length }} 篇文章
+            <div class="card-footer pagination-footer">
+                <span class="text-muted">共 {{ total }} 篇文章</span>
+                <div class="pagination-controls" aria-label="博客分页">
+                    <button
+                        type="button"
+                        class="page-arrow"
+                        aria-label="上一页"
+                        :disabled="loading || currentPage <= 1"
+                        @click="changePage(-1)"
+                    >←</button>
+                    <input
+                        v-model.number="pageInput"
+                        type="number"
+                        min="1"
+                        :max="Math.max(totalPages, 1)"
+                        aria-label="跳转页码"
+                        :disabled="loading || totalPages === 0"
+                        @change="goToPage(pageInput)"
+                        @keyup.enter="$event.target.blur()"
+                    >
+                    <button
+                        type="button"
+                        class="page-arrow"
+                        aria-label="下一页"
+                        :disabled="loading || totalPages === 0 || currentPage >= totalPages"
+                        @click="changePage(1)"
+                    >→</button>
+                </div>
             </div>
         </div>
 
@@ -154,10 +180,11 @@
 </template>
 
 <script>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted } from 'vue'
 import $ from 'jquery'
 import { useStore } from 'vuex'
 import MarkdownContent from '../../components/MarkdownContent.vue'
+import { clampPage, normalizePageResponse, paginationQuery } from '../../utils/pagination.mjs'
 
 export default {
     name: 'BlogHome',
@@ -169,6 +196,14 @@ export default {
         const loading = ref(false)
         const searchKeyword = ref('')
         const error = ref(null)
+        const currentPage = ref(1)
+        const pageInput = ref(1)
+        const total = ref(0)
+        const totalPages = ref(0)
+        const activeKeyword = ref('')
+        const retryPage = ref(1)
+        const retryKeyword = ref('')
+        const blogListRequestId = ref(0)
         
         // 博客详情相关状态
         const showDetail = ref(false)
@@ -182,21 +217,6 @@ export default {
         })
         const detailLoading = ref(false)
         const detailError = ref(null)
-
-        // 计算属性：根据搜索关键词过滤记录
-        const filteredRecords = computed(() => {
-            if (!searchKeyword.value.trim()) {
-                return records.value
-            }
-            
-            const keyword = searchKeyword.value.toLowerCase().trim()
-            return records.value.filter(record => {
-                return (
-                    (record.title && record.title.toLowerCase().includes(keyword)) ||
-                    (record.description && record.description.toLowerCase().includes(keyword))
-                )
-            })
-        })
 
         // 时间格式化函数
         const formatTime = (time) => {
@@ -318,7 +338,31 @@ export default {
         }
 
         // 获取博客列表
-        const getBlogList = () => {
+        const resetBlogPage = () => {
+            records.value = []
+            currentPage.value = 1
+            pageInput.value = 1
+            total.value = 0
+            totalPages.value = 0
+        }
+
+        const applyBlogPage = (resp) => {
+            const page = normalizePageResponse(resp, 10)
+            records.value = page.records
+            currentPage.value = page.currentPage
+            pageInput.value = page.currentPage
+            total.value = page.total
+            totalPages.value = page.totalPages
+        }
+
+        const getBlogList = (
+            requestedPage = currentPage.value,
+            requestedKeyword = activeKeyword.value
+        ) => {
+            const requestData = paginationQuery(requestedPage, requestedKeyword)
+            const requestId = ++blogListRequestId.value
+            retryPage.value = requestData.page
+            retryKeyword.value = requestData.keyword
             loading.value = true
             error.value = null
             
@@ -331,27 +375,20 @@ export default {
                 headers: {
                     Authorization: "Bearer " + store.state.user.token,
                 },
+                data: requestData,
                 success(resp) {
+                    if (requestId !== blogListRequestId.value) return
                     console.log('博客列表API响应原始数据:', resp)
-                    
-                    if (Array.isArray(resp)) {
-                        records.value = resp
-                        console.log('成功获取到', resp.length, '篇博客')
-                    } else if (resp && resp.data && Array.isArray(resp.data)) {
-                        records.value = resp.data
-                        console.log('成功获取到', resp.data.length, '篇博客')
-                    } else if (resp && resp.records && Array.isArray(resp.records)) {
-                        records.value = resp.records
-                        console.log('成功获取到', resp.records.length, '篇博客')
-                    } else {
-                        console.warn('API返回数据格式异常，使用模拟数据:', resp)
-                    }
-                    
-                    if (records.value.length === 0) {
-                        console.log('没有获取到博客数据')
+                    try {
+                        applyBlogPage(resp)
+                        console.log('成功获取到', records.value.length, '篇当前页博客')
+                    } catch (responseError) {
+                        resetBlogPage()
+                        error.value = responseError.message
                     }
                 },
                 error(jqXHR, textStatus, errorThrown) {
+                    if (requestId !== blogListRequestId.value) return
                     console.error("获取博客列表失败:", jqXHR.status, textStatus, errorThrown)
                     
                     let errorMsg = '网络请求失败'
@@ -368,6 +405,7 @@ export default {
                     error.value = errorMsg
                 },
                 complete() {
+                    if (requestId !== blogListRequestId.value) return
                     loading.value = false
                 }
             })
@@ -375,7 +413,20 @@ export default {
 
         // 搜索功能
         const handleSearch = () => {
-            console.log('搜索关键词:', searchKeyword.value)
+            activeKeyword.value = searchKeyword.value.trim()
+            getBlogList(1)
+        }
+
+        const changePage = (offset) => {
+            getBlogList(currentPage.value + offset)
+        }
+
+        const goToPage = (value) => {
+            getBlogList(clampPage(value, totalPages.value))
+        }
+
+        const retryBlogList = () => {
+            getBlogList(retryPage.value, retryKeyword.value)
         }
 
         onMounted(() => {
@@ -384,10 +435,13 @@ export default {
 
         return {
             records,
-            filteredRecords,
             loading,
             searchKeyword,
             error,
+            currentPage,
+            pageInput,
+            total,
+            totalPages,
             showDetail,
             currentBlog,
             detailLoading,
@@ -396,7 +450,10 @@ export default {
             viewBlogDetail,
             backToList,
             getBlogList,
-            handleSearch
+            handleSearch,
+            changePage,
+            goToPage,
+            retryBlogList
         }
     }
 }
@@ -658,6 +715,43 @@ export default {
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     padding: 1rem 2rem;
     border-top: 1px solid #dee2e6;
+}
+
+.pagination-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.pagination-controls {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.pagination-controls input {
+    width: 72px;
+    height: 36px;
+    text-align: center;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+}
+
+.page-arrow {
+    width: 36px;
+    height: 36px;
+    border: 1px solid #0d6efd;
+    border-radius: 6px;
+    background: #fff;
+    color: #0d6efd;
+}
+
+.page-arrow:disabled {
+    border-color: #adb5bd;
+    color: #adb5bd;
+    cursor: not-allowed;
 }
 
 /* 加载动画 */

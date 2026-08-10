@@ -11,7 +11,6 @@ import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.command.*;
 import com.github.dockerjava.api.model.*;
 import com.github.dockerjava.core.DockerClientBuilder;
-import com.github.dockerjava.core.command.ExecStartResultCallback;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -153,30 +152,11 @@ public class Consumer {
                     .withAttachStdin(true)
                     .withAttachStdout(true)
                     .exec();
-            final String[] errorMessage = {null};
-            final String[] Message = {null};
             Long maxTime = 0L;
             final Long[] maxMemory = {0L};
             String exec_id = execCreateCmdResponse.getId();
 
-            ExecStartResultCallback execStartResultCallback = new ExecStartResultCallback() {
-                @Override
-                public void onComplete() {
-                    super.onComplete();
-                }
-
-                @Override
-                public void onNext(Frame frame) {
-                    StreamType streamType = frame.getStreamType();
-                    if (streamType.STDERR.equals(streamType)) {
-                        errorMessage[0] = new String(frame.getPayload());
-                    } else {
-                        Message[0] = new String(frame.getPayload());
-                    }
-                    super.onNext(frame);
-                }
-
-            };
+            DockerOutputCollector outputCollector = new DockerOutputCollector();
             StatsCmd statsCmd = dockerClient.statsCmd(container_id);
             ResultCallback<Statistics> resultCallback = statsCmd.exec(
                     new ResultCallback<Statistics>() {
@@ -206,7 +186,7 @@ public class Consumer {
                 stopWatch.start();
 
                 dockerClient.execStartCmd(exec_id)
-                        .exec(execStartResultCallback)
+                        .exec(outputCollector)
                         .awaitCompletion(2000, TimeUnit.MILLISECONDS);
 
                 stopWatch.stop();
@@ -218,14 +198,16 @@ public class Consumer {
                 statsCmd.close();
             }
             EvaluateMessage evaluateMessage = new EvaluateMessage();
-            evaluateMessage.setErrorMessage(errorMessage[0]);
-            evaluateMessage.setMessage(Message[0]);
+            evaluateMessage.setErrorMessage(outputCollector.getStderr());
+            evaluateMessage.setMessage(outputCollector.getStdout());
             evaluateMessage.setTime(maxTime);
             evaluateMessage.setMemory(maxMemory[0]);
 
             evaluateList.add(evaluateMessage);
         }
-        dockerClient.stopContainerCmd(container_id).exec();
+        dockerClient.stopContainerCmd(container_id)
+                .withTimeout(0)
+                .exec();
         dockerClient.removeContainerCmd(container_id).exec();
         return evaluateList;
     }
@@ -271,7 +253,6 @@ public class Consumer {
             Long memory = evaluateMessage1.getMemory();
             input = input.replace("\n","");
 
-            System.out.println("input: " + input + " " + "output: " + output + " " + "error: " + error);
             if(error != null && !error.equals("")){
                 message.put("state", "Runtime Error");
                 message.put("score", 0);

@@ -6,7 +6,7 @@
                 <div class="row align-items-center">
                     <div class="col-md-6">
                         <h5 class="mb-0">题库列表</h5>
-                        <p class="text-muted mb-0 small">共 {{ problems.length }} 道题目</p>
+                        <p class="text-muted mb-0 small">共 {{ total }} 道题目</p>
                     </div>
                     <div class="col-md-6">
                         <div class="input-group">
@@ -38,7 +38,7 @@
                     <div class="error-state text-danger">
                         <i class="bi bi-exclamation-triangle display-4"></i>
                         <p class="mt-3">加载失败: {{ error }}</p>
-                        <button class="btn btn-primary mt-2" @click="getProblemList">重试</button>
+                        <button class="btn btn-primary mt-2" @click="retryProblemList">重试</button>
                     </div>
                 </div>
 
@@ -47,7 +47,7 @@
                     <div class="empty-state">
                         <i class="bi bi-clipboard-data display-4 text-muted"></i>
                         <p class="mt-3 text-muted">暂无题目</p>
-                        <button class="btn btn-outline-primary mt-2" @click="getProblemList">刷新</button>
+                        <button class="btn btn-outline-primary mt-2" @click="getProblemList(1)">刷新</button>
                     </div>
                 </div>
 
@@ -75,7 +75,7 @@
                         </thead>
                         <tbody>
                             <tr
-                                v-for="problem in filteredProblems"
+                                v-for="problem in problems"
                                 :key="problem.id"
                                 class="problem-row"
                                 role="link"
@@ -107,18 +107,45 @@
             </div>
 
             <!-- 卡片底部 -->
-            <div class="card-footer text-muted text-center">
-                共 {{ filteredProblems.length }} 道题目
+            <div class="card-footer pagination-footer">
+                <span class="text-muted">共 {{ total }} 道题目</span>
+                <div class="pagination-controls" aria-label="题库分页">
+                    <button
+                        type="button"
+                        class="page-arrow"
+                        aria-label="上一页"
+                        :disabled="loading || currentPage <= 1"
+                        @click="changePage(-1)"
+                    >←</button>
+                    <input
+                        v-model.number="pageInput"
+                        type="number"
+                        min="1"
+                        :max="Math.max(totalPages, 1)"
+                        aria-label="跳转页码"
+                        :disabled="loading || totalPages === 0"
+                        @change="goToPage(pageInput)"
+                        @keyup.enter="$event.target.blur()"
+                    >
+                    <button
+                        type="button"
+                        class="page-arrow"
+                        aria-label="下一页"
+                        :disabled="loading || totalPages === 0 || currentPage >= totalPages"
+                        @click="changePage(1)"
+                    >→</button>
+                </div>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted } from 'vue'
 import $ from 'jquery'
 import { useStore } from 'vuex'
-import { useRouter } from 'vue-router';
+import { useRouter } from 'vue-router'
+import { clampPage, normalizePageResponse, paginationQuery } from '../../utils/pagination.mjs'
 
 export default {
     name: 'OJProblemList',
@@ -129,25 +156,18 @@ export default {
         const loading = ref(false)
         const searchKeyword = ref('')
         const error = ref(null)
-        const router = useRouter();
+        const currentPage = ref(1)
+        const pageInput = ref(1)
+        const total = ref(0)
+        const totalPages = ref(0)
+        const activeKeyword = ref('')
+        const retryPage = ref(1)
+        const retryKeyword = ref('')
+        const topicListRequestId = ref(0)
+        const router = useRouter()
 
-        // 计算属性：根据搜索关键词过滤题目
-        const filteredProblems = computed(() => {
-            if (!searchKeyword.value.trim()) {
-                return problems.value
-            }
-            
-            const keyword = searchKeyword.value.toLowerCase().trim()
-            return problems.value.filter(problem => {
-                return (
-                    (problem.id && problem.id.toString().includes(keyword)) ||
-                    (problem.title && problem.title.toLowerCase().includes(keyword)) ||
-                    (problem.description && problem.description.toLowerCase().includes(keyword))
-                )
-            })
-        })
         const handleView = (id) => {
-            router.push({ name: 'Details', params: { id: id } });
+            router.push({ name: 'Details', params: { id: id } })
         }
         // 获取难度对应的CSS类
         const getDifficultyClass = (star) => {
@@ -177,7 +197,31 @@ export default {
         }
 
         // 获取题目列表
-        const getProblemList = () => {
+        const resetProblemPage = () => {
+            problems.value = []
+            currentPage.value = 1
+            pageInput.value = 1
+            total.value = 0
+            totalPages.value = 0
+        }
+
+        const applyProblemPage = (resp) => {
+            const page = normalizePageResponse(resp, 20)
+            problems.value = page.records
+            currentPage.value = page.currentPage
+            pageInput.value = page.currentPage
+            total.value = page.total
+            totalPages.value = page.totalPages
+        }
+
+        const getProblemList = (
+            requestedPage = currentPage.value,
+            requestedKeyword = activeKeyword.value
+        ) => {
+            const requestData = paginationQuery(requestedPage, requestedKeyword)
+            const requestId = ++topicListRequestId.value
+            retryPage.value = requestData.page
+            retryKeyword.value = requestData.keyword
             loading.value = true
             error.value = null
             
@@ -191,27 +235,20 @@ export default {
                 url: "http://127.0.0.1:3000/oj/topic/getlist/",
                 type: "GET",
                 headers: headers,
+                data: requestData,
                 success(resp) {
+                    if (requestId !== topicListRequestId.value) return
                     console.log('题目列表API响应:', resp)
-                    
-                    if (Array.isArray(resp)) {
-                        problems.value = resp
-                        console.log('成功获取到', resp.length, '道题目')
-                    } else if (resp && resp.data && Array.isArray(resp.data)) {
-                        problems.value = resp.data
-                        console.log('成功获取到', resp.data.length, '道题目')
-                    } else if (resp && resp.list && Array.isArray(resp.list)) {
-                        problems.value = resp.list
-                        console.log('成功获取到', resp.list.length, '道题目')
-                    } else {
-                        console.warn('API返回数据格式异常，使用模拟数据')
-                    }
-                    
-                    if (problems.value.length === 0) {
-                        console.log('没有获取到题目数据')
+                    try {
+                        applyProblemPage(resp)
+                        console.log('成功获取到', problems.value.length, '道当前页题目')
+                    } catch (responseError) {
+                        resetProblemPage()
+                        error.value = responseError.message
                     }
                 },
                 error(jqXHR, textStatus, errorThrown) {
+                    if (requestId !== topicListRequestId.value) return
                     console.error("获取题目列表失败:", jqXHR.status, textStatus, errorThrown)
                     
                     let errorMsg = '网络请求失败'
@@ -228,14 +265,27 @@ export default {
                     error.value = errorMsg
                 },
                 complete() {
+                    if (requestId !== topicListRequestId.value) return
                     loading.value = false
                 }
             })
         }
 
         const handleSearch = () => {
-            console.log('搜索关键词:', searchKeyword.value)
-            // 搜索功能已通过computed属性filteredProblems实现
+            activeKeyword.value = searchKeyword.value.trim()
+            getProblemList(1)
+        }
+
+        const changePage = (offset) => {
+            getProblemList(currentPage.value + offset)
+        }
+
+        const goToPage = (value) => {
+            getProblemList(clampPage(value, totalPages.value))
+        }
+
+        const retryProblemList = () => {
+            getProblemList(retryPage.value, retryKeyword.value)
         }
 
         onMounted(() => {
@@ -244,15 +294,21 @@ export default {
 
         return {
             problems,
-            filteredProblems,
             loading,
             searchKeyword,
             error,
+            currentPage,
+            pageInput,
+            total,
+            totalPages,
             getDifficultyClass,
             getDifficultyText,
             getProblemList,
             handleSearch,
-            handleView
+            handleView,
+            changePage,
+            goToPage,
+            retryProblemList
         }
     }
 }
@@ -458,6 +514,43 @@ export default {
     border-top: 1px solid #dee2e6;
 }
 
+.pagination-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.pagination-controls {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.pagination-controls input {
+    width: 72px;
+    height: 36px;
+    text-align: center;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+}
+
+.page-arrow {
+    width: 36px;
+    height: 36px;
+    border: 1px solid #0d6efd;
+    border-radius: 6px;
+    background: #fff;
+    color: #0d6efd;
+}
+
+.page-arrow:disabled {
+    border-color: #adb5bd;
+    color: #adb5bd;
+    cursor: not-allowed;
+}
+
 /* 加载动画 */
 .loading-spinner {
     width: 40px;
@@ -504,6 +597,14 @@ export default {
     .difficulty-badge {
         min-width: 50px;
         font-size: 0.8rem;
+    }
+
+    .pagination-footer {
+        flex-wrap: wrap;
+    }
+
+    .pagination-controls {
+        width: 100%;
     }
 }
 </style>

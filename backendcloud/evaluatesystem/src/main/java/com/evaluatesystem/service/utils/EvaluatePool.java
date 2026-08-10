@@ -17,46 +17,16 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 @Component
-public class EvaluatePool extends Thread {
-    public RabbitTemplate rabbitTemplate;
-
-    private BlockingQueue<JSONObject> queue = new LinkedBlockingQueue<>();
-
+public class EvaluatePool {
     @Autowired
-    private Consumer consumer;
+    private final Consumer consumer;
 
-    @Autowired
-    public void setRabbitTemplate(RabbitTemplate rabbitTemplate) {
-        this.rabbitTemplate = rabbitTemplate;
+    public EvaluatePool(Consumer consumer) {
+        this.consumer = consumer;
     }
 
-    @EventListener(ApplicationReadyEvent.class)
-    public void startThread(){
-        this.start();
-    }
-
-    @RabbitListener (queues = "evaluate.task.queue")
-    public void EvaluateTask(JSONObject message) {
-        try {
-            queue.put(message);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
-    }
-
-
-    @Override
-    public void run() {
-        while (true) {
-            JSONObject message = null;
-            try {
-                message = queue.take();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            System.out.println("EvaluatePool: " + message);
-            consumer.startEvaluate(message);
-        }
+    @RabbitListener(queues = "evaluate.task.queue", concurrency = "2")
+    private void pool(JSONObject message) {
+        consumer.startEvaluate(message);
     }
 }

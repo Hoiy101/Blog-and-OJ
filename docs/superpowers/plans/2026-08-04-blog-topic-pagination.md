@@ -12,9 +12,12 @@
 
 - Blog page size is fixed at 10 and topic page size is fixed at 20.
 - The frontend must never fetch, cache, concatenate, or slice the complete result set.
+- The public topic page always sends `page`; a legacy `/oj/topic/getlist/` request without `page` continues returning the complete array for the existing admin topic manager.
 - Blog search covers title and description and sorts by `modifytime DESC, id DESC`.
 - Topic search uses an exact ID match for numeric keywords plus contains matching on title and description, and sorts by `id ASC`.
 - Search resets to page 1; invalid page values become 1; values above the last page resolve to the last page.
+- Only the latest list request may update state, and retry must replay the exact failed page and keyword.
+- Frontend response validation rejects missing or inconsistent pagination metadata instead of silently defaulting it.
 - The pagination control remains at the bottom-right and contains a left arrow, numeric page input, and right arrow.
 - Existing blog row navigation, keyboard accessibility, blog detail rendering, and topic row navigation must remain unchanged.
 - Preserve all unrelated staged and unstaged changes; every commit command uses an explicit pathspec.
@@ -69,7 +72,7 @@ Run:
 
 ```bash
 cd backendcloud
-mvn -pl backend -Dtest=PaginationUtilsTests test
+/Applications/IntelliJ\ IDEA.app/Contents/plugins/maven/lib/maven3/bin/mvn -pl backend -Dtest=PaginationUtilsTests test
 ```
 
 Expected: compilation fails because `PaginationUtils` does not exist.
@@ -165,7 +168,7 @@ Run:
 
 ```bash
 cd backendcloud
-mvn -pl backend -Dtest=PaginationUtilsTests,BackendApplicationTests test
+/Applications/IntelliJ\ IDEA.app/Contents/plugins/maven/lib/maven3/bin/mvn -pl backend -Dtest=PaginationUtilsTests,BackendApplicationTests test
 ```
 
 Expected: both test classes pass; the application context creates the pagination interceptor.
@@ -277,7 +280,7 @@ Run:
 
 ```bash
 cd backendcloud
-mvn -pl backend -Dtest=AllGetListServiceImplPaginationTests test
+/Applications/IntelliJ\ IDEA.app/Contents/plugins/maven/lib/maven3/bin/mvn -pl backend -Dtest=AllGetListServiceImplPaginationTests test
 ```
 
 Expected: compilation fails because the constructor and paginated `getAll` signature do not exist.
@@ -338,7 +341,7 @@ Run:
 
 ```bash
 cd backendcloud
-mvn -pl backend -Dtest=AllGetListServiceImplPaginationTests,PaginationUtilsTests test
+/Applications/IntelliJ\ IDEA.app/Contents/plugins/maven/lib/maven3/bin/mvn -pl backend -Dtest=AllGetListServiceImplPaginationTests,PaginationUtilsTests test
 ```
 
 Expected: all focused tests pass.
@@ -353,22 +356,24 @@ git commit -m "feat: paginate blog queries" -- backendcloud/backend/src/main/jav
 ### Task 3: Paginate the topic endpoint
 
 **Files:**
-- Modify: `backendcloud/backend/src/main/java/com/kob/backend/controller/manage/topic/GetListTopicController.java`
-- Modify: `backendcloud/backend/src/main/java/com/kob/backend/service/manage/topic/GetListTopicService.java`
-- Modify: `backendcloud/backend/src/main/java/com/kob/backend/service/impl/manage/topic/GetListTopicServiceImpl.java`
-- Test: `backendcloud/backend/src/test/java/com/kob/backend/service/impl/manage/topic/GetListTopicServiceImplPaginationTests.java`
+- Modify: `backendcloud/backend/src/main/java/com/kob/backend/controller/oj/topic/GetListTopicController.java`
+- Modify: `backendcloud/backend/src/main/java/com/kob/backend/service/oj/topic/GetListTopicService.java`
+- Modify: `backendcloud/backend/src/main/java/com/kob/backend/service/impl/oj/topic/GetListTopicServiceImpl.java`
+- Test: `backendcloud/backend/src/test/java/com/kob/backend/service/impl/oj/topic/GetListTopicServiceImplPaginationTests.java`
+- Test: `backendcloud/backend/src/test/java/com/kob/backend/controller/oj/topic/GetListTopicControllerPaginationTests.java`
 
 **Interfaces:**
 - Consumes: `PaginationUtils`, `PageResponse<Topic>`, and `TopicMapper.selectPage(IPage<Topic>, Wrapper<Topic>)`.
+- Preserves: `GetListTopicService.getList(): List<Topic>` for the admin manager's request without `page`.
 - Produces: `GetListTopicService.getList(long page, String keyword): PageResponse<Topic>`.
-- Produces: `GET /oj/topic/getlist/?page=<value>&keyword=<value>`.
+- Produces: paginated `GET /oj/topic/getlist/?page=<value>&keyword=<value>` while preserving the legacy array response for `GET /oj/topic/getlist/`.
 
 - [ ] **Step 1: Write failing topic pagination tests**
 
 Create the complete Mockito test class:
 
 ```java
-package com.kob.backend.service.impl.manage.topic;
+package com.kob.backend.service.impl.oj.topic;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kob.backend.mapper.TopicMapper;
@@ -449,16 +454,17 @@ Run:
 
 ```bash
 cd backendcloud
-mvn -pl backend -Dtest=GetListTopicServiceImplPaginationTests test
+/Applications/IntelliJ\ IDEA.app/Contents/plugins/maven/lib/maven3/bin/mvn -pl backend -Dtest=GetListTopicServiceImplPaginationTests test
 ```
 
 Expected: compilation fails because the paginated `getList` signature and constructor do not exist.
 
 - [ ] **Step 3: Implement topic pagination and URL parameters**
 
-Change the interface to:
+Preserve the existing no-argument interface method and add the overload:
 
 ```java
+List<Topic> getList();
 PageResponse<Topic> getList(long page, String keyword);
 ```
 
@@ -501,14 +507,52 @@ private Integer parseTopicId(String keyword) {
 }
 ```
 
-Change the controller method to parse the two request parameters:
+Change the controller method so `page` presence selects the response contract:
 
 ```java
 @GetMapping("/oj/topic/getlist/")
-public PageResponse<Topic> getlist(
-        @RequestParam(defaultValue = "1") String page,
+public Object getlist(
+        @RequestParam(required = false) String page,
         @RequestParam(defaultValue = "") String keyword) {
+    if (page == null) {
+        return getListTopicService.getList();
+    }
     return getListTopicService.getList(PaginationUtils.parsePage(page), keyword);
+}
+```
+
+Add the controller regression test before implementing the conditional branch:
+
+```java
+package com.kob.backend.controller.oj.topic;
+
+import com.kob.backend.model.PageResponse;
+import com.kob.backend.pojo.Topic;
+import com.kob.backend.service.oj.topic.GetListTopicService;
+import org.junit.jupiter.api.Test;
+
+import java.util.Collections;
+
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+class GetListTopicControllerPaginationTests {
+    @Test
+    void preservesLegacyArrayAndUsesPaginationWhenPageIsPresent() {
+        GetListTopicService service = mock(GetListTopicService.class);
+        GetListTopicController controller = new GetListTopicController(service);
+        java.util.List<Topic> legacy = Collections.singletonList(new Topic());
+        PageResponse<Topic> page = new PageResponse<>(legacy, 2L, 20L, 21L, 2L);
+        when(service.getList()).thenReturn(legacy);
+        when(service.getList(2L, "Java")).thenReturn(page);
+
+        assertSame(legacy, controller.getlist(null, ""));
+        assertSame(page, controller.getlist("2", "Java"));
+        verify(service).getList();
+        verify(service).getList(2L, "Java");
+    }
 }
 ```
 
@@ -518,7 +562,7 @@ Run:
 
 ```bash
 cd backendcloud
-mvn -pl backend -Dtest=AllGetListServiceImplPaginationTests,GetListTopicServiceImplPaginationTests,PaginationUtilsTests test
+/Applications/IntelliJ\ IDEA.app/Contents/plugins/maven/lib/maven3/bin/mvn -pl backend -Dtest=AllGetListServiceImplPaginationTests,GetListTopicServiceImplPaginationTests,GetListTopicControllerPaginationTests,PaginationUtilsTests test
 ```
 
 Expected: all tests pass.
@@ -526,8 +570,8 @@ Expected: all tests pass.
 - [ ] **Step 5: Commit only the topic pagination paths**
 
 ```bash
-git add backendcloud/backend/src/main/java/com/kob/backend/controller/manage/topic/GetListTopicController.java backendcloud/backend/src/main/java/com/kob/backend/service/manage/topic/GetListTopicService.java backendcloud/backend/src/main/java/com/kob/backend/service/impl/manage/topic/GetListTopicServiceImpl.java backendcloud/backend/src/test/java/com/kob/backend/service/impl/manage/topic/GetListTopicServiceImplPaginationTests.java
-git commit -m "feat: paginate topic queries" -- backendcloud/backend/src/main/java/com/kob/backend/controller/manage/topic/GetListTopicController.java backendcloud/backend/src/main/java/com/kob/backend/service/manage/topic/GetListTopicService.java backendcloud/backend/src/main/java/com/kob/backend/service/impl/manage/topic/GetListTopicServiceImpl.java backendcloud/backend/src/test/java/com/kob/backend/service/impl/manage/topic/GetListTopicServiceImplPaginationTests.java
+git add backendcloud/backend/src/main/java/com/kob/backend/controller/oj/topic/GetListTopicController.java backendcloud/backend/src/main/java/com/kob/backend/service/oj/topic/GetListTopicService.java backendcloud/backend/src/main/java/com/kob/backend/service/impl/oj/topic/GetListTopicServiceImpl.java backendcloud/backend/src/test/java/com/kob/backend/service/impl/oj/topic/GetListTopicServiceImplPaginationTests.java backendcloud/backend/src/test/java/com/kob/backend/controller/oj/topic/GetListTopicControllerPaginationTests.java
+git commit -m "feat: paginate topic queries" -- backendcloud/backend/src/main/java/com/kob/backend/controller/oj/topic/GetListTopicController.java backendcloud/backend/src/main/java/com/kob/backend/service/oj/topic/GetListTopicService.java backendcloud/backend/src/main/java/com/kob/backend/service/impl/oj/topic/GetListTopicServiceImpl.java backendcloud/backend/src/test/java/com/kob/backend/service/impl/oj/topic/GetListTopicServiceImplPaginationTests.java backendcloud/backend/src/test/java/com/kob/backend/controller/oj/topic/GetListTopicControllerPaginationTests.java
 ```
 
 ### Task 4: Shared frontend pagination state helpers
@@ -1031,7 +1075,7 @@ git commit -m "feat: paginate topic list" -- web/src/views/ranklist/RanKlistInde
 
 ```bash
 cd backendcloud
-mvn -pl backend test
+/Applications/IntelliJ\ IDEA.app/Contents/plugins/maven/lib/maven3/bin/mvn -pl backend test
 ```
 
 Expected: Maven exits 0 with zero failed tests.
@@ -1068,7 +1112,7 @@ Expected: Vue CLI exits 0 and creates the production bundle.
 ```bash
 git diff --check
 git status --short
-git diff -- backendcloud/backend/pom.xml backendcloud/backend/src/main/java/com/kob/backend/config/MybatisPlusConfig.java backendcloud/backend/src/main/java/com/kob/backend/model/PageResponse.java backendcloud/backend/src/main/java/com/kob/backend/utils/PaginationUtils.java backendcloud/backend/src/main/java/com/kob/backend/controller/blog/AllGetListController.java backendcloud/backend/src/main/java/com/kob/backend/service/blog/AllGetListService.java backendcloud/backend/src/main/java/com/kob/backend/service/impl/blog/AllGetListServiceImpl.java backendcloud/backend/src/main/java/com/kob/backend/controller/manage/topic/GetListTopicController.java backendcloud/backend/src/main/java/com/kob/backend/service/manage/topic/GetListTopicService.java backendcloud/backend/src/main/java/com/kob/backend/service/impl/manage/topic/GetListTopicServiceImpl.java web/src/utils/pagination.mjs web/src/views/pk/PkIndexView.vue web/src/views/ranklist/RanKlistIndexView.vue
+git diff -- backendcloud/backend/pom.xml backendcloud/backend/src/main/java/com/kob/backend/config/MybatisPlusConfig.java backendcloud/backend/src/main/java/com/kob/backend/model/PageResponse.java backendcloud/backend/src/main/java/com/kob/backend/utils/PaginationUtils.java backendcloud/backend/src/main/java/com/kob/backend/controller/blog/AllGetListController.java backendcloud/backend/src/main/java/com/kob/backend/service/blog/AllGetListService.java backendcloud/backend/src/main/java/com/kob/backend/service/impl/blog/AllGetListServiceImpl.java backendcloud/backend/src/main/java/com/kob/backend/controller/oj/topic/GetListTopicController.java backendcloud/backend/src/main/java/com/kob/backend/service/oj/topic/GetListTopicService.java backendcloud/backend/src/main/java/com/kob/backend/service/impl/oj/topic/GetListTopicServiceImpl.java web/src/utils/pagination.mjs web/src/views/pk/PkIndexView.vue web/src/views/ranklist/RanKlistIndexView.vue
 ```
 
 Expected: no whitespace errors; status still shows the user's unrelated pre-existing changes without staging-state loss; reviewed diffs satisfy every requirement in the design spec.

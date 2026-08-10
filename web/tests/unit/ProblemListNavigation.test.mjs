@@ -28,3 +28,35 @@ test('navigates to problem details from the whole row by mouse or keyboard', () 
 test('uses a pointer cursor for interactive problem rows', () => {
   assert.match(source, /\.problem-row\s*\{[^}]*cursor:\s*pointer/s)
 })
+
+test('requests and renders only the current topic page', () => {
+  assert.match(source, /const requestData = paginationQuery\(requestedPage, requestedKeyword\)/)
+  assert.match(source, /data:\s*requestData/)
+  assert.match(source, /problems\.value\s*=\s*page\.records/)
+  assert.doesNotMatch(source, /filteredProblems|\.slice\(/)
+  assert.match(source, /normalizePageResponse\(resp, 20\)/)
+})
+
+test('renders bottom-right accessible topic pagination controls', () => {
+  assert.match(source, /class="pagination-controls"/)
+  assert.match(source, /aria-label="上一页"/)
+  assert.match(source, /aria-label="跳转页码"/)
+  assert.match(source, /aria-label="下一页"/)
+  assert.match(source, /justify-content:\s*flex-end/)
+})
+
+test('resets topic searches to page one and disables boundary arrows', () => {
+  assert.match(source, /activeKeyword\.value = searchKeyword\.value\.trim\(\)/)
+  assert.match(source, /getProblemList\(1\)/)
+  assert.match(source, /:disabled="loading \|\| currentPage <= 1"/)
+  assert.match(source, /:disabled="loading \|\| totalPages === 0 \|\| currentPage >= totalPages"/)
+})
+
+test('ignores stale topic responses and retries the exact failed query', () => {
+  assert.match(source, /const topicListRequestId = ref\(0\)/)
+  assert.match(source, /const requestId = \+\+topicListRequestId\.value/)
+  const staleGuards = source.match(/if \(requestId !== topicListRequestId\.value\) return/g) || []
+  assert.ok(staleGuards.length >= 3, 'success, error and complete callbacks should ignore stale requests')
+  assert.match(source, /@click="retryProblemList"/)
+  assert.match(source, /getProblemList\(retryPage\.value, retryKeyword\.value\)/)
+})

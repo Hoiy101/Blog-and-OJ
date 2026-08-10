@@ -21,7 +21,7 @@ public class AvatarServiceImpl implements AvatarService {
 
     @Autowired
     private UserMapper userMapper;
-    private final String endpoint = "http://47.105.40.164:9000";
+    private final String endpoint = "http://47.119.128.174:9000";
     private final String accessKey = "wuyanzu";
     private final String secretKey = "bo@DwF1mzr_wF7am";
     private final String bucket = "blog";
