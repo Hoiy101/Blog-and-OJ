@@ -133,6 +133,33 @@ Blog-and-OJ/
 
 ## 后端启动方法
 
+### 本机环境变量
+
+后端连接信息通过环境变量提供，不在仓库中保存真实值。当前 macOS 用户的值保存在权限为 `600` 的 `~/.config/blog-and-oj/env.zsh`，并由 `~/.zshenv` 自动加载。修改环境文件后，请重新打开终端；若从图形界面启动 IntelliJ IDEA，请重新打开 IDEA。
+
+需要配置的变量如下：
+
+| 环境变量 | 用途 |
+| --- | --- |
+| `BLOG_OJ_DB_URL` | MySQL JDBC 地址 |
+| `BLOG_OJ_DB_USERNAME` | MySQL 用户名 |
+| `BLOG_OJ_DB_PASSWORD` | MySQL 密码 |
+| `BLOG_OJ_RABBITMQ_HOST` | RabbitMQ 地址 |
+| `BLOG_OJ_RABBITMQ_PORT` | RabbitMQ 端口 |
+| `BLOG_OJ_RABBITMQ_USERNAME` | RabbitMQ 用户名 |
+| `BLOG_OJ_RABBITMQ_PASSWORD` | RabbitMQ 密码 |
+| `BLOG_OJ_MINIO_ENDPOINT` | MinIO 地址 |
+| `BLOG_OJ_MINIO_BUCKET` | MinIO Bucket |
+| `BLOG_OJ_MINIO_ACCESS_KEY` | MinIO Access Key |
+| `BLOG_OJ_MINIO_SECRET_KEY` | MinIO Secret Key |
+| `BLOG_OJ_REDIS_URL` | Redis 连接地址 |
+
+可在新终端中检查变量是否已加载（该命令不会显示真实值）：
+
+```bash
+zsh -lc 'test -n "$BLOG_OJ_DB_URL" && test -n "$BLOG_OJ_RABBITMQ_HOST" && test -n "$BLOG_OJ_MINIO_ENDPOINT" && test -n "$BLOG_OJ_REDIS_URL"'
+```
+
 先启动 Docker，然后分别打开两个终端启动主业务服务和判题服务。
 
 ### 方法一：使用 IntelliJ IDEA
