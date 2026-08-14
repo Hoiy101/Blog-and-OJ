@@ -12,6 +12,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,7 +52,6 @@ public class GetServiceImpl implements GetService {
             String blog_string = redisTemplate.opsForValue().get("blog:" + blogId);
             blog = objectMapper.readValue(blog_string,Blog.class);
         }
-
         map.put("title", blog.getTitle());
         map.put("description",  blog.getDescription());
         map.put("content", blog.getContent());

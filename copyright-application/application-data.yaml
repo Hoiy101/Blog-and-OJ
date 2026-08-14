@@ -1,0 +1,44 @@
+{
+  "software": {
+    "full_name": "Blog and OJ",
+    "short_name": "Blog and OJ",
+    "version": "V1.0",
+    "category": "应用软件",
+    "development_type": "独立开发",
+    "rights_acquisition": "原始取得",
+    "rights_scope": "全部权利",
+    "completion_date": "2026年8月10日",
+    "published": true,
+    "publication_date": "2026年2月23日",
+    "publication_place": "中国",
+    "publication_method": "GitHub 网络发布",
+    "publication_url": "https://github.com/Hoiy101/Blog-and-OJ"
+  },
+  "applicant": {
+    "type": "自然人",
+    "name": "",
+    "id_type": "居民身份证",
+    "id_number": "",
+    "address": "",
+    "postal_code": "",
+    "phone": "",
+    "email": ""
+  },
+  "technical": {
+    "purpose": "为个人内容创作、知识分享和在线编程练习提供一体化平台。",
+    "industry": "互联网信息服务与教育学习",
+    "hardware_environment": "x86-64或ARM64处理器，4GB及以上内存，10GB及以上可用磁盘空间；服务端需支持Docker运行。",
+    "software_environment": "服务端支持Linux、macOS或Windows，JDK 8、MySQL 8、Redis、RabbitMQ、Docker、MinIO；客户端使用支持ECMAScript 2015及以上标准的现代桌面浏览器。",
+    "development_tools": "IntelliJ IDEA、Visual Studio Code、Maven、npm、Git",
+    "languages": "Java、JavaScript、Vue单文件组件、HTML、CSS、SQL",
+    "source_scale": "共167个自有源代码文件，约11014行",
+    "features": [
+      "用户注册、登录、JWT身份认证、头像与个人信息管理",
+      "博客创建、编辑、删除、分页浏览、搜索、Markdown展示和图片上传",
+      "在线题库浏览、题目详情与测试用例管理",
+      "Java代码在线编辑、提交及Docker隔离判题",
+      "RabbitMQ异步任务处理与WebSocket判题结果推送",
+      "个人提交记录、答题详情和后台管理"
+    ]
+  }
+}
