@@ -1,56 +1,58 @@
 <template>
-    <div class="container content-field">
+    <div class="container page-shell">
         <!-- 博客列表卡片 -->
-        <div v-if="!showDetail" class="card blog-card">
+        <div v-if="!showDetail" class="page-card blog-card">
             <!-- 搜索框在卡片顶部 -->
-            <div class="card-header border-bottom bg-light">
-                <div class="row align-items-center">
-                    <div class="col-md-8">
-                        <h5 class="mb-0">博客文章</h5>
-                        <p class="text-muted mb-0 small">共 {{ total }} 篇文章</p>
+            <div class="page-card-header">
+                <div class="d-flex align-items-center gap-3">
+                    <span class="page-title-icon"><i class="bi bi-journal-richtext"></i></span>
+                    <div>
+                        <h1>博客文章</h1>
+                        <p class="page-card-subtitle">共 {{ total }} 篇文章，按更新时间排序</p>
                     </div>
-                    <div class="col-md-4">
-                        <div class="input-group">
-                            <input 
-                                type="text" 
-                                class="form-control" 
-                                placeholder="搜索文章标题或内容..." 
-                                aria-label="搜索博客文章"
-                                v-model="searchKeyword"
-                                @keyup.enter="handleSearch"
-                            >
-                            <button class="btn btn-outline-primary" type="button" @click="handleSearch">
-                                搜索
-                            </button>
-                        </div>
-                    </div>
+                </div>
+                <div class="search-box">
+                    <i class="bi bi-search"></i>
+                    <input
+                        type="text"
+                        class="form-control"
+                        placeholder="搜索文章标题或内容..."
+                        aria-label="搜索博客文章"
+                        v-model="searchKeyword"
+                        @keyup.enter="handleSearch"
+                    >
+                    <button class="btn btn-primary search-btn" type="button" @click="handleSearch">
+                        搜索
+                    </button>
                 </div>
             </div>
 
             <!-- 博客列表部分 -->
-            <div class="card-body p-0 blog-list-container">
+            <div class="blog-list-container">
                 <!-- 加载状态 -->
-                <div v-if="loading" class="text-center py-5">
-                    <div class="loading-spinner"></div>
-                    <p class="mt-3 text-muted">加载中...</p>
+                <div v-if="loading" class="blog-skeleton" aria-busy="true" aria-label="加载中">
+                    <div v-for="n in 4" :key="n" class="blog-skeleton-item">
+                        <span class="skeleton-line skeleton-title"></span>
+                        <span class="skeleton-line skeleton-meta"></span>
+                        <span class="skeleton-line"></span>
+                        <span class="skeleton-line skeleton-short"></span>
+                    </div>
                 </div>
 
                 <!-- 错误状态 -->
-                <div v-else-if="error" class="text-center py-5">
-                    <div class="error-state text-danger">
-                        <i class="bi bi-exclamation-triangle display-4"></i>
-                        <p class="mt-3">加载失败: {{ error }}</p>
-                        <button class="btn btn-primary mt-2" @click="retryBlogList">重试</button>
-                    </div>
+                <div v-else-if="error" class="state-panel is-error">
+                    <span class="state-icon"><i class="bi bi-exclamation-triangle"></i></span>
+                    <p class="state-title">加载失败</p>
+                    <p class="state-text">{{ error }}</p>
+                    <button class="btn btn-primary" @click="retryBlogList"><i class="bi bi-arrow-clockwise"></i> 重试</button>
                 </div>
 
                 <!-- 无数据提示 -->
-                <div v-else-if="records.length === 0" class="text-center py-5">
-                    <div class="empty-state">
-                        <i class="bi bi-journal-text display-4 text-muted"></i>
-                        <p class="mt-3 text-muted">暂无博客文章</p>
-                        <button class="btn btn-outline-primary mt-2" @click="getBlogList(1)">刷新</button>
-                    </div>
+                <div v-else-if="records.length === 0" class="state-panel">
+                    <span class="state-icon"><i class="bi bi-journal-x"></i></span>
+                    <p class="state-title">暂无博客文章</p>
+                    <p class="state-text">换个关键词试试，或者去个人空间发布第一篇博客。</p>
+                    <button class="btn btn-outline-primary" @click="getBlogList(1)"><i class="bi bi-arrow-clockwise"></i> 刷新</button>
                 </div>
 
                 <!-- 博客列表 -->
@@ -65,24 +67,27 @@
                         @keydown.enter="viewBlogDetail(record.id)"
                         @keydown.space.prevent="viewBlogDetail(record.id)"
                     >
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <h5 class="card-title mb-0">{{ record.title || '无标题' }}</h5>
-                            <span class="badge bg-light text-dark small">#{{ record.id || '未知' }}</span>
+                        <div class="blog-item-main">
+                            <h2 class="blog-item-title">{{ record.title || '无标题' }}</h2>
+                            <p class="blog-item-desc">{{ record.description || '暂无简介' }}</p>
+                            <div class="blog-item-meta">
+                                <span><i class="bi bi-calendar-plus"></i> 创建于 {{ formatTime(record.createtime) }}</span>
+                                <span><i class="bi bi-pencil"></i> 更新于 {{ formatTime(record.modifytime) }}</span>
+                            </div>
                         </div>
-                        <h6 class="card-subtitle mb-2 text-muted">
-                            <small>
-                                <i class="bi bi-calendar-plus"></i> 创建于: {{ formatTime(record.createtime) }} | 
-                                <i class="bi bi-pencil"></i> 更新于: {{ formatTime(record.modifytime) }}
-                            </small>
-                        </h6>
-                        <p class="card-text text-secondary mb-3">{{ record.description || '暂无简介' }}</p>
+                        <div class="blog-item-side">
+                            <span class="tag tag-mono">#{{ record.id || '未知' }}</span>
+                            <i class="bi bi-chevron-right blog-item-arrow"></i>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- 卡片底部 -->
-            <div class="card-footer pagination-footer">
-                <span class="text-muted">共 {{ total }} 篇文章</span>
+            <div class="page-card-footer pagination-footer">
+                <span class="text-muted">
+                    <template v-if="totalPages > 0">第 {{ currentPage }} / {{ totalPages }} 页 · </template>共 {{ total }} 篇文章
+                </span>
                 <div class="pagination-controls" aria-label="博客分页">
                     <button
                         type="button"
@@ -90,7 +95,7 @@
                         aria-label="上一页"
                         :disabled="loading || currentPage <= 1"
                         @click="changePage(-1)"
-                    >←</button>
+                    ><i class="bi bi-chevron-left"></i></button>
                     <input
                         v-model.number="pageInput"
                         type="number"
@@ -101,81 +106,68 @@
                         @change="goToPage(pageInput)"
                         @keyup.enter="$event.target.blur()"
                     >
+                    <span class="page-total">/ {{ Math.max(totalPages, 1) }}</span>
                     <button
                         type="button"
                         class="page-arrow"
                         aria-label="下一页"
                         :disabled="loading || totalPages === 0 || currentPage >= totalPages"
                         @click="changePage(1)"
-                    >→</button>
+                    ><i class="bi bi-chevron-right"></i></button>
                 </div>
             </div>
         </div>
 
         <!-- 博客详情页面 -->
-        <div v-else class="card blog-detail-card">
+        <article v-else class="page-card blog-detail-card">
             <!-- 详情页头部 -->
-            <div class="card-header border-bottom bg-light d-flex justify-content-between align-items-center">
-                <div>
-                    <button class="btn btn-outline-secondary btn-sm" @click="backToList">
-                        <i class="bi bi-arrow-left"></i> 返回列表
-                    </button>
-                </div>
-                <h5 class="mb-0">博客详情</h5>
-                <div>
-                    <span class="badge bg-info">ID: {{ currentBlog.id }}</span>
-                </div>
+            <div class="page-card-header blog-detail-header">
+                <button class="btn btn-outline-secondary btn-sm" @click="backToList">
+                    <i class="bi bi-arrow-left"></i> 返回列表
+                </button>
+                <h2 class="blog-detail-heading">博客详情</h2>
+                <span class="tag tag-mono">#{{ currentBlog.id }}</span>
             </div>
 
             <!-- 博客内容区域 -->
-            <div class="card-body blog-detail-container">
+            <div class="blog-detail-container">
                 <!-- 加载状态 -->
-                <div v-if="detailLoading" class="text-center py-5">
+                <div v-if="detailLoading" class="state-panel">
                     <div class="loading-spinner"></div>
-                    <p class="mt-3 text-muted">加载博客内容中...</p>
+                    <p class="state-text">加载博客内容中…</p>
                 </div>
 
                 <!-- 错误状态 -->
-                <div v-else-if="detailError" class="text-center py-5">
-                    <div class="error-state text-danger">
-                        <i class="bi bi-exclamation-triangle display-4"></i>
-                        <p class="mt-3">加载失败: {{ detailError }}</p>
-                        <button class="btn btn-primary mt-2" @click="backToList">返回列表</button>
-                    </div>
+                <div v-else-if="detailError" class="state-panel is-error">
+                    <span class="state-icon"><i class="bi bi-exclamation-triangle"></i></span>
+                    <p class="state-title">加载失败</p>
+                    <p class="state-text">{{ detailError }}</p>
+                    <button class="btn btn-primary" @click="backToList">返回列表</button>
                 </div>
 
                 <!-- 博客详情内容 -->
                 <div v-else class="blog-detail-content">
-                    <!-- 博客标题 -->
-                    <div class="blog-header mb-4">
-                        <h2 class="blog-title">{{ currentBlog.title }}</h2>
-                        <div class="blog-meta text-muted mb-3">
-                            <span class="me-3">
-                                <i class="bi bi-calendar-plus"></i> 创建时间: {{ formatTime(currentBlog.createtime) }}
-                            </span>
-                            <span>
-                                <i class="bi bi-pencil"></i> 更新时间: {{ formatTime(currentBlog.modifytime) }}
-                            </span>
+                    <header class="blog-header">
+                        <h1 class="blog-title">{{ currentBlog.title }}</h1>
+                        <div class="blog-meta">
+                            <span><i class="bi bi-calendar-plus"></i> 创建时间 {{ formatTime(currentBlog.createtime) }}</span>
+                            <span><i class="bi bi-pencil"></i> 更新时间 {{ formatTime(currentBlog.modifytime) }}</span>
                         </div>
-                        <div v-if="currentBlog.description" class="blog-description bg-light p-3 rounded mb-4">
-                            <p class="lead mb-0">{{ currentBlog.description }}</p>
-                        </div>
-                    </div>
+                        <p v-if="currentBlog.description" class="blog-description">{{ currentBlog.description }}</p>
+                    </header>
 
                     <!-- 博客内容 -->
-                    <div class="blog-body">
-                        <MarkdownContent class="blog-content" :source="currentBlog.content" />
-                    </div>
+                    <MarkdownContent class="article-body blog-content" :source="currentBlog.content" />
 
                     <!-- 操作按钮 -->
-                    <div class="blog-actions mt-4 pt-4 border-top">
+                    <footer class="blog-actions">
                         <button class="btn btn-outline-secondary" @click="backToList">
                             <i class="bi bi-arrow-left"></i> 返回列表
                         </button>
-                    </div>
+                    </footer>
                 </div>
             </div>
-        </div>
+        </article>
     </div>
 </template>
 
@@ -460,95 +452,32 @@ export default {
 </script>
 
 <style scoped>
-/* 主容器间距 */
-.content-field {
-    margin-top: 2rem;
-    padding-top: 1rem;
-    padding-bottom: 3rem;
-    min-height: calc(100vh - 200px);
-}
-
-/* 博客卡片样式 */
-.blog-card, .blog-detail-card {
-    border: 1px solid #e0e0e0;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    transition: all 0.3s ease;
-    background-color: #fff;
-}
-
-.blog-card:hover, .blog-detail-card:hover {
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-}
-
-/* 卡片头部样式 */
-.blog-card .card-header, .blog-detail-card .card-header {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    padding: 1.5rem 2rem;
-    border-bottom: 2px solid #dee2e6;
-}
-
-.blog-card .card-header h5, .blog-detail-card .card-header h5 {
-    font-weight: 600;
-    color: #2c3e50;
-}
-
-/* 博客详情头部 */
-.blog-detail-card .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-/* 搜索框样式 */
-.blog-card .input-group {
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.blog-card .form-control {
-    border-color: #ced4da;
-    border-right: none;
-    padding: 0.75rem 1rem;
-    font-size: 0.95rem;
-    height: 42px;
-}
-
-.blog-card .form-control:focus {
-    border-color: #86b7fe;
-    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
-    z-index: 1;
-}
-
-.blog-card .btn-outline-primary {
-    border-color: #0d6efd;
-    color: #0d6efd;
-    padding: 0.5rem 1.5rem;
-    height: 42px;
-    font-weight: 500;
-    transition: all 0.2s;
-}
-
-.blog-card .btn-outline-primary:hover {
-    background-color: #0d6efd;
-    color: white;
-    transform: translateY(-1px);
-}
-
-/* 博客列表项样式 */
+/* 博客列表项 */
 .blog-item {
-    transition: all 0.2s ease;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1.25rem;
+    transition: background-color 0.2s ease;
     background-color: #fff;
     cursor: pointer;
 }
 
 .blog-item:hover {
     background-color: #f8fafc;
+}
+
+.blog-item:hover .blog-item-title {
+    color: var(--app-primary);
+}
+
+.blog-item:hover .blog-item-arrow {
     transform: translateX(4px);
+    color: var(--app-primary);
 }
 
 .blog-item:focus-visible {
-    outline: 2px solid #0d6efd;
+    outline: 2px solid var(--app-primary);
     outline-offset: -2px;
 }
 
@@ -556,264 +485,196 @@ export default {
     border-bottom: none !important;
 }
 
-.blog-item .card-title {
-    font-weight: 600;
-    color: #2c3e50;
-    font-size: 1.25rem;
+.blog-item-main {
+    min-width: 0;
+    flex: 1;
+}
+
+.blog-item-title {
+    margin: 0 0 0.45rem;
+    font-size: 1.2rem;
+    font-weight: 700;
     line-height: 1.4;
+    color: var(--app-text);
+    transition: color 0.15s ease;
 }
 
-.blog-item .card-text {
+.blog-item-desc {
+    margin: 0 0 0.75rem;
+    color: var(--app-text-secondary);
     font-size: 0.95rem;
-    line-height: 1.6;
-    color: #5a6268;
-    min-height: 60px;
+    line-height: 1.65;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
-.blog-item .badge {
-    background-color: #f8f9fa;
-    color: #6c757d;
-    font-weight: 500;
-    padding: 0.35em 0.65em;
-    border: 1px solid #dee2e6;
+.blog-item-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.25rem;
+    font-size: 0.82rem;
+    color: var(--app-text-muted);
 }
 
-/* 博客详情样式 */
+.blog-item-meta i {
+    margin-right: 0.25rem;
+}
+
+.blog-item-side {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.75rem;
+    flex-shrink: 0;
+}
+
+.blog-item-arrow {
+    color: #cbd5e1;
+    font-size: 1.1rem;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+/* 骨架屏 */
+.blog-skeleton-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--app-border);
+}
+
+.blog-skeleton-item:last-child {
+    border-bottom: 0;
+}
+
+.skeleton-line {
+    display: block;
+    height: 12px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #eef2f7 25%, #f8fafc 50%, #eef2f7 75%);
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.4s ease infinite;
+}
+
+.skeleton-title {
+    width: 45%;
+    height: 18px;
+}
+
+.skeleton-meta {
+    width: 30%;
+    height: 10px;
+}
+
+.skeleton-short {
+    width: 65%;
+}
+
+@keyframes skeleton-shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* 分页 */
+.pagination-controls {
+    justify-content: flex-end;
+}
+
+/* 博客详情 */
+.blog-detail-header {
+    padding-top: 0.9rem;
+    padding-bottom: 0.9rem;
+}
+
+.blog-detail-heading {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--app-text-secondary);
+}
+
 .blog-detail-container {
-    padding: 2rem;
+    padding: 2.5rem 3rem 2rem;
 }
 
 .blog-header {
-    border-bottom: 2px solid #f0f0f0;
     padding-bottom: 1.5rem;
     margin-bottom: 2rem;
+    border-bottom: 1px solid var(--app-border);
 }
 
 .blog-title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: #2c3e50;
-    margin-bottom: 1rem;
-    line-height: 1.2;
+    margin: 0 0 1rem;
+    font-size: 2.2rem;
+    font-weight: 800;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    color: var(--app-text);
 }
 
 .blog-meta {
-    font-size: 0.9rem;
-    color: #6c757d;
-    margin-bottom: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.5rem;
+    font-size: 0.88rem;
+    color: var(--app-text-muted);
 }
 
 .blog-meta i {
-    margin-right: 0.5rem;
+    margin-right: 0.3rem;
 }
 
 .blog-description {
-    background-color: #f8f9fa;
-    border-left: 4px solid #0d6efd;
-    padding: 1.5rem;
-    font-size: 1.1rem;
-    line-height: 1.6;
-    color: #495057;
+    margin: 1.5rem 0 0;
+    padding: 1rem 1.25rem;
+    border-left: 4px solid var(--app-primary);
+    border-radius: 0 var(--app-radius-sm) var(--app-radius-sm) 0;
+    background: var(--app-surface-soft);
+    color: var(--app-text-secondary);
+    font-size: 1.05rem;
+    line-height: 1.7;
 }
 
-.blog-description .lead {
-    font-size: 1.2rem;
-    font-weight: 400;
-    color: #495057;
-}
-
-/* 博客内容样式 */
-.blog-content {
-    font-size: 1.1rem;
-    line-height: 1.8;
-    color: #333;
-}
-
-.blog-content h1, .blog-content h2, .blog-content h3 {
-    margin-top: 2rem;
-    margin-bottom: 1rem;
-    color: #2c3e50;
-    font-weight: 600;
-}
-
-.blog-content h1 {
-    font-size: 2rem;
-    border-bottom: 2px solid #f0f0f0;
-    padding-bottom: 0.5rem;
-}
-
-.blog-content h2 {
-    font-size: 1.75rem;
-    border-left: 4px solid #0d6efd;
-    padding-left: 1rem;
-}
-
-.blog-content h3 {
-    font-size: 1.5rem;
-    color: #495057;
-}
-
-.blog-content p {
-    margin-bottom: 1.5rem;
-    text-align: justify;
-}
-
-.blog-content ul, .blog-content ol {
-    margin-bottom: 1.5rem;
-    padding-left: 2rem;
-}
-
-.blog-content li {
-    margin-bottom: 0.5rem;
-}
-
-.blog-content pre {
-    background-color: #f8f9fa;
-    border: 1px solid #e9ecef;
-    border-radius: 0.5rem;
-    padding: 1rem;
-    margin: 1.5rem 0;
-    overflow-x: auto;
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 0.9rem;
-    line-height: 1.4;
-}
-
-.blog-content code {
-    background-color: #f8f9fa;
-    padding: 0.2rem 0.4rem;
-    border-radius: 0.25rem;
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 0.9em;
-    color: #e83e8c;
-}
-
-/* 操作按钮 */
 .blog-actions {
     display: flex;
-    justify-content: flex-start;
-    gap: 1rem;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--app-border);
 }
 
-/* 空状态样式 */
-.empty-state, .error-state {
-    padding: 4rem 2rem;
-    color: #6c757d;
-}
-
-.empty-state i, .error-state i {
-    opacity: 0.5;
-    font-size: 4rem;
-}
-
-.error-state i {
-    color: #dc3545;
-}
-
-/* 卡片底部样式 */
-.blog-card .card-footer, .blog-detail-card .card-footer {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    padding: 1rem 2rem;
-    border-top: 1px solid #dee2e6;
-}
-
-.pagination-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-}
-
-.pagination-controls {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.pagination-controls input {
-    width: 72px;
-    height: 36px;
-    text-align: center;
-    border: 1px solid #ced4da;
-    border-radius: 6px;
-}
-
-.page-arrow {
-    width: 36px;
-    height: 36px;
-    border: 1px solid #0d6efd;
-    border-radius: 6px;
-    background: #fff;
-    color: #0d6efd;
-}
-
-.page-arrow:disabled {
-    border-color: #adb5bd;
-    color: #adb5bd;
-    cursor: not-allowed;
-}
-
-/* 加载动画 */
-.loading-spinner {
-    width: 40px;
-    height: 40px;
-    border: 3px solid #f3f3f3;
-    border-top: 3px solid #0d6efd;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin: 2rem auto;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* 响应式调整 */
-@media (max-width: 768px) {
-    .content-field {
-        margin-top: 1rem;
-        padding: 0.5rem;
+@media (max-width: 767.98px) {
+    .blog-item {
+        flex-direction: column;
+        gap: 0.75rem;
+        padding: 1.25rem !important;
     }
-    
-    .blog-card .card-header, .blog-detail-card .card-header {
-        padding: 1rem;
-    }
-    
-    .blog-card .card-header .row > div, 
-    .blog-detail-card .card-header .row > div {
+
+    .blog-item-side {
+        flex-direction: row;
+        align-items: center;
         width: 100%;
-        margin-bottom: 1rem;
+        justify-content: space-between;
     }
-    
-    .blog-item, .blog-detail-container {
-        padding: 1.5rem;
+
+    .blog-detail-container {
+        padding: 1.5rem 1.25rem;
     }
-    
+
     .blog-title {
-        font-size: 1.8rem;
-    }
-    
-    .blog-description {
-        padding: 1rem;
-        font-size: 1rem;
-    }
-    
-    .blog-content {
-        font-size: 1rem;
-    }
-    
-    .blog-content h1 {
         font-size: 1.6rem;
     }
-    
-    .blog-content h2 {
-        font-size: 1.4rem;
+
+    .pagination-footer {
+        flex-direction: column;
+        align-items: stretch;
     }
-    
-    .blog-content h3 {
-        font-size: 1.2rem;
+
+    .pagination-controls {
+        justify-content: center;
     }
 }
 </style>

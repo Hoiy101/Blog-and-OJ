@@ -150,12 +150,14 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
-  animation: fadeIn 0.3s ease;
+  padding: 1rem;
+  z-index: 1600;
+  animation: fadeIn 0.2s ease;
 }
 
 @keyframes fadeIn {
@@ -168,65 +170,92 @@ export default {
 }
 
 .modal-container {
+  position: relative;
   background: white;
-  border-radius: 20px;
-  padding: 2rem;
-  min-width: 400px;
-  max-width: 90%;
+  border-radius: 24px;
+  padding: 2.25rem 2rem 1.75rem;
+  width: 100%;
+  max-width: 440px;
   text-align: center;
-  animation: slideUp 0.4s ease;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease;
+  box-shadow: var(--app-shadow-lg);
+  overflow: hidden;
+  --tone-color: #0891b2;
+  --tone-soft: rgba(8, 145, 178, 0.12);
+}
+
+.modal-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: var(--tone-color);
 }
 
 @keyframes slideUp {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(20px) scale(0.96);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
 
 .modal-container.result-success {
-  border-top: 6px solid #28a745;
+  --tone-color: #16a34a;
+  --tone-soft: rgba(22, 163, 74, 0.12);
 }
 
 .modal-container.result-warning {
-  border-top: 6px solid #ffc107;
+  --tone-color: #d97706;
+  --tone-soft: rgba(217, 119, 6, 0.14);
 }
 
 .modal-container.result-danger {
-  border-top: 6px solid #dc3545;
+  --tone-color: #dc2626;
+  --tone-soft: rgba(220, 38, 38, 0.1);
 }
 
 .modal-container.result-info {
-  border-top: 6px solid #17a2b8;
+  --tone-color: #0891b2;
+  --tone-soft: rgba(8, 145, 178, 0.12);
 }
 
 .modal-header {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .result-icon {
-  font-size: 6rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background: var(--tone-soft);
+  color: var(--tone-color);
+  font-size: 2.8rem;
+  line-height: 1;
+  animation: result-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.result-success .result-icon i {
-  color: #28a745;
+.result-icon i {
+  color: var(--tone-color);
 }
 
-.result-warning .result-icon i {
-  color: #ffc107;
-}
-
-.result-danger .result-icon i {
-  color: #dc3545;
-}
-
-.result-info .result-icon i {
-  color: #17a2b8;
+@keyframes result-pop {
+  from {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .modal-body {
@@ -234,30 +263,16 @@ export default {
 }
 
 .result-title {
-  font-size: 1.8rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
-}
-
-.result-success .result-title {
-  color: #28a745;
-}
-
-.result-warning .result-title {
-  color: #ffc107;
-}
-
-.result-danger .result-title {
-  color: #dc3545;
-}
-
-.result-info .result-title {
-  color: #17a2b8;
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin-bottom: 0.4rem;
+  color: var(--tone-color);
 }
 
 .result-desc {
-  color: #6c757d;
-  font-size: 1rem;
+  color: var(--app-text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.6;
   margin-bottom: 1.5rem;
 }
 
@@ -269,47 +284,41 @@ export default {
   display: inline-flex;
   align-items: baseline;
   justify-content: center;
-  width: 120px;
-  height: 120px;
+  width: 124px;
+  height: 124px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 1rem;
-}
-
-.result-success .score-circle {
-  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-}
-
-.result-warning .score-circle {
-  background: linear-gradient(135deg, #fc4a1a 0%, #f7b733 100%);
-}
-
-.result-danger .score-circle {
-  background: linear-gradient(135deg, #ef473a 0%, #cb2d3e 100%);
+  border: 8px solid var(--tone-color);
+  background: #fff;
+  color: var(--tone-color);
+  padding-top: 34px;
 }
 
 .score-value {
-  font-size: 3rem;
-  font-weight: 700;
+  font-size: 2.4rem;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
 }
 
 .score-label {
-  font-size: 1rem;
-  margin-left: 0.25rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-left: 0.2rem;
+  color: var(--app-text-muted);
 }
 
 .result-details {
-  background-color: #f8f9fa;
-  border-radius: 10px;
-  padding: 1rem;
+  background-color: var(--app-surface-soft);
+  border-radius: 12px;
+  padding: 0.5rem 1rem;
 }
 
 .detail-item {
   display: flex;
   justify-content: space-between;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #e9ecef;
+  align-items: center;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--app-border);
 }
 
 .detail-item:last-child {
@@ -317,63 +326,65 @@ export default {
 }
 
 .detail-label {
-  color: #6c757d;
-  font-weight: 500;
+  color: var(--app-text-muted);
+  font-size: 0.9rem;
 }
 
 .detail-value {
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--app-text);
 }
 
 .modal-footer {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
 .modal-footer .btn {
-  padding: 0.75rem 2rem;
-  border-radius: 25px;
+  padding: 0.6rem 1.5rem;
+  border-radius: 999px;
   font-weight: 600;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .modal-footer .btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border: none;
+  background: var(--tone-color);
+  border-color: var(--tone-color);
 }
 
-.result-success .modal-footer .btn-primary {
-  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+.modal-footer .btn-primary:hover {
+  filter: brightness(0.92);
 }
 
 .modal-footer .btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+  transform: translateY(-1px);
 }
 
 @media (max-width: 576px) {
   .modal-container {
-    min-width: auto;
-    padding: 1.5rem;
+    padding: 2rem 1.25rem 1.5rem;
   }
-  
+
   .result-icon {
-    font-size: 4rem;
+    width: 72px;
+    height: 72px;
+    font-size: 2.2rem;
   }
-  
+
   .result-title {
-    font-size: 1.4rem;
+    font-size: 1.35rem;
   }
-  
+
   .score-circle {
-    width: 100px;
-    height: 100px;
+    width: 104px;
+    height: 104px;
+    padding-top: 26px;
   }
-  
+
   .score-value {
-    font-size: 2.5rem;
+    font-size: 2rem;
   }
 }
 </style>

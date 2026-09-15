@@ -1,24 +1,41 @@
 <template>
-    <ContentField v-if="!$store.state.user.pulling_info">
-        <div class="row justify-content-md-center">
-            <div class="col-3">
-                <form @submit.prevent="login">
-                    <div class="mb-3">
-                        <label for="username" class="form-label">用户名</label>
-                        <input v-model = "username" type="text" class="form-control" id="username" placeholder="请输入用户名">
-                    </div>
-                    <div class="mb-3">
-                        <label for="password" class="form-label">密码</label>
-                        <input v-model = "password" type="password" class="form-control" id="password" placeholder="请输入密码">
-                    </div>
-                    <div class="error-message">
-                        {{ error_message }}
-                    </div>
-                    <button type="submit" class="btn btn-primary">登录</button>
-                </form>
-            </div>
+    <ContentField v-if="!$store.state.user.pulling_info" class="auth-shell">
+        <div class="auth-brand">
+            <span class="auth-brand-mark"><i class="bi bi-braces-asterisk"></i></span>
+            <h1 class="auth-title">欢迎回来</h1>
+            <p class="auth-subtitle">登录后继续写博客、刷题目</p>
         </div>
+        <form class="auth-form" @submit.prevent="login">
+            <div class="mb-3">
+                <label for="username" class="form-label">用户名</label>
+                <div class="auth-input">
+                    <i class="bi bi-person"></i>
+                    <input v-model = "username" type="text" class="form-control" id="username" placeholder="请输入用户名" autocomplete="username">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">密码</label>
+                <div class="auth-input">
+                    <i class="bi bi-lock"></i>
+                    <input v-model = "password" type="password" class="form-control" id="password" placeholder="请输入密码" autocomplete="current-password">
+                </div>
+            </div>
+            <div class="error-message" v-if="error_message">
+                <i class="bi bi-exclamation-circle-fill"></i> {{ error_message }}
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg auth-submit">登录</button>
+            <p class="auth-switch">
+                还没有账号？
+                <router-link :to="{ name: 'user_account_register' }">立即注册</router-link>
+            </p>
+        </form>
     </ContentField>
+    <div v-else class="auth-page">
+        <div class="auth-restoring">
+            <div class="loading-spinner"></div>
+            <p>正在恢复登录状态…</p>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -102,11 +119,5 @@ export default{
 </script>
 
 <style scoped>
-button{
-    width: 100%;
-}
-.error-message{
-    color: red;
-    margin-bottom: 10px;
-}
+/* 登录/注册共用样式见 src/assets/styles/theme.css 的 auth 部分 */
 </style>

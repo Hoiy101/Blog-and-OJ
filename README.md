@@ -68,6 +68,7 @@ Blog-and-OJ/
 │   │   ├── api/                           # 博客图片接口
 │   │   ├── assets/
 │   │   │   ├── images/                    # 页面图片资源
+│   │   │   └── styles/theme.css           # 全局设计变量与通用组件样式
 │   │   ├── components/                    # 导航栏、编辑器、判题弹窗等组件
 │   │   ├── router/                        # Vue Router 路由
 │   │   ├── store/                         # Vuex 状态管理
@@ -98,7 +99,7 @@ Blog-and-OJ/
 | Vue CLI 5 | 开发、构建与工程管理 |
 | Vue Router 4 | 前端路由管理 |
 | Vuex 4 | 用户与题目等全局状态管理 |
-| Bootstrap 5 | 页面布局与样式 |
+| Bootstrap 5 + Bootstrap Icons | 页面布局、基础样式与图标 |
 | jQuery | 部分 HTTP 请求与页面交互 |
 | Ace Editor | 在线代码编辑器 |
 | Node.js Test Runner | 前端单元测试 |

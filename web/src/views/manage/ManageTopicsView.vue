@@ -17,7 +17,7 @@
               aria-label="搜索题目"
             >
             <button class="btn btn-primary text-nowrap" @click="openCreate">新增题目</button>
-            <button class="btn btn-outline-primary" :disabled="loading" @click="loadTopics">刷新</button>
+            <button class="btn btn-outline-primary text-nowrap" :disabled="loading" @click="loadTopics">刷新</button>
           </div>
         </div>
       </header>
@@ -50,7 +50,11 @@
             <tr v-for="topic in filteredTopics" :key="topic.id">
               <td><span class="badge bg-light text-dark">#{{ topic.id }}</span></td>
               <td class="fw-semibold">{{ topic.title || '无标题' }}</td>
-              <td><span class="badge bg-info text-dark">{{ topic.star || '未设置' }}</span></td>
+              <td>
+                <span class="difficulty-badge" :class="difficultyClass(topic.star)">
+                  {{ topic.star ? `${difficultyText(topic.star)} · ${topic.star} 星` : '未设置' }}
+                </span>
+              </td>
               <td class="text-end">
                 <div class="d-inline-flex flex-wrap justify-content-end gap-2">
                   <button class="btn btn-outline-primary btn-sm" @click="openEdit(topic)">修改题目</button>
@@ -113,6 +117,7 @@ import {
   topicPayload,
   topicToForm
 } from '@/utils/admin.mjs'
+import { difficultyClass, difficultyText } from '@/utils/format.mjs'
 import TopicFormModal from '@/components/manage/TopicFormModal.vue'
 import EvaluateModal from '@/components/manage/EvaluateModal.vue'
 import DeleteTopicModal from '@/components/manage/DeleteTopicModal.vue'
@@ -322,7 +327,8 @@ export default {
       showDeleteModal, deleteSubmitting, deleteModalError,
       loadTopics, openCreate, openEdit, closeTopicModal, saveTopic,
       openEvaluates, closeEvaluateModal, saveEvaluates,
-      openDelete, closeDeleteModal, deleteTopic
+      openDelete, closeDeleteModal, deleteTopic,
+      difficultyClass, difficultyText
     }
   }
 }

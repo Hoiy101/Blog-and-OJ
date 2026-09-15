@@ -1,16 +1,28 @@
 <template>
   <div class="markdown-editor">
     <div class="markdown-editor-toolbar">
-      <button type="button" class="btn btn-sm btn-outline-secondary" @mousedown.prevent="formatBlock('strong')">粗体</button>
-      <button type="button" class="btn btn-sm btn-outline-secondary" @mousedown.prevent="formatBlock('h2')">标题</button>
-      <input v-model="linkUrl" class="form-control form-control-sm markdown-link-input" type="url" placeholder="https://链接地址">
-      <button type="button" class="btn btn-sm btn-outline-secondary" @mousedown.prevent="createLink">添加链接</button>
-      <button type="button" class="btn btn-sm btn-outline-primary" :disabled="!blogId || uploading" @click="$refs.file.click()">
-        {{ uploading ? '上传中…' : '上传图片' }}
-      </button>
-      <input ref="file" hidden type="file" accept="image/png,image/jpeg,image/webp,image/gif" @change="upload">
-      <small v-if="!blogId" class="text-muted">先创建博客，再修改文章上传图片</small>
-      <span v-if="error" class="text-danger">{{ error }}</span>
+      <div class="toolbar-group">
+        <button type="button" class="toolbar-btn" title="粗体" aria-label="粗体" @mousedown.prevent="formatBlock('strong')">
+          <i class="bi bi-type-bold"></i>
+        </button>
+        <button type="button" class="toolbar-btn" title="标题" aria-label="标题" @mousedown.prevent="formatBlock('h2')">
+          <i class="bi bi-type-h2"></i>
+        </button>
+      </div>
+      <div class="toolbar-group toolbar-link">
+        <i class="bi bi-link-45deg toolbar-link-icon"></i>
+        <input v-model="linkUrl" class="form-control form-control-sm markdown-link-input" type="url" placeholder="https://链接地址" aria-label="链接地址">
+        <button type="button" class="btn btn-sm btn-outline-secondary text-nowrap" @mousedown.prevent="createLink">添加链接</button>
+      </div>
+      <div class="toolbar-group ms-auto">
+        <button type="button" class="btn btn-sm btn-outline-primary" :disabled="!blogId || uploading" @click="$refs.file.click()">
+          <span v-if="uploading" class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+          <i v-else class="bi bi-image me-1"></i>{{ uploading ? '上传中…' : '上传图片' }}
+        </button>
+        <input ref="file" hidden type="file" accept="image/png,image/jpeg,image/webp,image/gif" @change="upload">
+      </div>
+      <small v-if="!blogId" class="toolbar-note text-muted"><i class="bi bi-info-circle"></i> 先创建博客，再修改文章上传图片</small>
+      <span v-if="error" class="toolbar-note text-danger"><i class="bi bi-exclamation-circle"></i> {{ error }}</span>
     </div>
     <div
       ref="editorRoot"
@@ -457,12 +469,19 @@ export default {
 </script>
 
 <style scoped>
-.markdown-editor-toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem; margin-bottom: .75rem; }
-.markdown-link-input { width: min(260px, 100%); }
-.wysiwyg-editor { min-height: 350px; padding: 1rem; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 4px; background: white; outline: none; }
+.markdown-editor { border: 1px solid var(--app-border-strong); border-radius: var(--app-radius); background: #fff; overflow: hidden; transition: border-color .15s ease, box-shadow .15s ease; }
+.markdown-editor:focus-within { border-color: #93c5fd; box-shadow: 0 0 0 .2rem var(--app-primary-soft); }
+.markdown-editor-toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem .75rem; padding: .5rem .75rem; border-bottom: 1px solid var(--app-border); background: var(--app-surface-soft); }
+.toolbar-group { display: flex; align-items: center; gap: .3rem; }
+.toolbar-btn { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border: 1px solid transparent; border-radius: 8px; background: transparent; color: var(--app-text-secondary); font-size: 1.05rem; }
+.toolbar-btn:hover { background: #fff; border-color: var(--app-border); color: var(--app-primary); }
+.toolbar-link { gap: .4rem; }
+.toolbar-link-icon { color: var(--app-text-muted); font-size: 1.1rem; }
+.toolbar-note { flex-basis: 100%; font-size: .8rem; }
+.markdown-link-input { width: min(240px, 100%); }
+.wysiwyg-editor { min-height: 350px; max-height: 60vh; padding: 1.25rem 1.5rem; overflow-y: auto; border: 0; background: white; outline: none; font-size: 1rem; }
 .wysiwyg-editor { position: relative; }
-.wysiwyg-editor:focus { border-color: #86b7fe; box-shadow: 0 0 0 .2rem rgba(13, 110, 253, .15); }
-.wysiwyg-editor:empty::before { color: #adb5bd; content: attr(data-placeholder); pointer-events: none; }
+.wysiwyg-editor:empty::before { color: #9ca3af; content: attr(data-placeholder); pointer-events: none; }
 .wysiwyg-editor :deep(img) { display: block; width: var(--markdown-image-width, 25%); max-width: 100%; height: auto; margin: 1rem auto; cursor: pointer; }
 .wysiwyg-editor :deep(img.is-selected) { outline: 3px solid #0d6efd; outline-offset: 3px; }
 .wysiwyg-editor :deep(.image-resize-controls) { position: absolute; z-index: 2; display: block; pointer-events: none; }

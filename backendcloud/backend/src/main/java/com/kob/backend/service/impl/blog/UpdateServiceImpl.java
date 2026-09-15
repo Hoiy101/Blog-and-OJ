@@ -1,11 +1,14 @@
 package com.kob.backend.service.impl.blog;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kob.backend.mapper.BlogMapper;
 import com.kob.backend.pojo.Blog;
 import com.kob.backend.pojo.User;
 import com.kob.backend.service.impl.utils.UserDetailsImpl;
 import com.kob.backend.service.blog.UpdateService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -19,8 +22,14 @@ public class UpdateServiceImpl implements UpdateService {
     @Autowired
     private BlogMapper blogMapper;
 
+    @Autowired
+    private StringRedisTemplate redisTemplate;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @Override
-    public Map<String, String> update(Map<String, String> data) {
+    public Map<String, String> update(Map<String, String> data) throws JsonProcessingException {
         UsernamePasswordAuthenticationToken authenticationToken =
                 (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImpl loginUser = (UserDetailsImpl) authenticationToken.getPrincipal();
@@ -79,6 +88,8 @@ public class UpdateServiceImpl implements UpdateService {
         Blog new_blog = new Blog(blog.getId(), user.getId(), title, description, content, blog.getCreatetime(), date);
 
         blogMapper.updateById(new_blog);
+        String string_blog = objectMapper.writeValueAsString(new_blog);
+        redisTemplate.opsForValue().set("blog:" + blog.getId(), string_blog);
 
         map.put("error_message", "success");
 

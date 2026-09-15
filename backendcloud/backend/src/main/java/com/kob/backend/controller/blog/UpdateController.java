@@ -1,5 +1,6 @@
 package com.kob.backend.controller.blog;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.kob.backend.service.blog.UpdateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,7 +15,7 @@ public class UpdateController {
     private UpdateService updateService;
 
     @PostMapping("/user/bot/update/")
-    private Map<String,String> update(@RequestParam Map<String,String> data){
+    private Map<String,String> update(@RequestParam Map<String,String> data) throws JsonProcessingException {
         return updateService.update(data);
     }
 }

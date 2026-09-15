@@ -1,27 +1,41 @@
 <template>
-    <ContentField>
-        <div class="row justify-content-md-center">
-            <div class="col-3">
-                <form @submit.prevent="register">
-                    <div class="mb-3">
-                        <label for="username" class="form-label">用户名</label>
-                        <input v-model = "username" type="text" class="form-control" id="username" placeholder="请输入用户名">
-                    </div>
-                    <div class="mb-3">
-                        <label for="password" class="form-label">密码</label>
-                        <input v-model = "password" type="password" class="form-control" id="password" placeholder="请输入密码">
-                    </div>
-                    <div class="mb-3">
-                        <label for="cofirmedPassword" class="form-label">确认密码</label>
-                        <input v-model = "cofirmedPassword" type="password" class="form-control" id="cofirmedPassword" placeholder="请再次输入密码">
-                    </div>
-                    <div class="error-message">
-                        {{ error_message }}
-                    </div>
-                    <button type="submit" class="btn btn-primary">注册</button>
-                </form>
-            </div>
+    <ContentField class="auth-shell">
+        <div class="auth-brand">
+            <span class="auth-brand-mark"><i class="bi bi-person-plus"></i></span>
+            <h1 class="auth-title">创建账号</h1>
+            <p class="auth-subtitle">注册后即可发布博客并在线提交代码</p>
         </div>
+        <form class="auth-form" @submit.prevent="register">
+            <div class="mb-3">
+                <label for="username" class="form-label">用户名</label>
+                <div class="auth-input">
+                    <i class="bi bi-person"></i>
+                    <input v-model = "username" type="text" class="form-control" id="username" placeholder="请输入用户名" autocomplete="username">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">密码</label>
+                <div class="auth-input">
+                    <i class="bi bi-lock"></i>
+                    <input v-model = "password" type="password" class="form-control" id="password" placeholder="请输入密码" autocomplete="new-password">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="cofirmedPassword" class="form-label">确认密码</label>
+                <div class="auth-input">
+                    <i class="bi bi-shield-check"></i>
+                    <input v-model = "cofirmedPassword" type="password" class="form-control" id="cofirmedPassword" placeholder="请再次输入密码" autocomplete="new-password">
+                </div>
+            </div>
+            <div class="error-message" v-if="error_message">
+                <i class="bi bi-exclamation-circle-fill"></i> {{ error_message }}
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg auth-submit">注册</button>
+            <p class="auth-switch">
+                已有账号？
+                <router-link :to="{ name: 'user_account_login' }">直接登录</router-link>
+            </p>
+        </form>
     </ContentField>
 </template>
 
@@ -74,11 +88,5 @@ export default{
 </script>
 
 <style scoped>
-button{
-    width: 100%;
-}
-.error-message{
-    color: red;
-    margin-bottom: 10px;
-}
+/* 登录/注册共用样式见 src/assets/styles/theme.css 的 auth 部分 */
 </style>

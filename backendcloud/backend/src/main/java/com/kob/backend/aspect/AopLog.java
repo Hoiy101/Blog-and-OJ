@@ -33,9 +33,7 @@ public class AopLog {
     public Object logAop(ProceedingJoinPoint pjp) throws Throwable{
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
-        ObjectMapper mapper = new ObjectMapper();
-        Object[] args = pjp.getArgs();
-        Object result = pjp.proceed();
+        Object result = pjp.proceed(); //执行代码的类，在这之前可以获取到进入该类的数据，这之后可以获取到该类返回的数据
         String methodName = pjp.getSignature().getName();
         LoginRecord loginRecord = new LoginRecord();
         if(methodName.equals("getinfo")) {

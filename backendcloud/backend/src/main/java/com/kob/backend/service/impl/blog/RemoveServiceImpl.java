@@ -7,6 +7,7 @@ import com.kob.backend.service.impl.utils.UserDetailsImpl;
 import com.kob.backend.service.blog.RemoveService;
 import com.kob.backend.service.impl.blog.storage.BlogImageStorage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,8 @@ public class RemoveServiceImpl implements RemoveService {
         this.blogMapper = blogMapper;
         this.blogImageStorage = blogImageStorage;
     }
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
     @Override
     public Map<String, String> remove(Map<String, String> data) {
@@ -41,14 +44,15 @@ public class RemoveServiceImpl implements RemoveService {
         Map<String,String> map = new HashMap<>();
 
         if(blog == null){
-            map.put("error_message", "bot不存在或已被删除");
+            map.put("error_message", "blog不存在或已被删除");
             return map;
         }
         if(!blog.getUserId().equals(user.getId())){
-            map.put("error_message", "没有权限删除此bot");
+            map.put("error_message", "没有权限删除此blog");
             return map;
         }
 
+        redisTemplate.delete("blog:" + blog.getId());
         blogMapper.deleteById(bot_id);
         try {
             blogImageStorage.deletePrefix("blog-images/" + user.getId() + "/" + bot_id + "/");

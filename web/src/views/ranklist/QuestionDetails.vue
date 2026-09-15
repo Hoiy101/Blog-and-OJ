@@ -1,5 +1,5 @@
 <template>
-    <div class="container content-field">
+    <div class="problem-page">
         <!-- 结果提示窗 -->
         <ResultModal 
             :visible="showResultModal" 
@@ -7,192 +7,168 @@
             @close="closeResultModal"
             @viewSolution="goToAnswer"
         />
-        
-        <!-- 题目详情和编辑界面 -->
-        <div class="card oj-detail-card">
-            <!-- 头部：返回按钮和题目信息 -->
-            <div class="card-header border-bottom bg-light">
-                <div class="d-flex justify-content-between align-items-center">
-                    <button class="btn btn-outline-secondary btn-sm" @click="backToProblemList">
-                        <i class="bi bi-arrow-left"></i> 返回题库
-                    </button>
-                    <h5 class="mb-0 text-center">题目详情</h5>
-                    <div>
-                        <span class="badge bg-info me-2">ID: {{ problem.id }}</span>
-                        <span class="badge difficulty-badge" :class="getDifficultyClass(problem.star)">
-                            {{ getDifficultyText(problem.star) }}
-                        </span>
-                    </div>
+
+        <!-- 头部：返回按钮和题目信息 -->
+        <div class="problem-toolbar">
+            <div class="problem-toolbar-left">
+                <button class="btn btn-outline-secondary btn-sm" @click="backToProblemList">
+                    <i class="bi bi-arrow-left"></i> 题库
+                </button>
+                <div class="problem-heading">
+                    <span class="tag tag-mono">#{{ problem.id || '…' }}</span>
+                    <h1 class="problem-title" :title="problem.title">{{ problem.title || '加载中...' }}</h1>
+                    <span v-if="!loading && !error" class="difficulty-badge" :class="getDifficultyClass(problem.star)">
+                        {{ getDifficultyText(problem.star) }}
+                    </span>
                 </div>
             </div>
+            <div class="problem-toolbar-right">
+                <span class="tag" title="时间限制"><i class="bi bi-stopwatch"></i> 时间限制 {{ problem.timeLimit || 0 }}s</span>
+                <span class="tag" title="内存限制"><i class="bi bi-memory"></i> 内存限制 {{ problem.memLimit || 0 }}MB</span>
+                <span class="tag" title="测试点"><i class="bi bi-list-check"></i> 测试点 {{ problem.testPoint || 0 }}</span>
+                <button class="btn btn-outline-primary btn-sm" @click="viewAnswer">
+                    <i class="bi bi-lightbulb"></i> 查看题解
+                </button>
+            </div>
+        </div>
 
-            <div class="card-body p-0">
-                <div class="row g-0">
-                    <!-- 左侧：题目描述区域 -->
-                    <div class="col-md-6 border-end problem-description-area">
-                        <div class="p-4 problem-description-content">
-                            <!-- 加载状态 -->
-                            <div v-if="loading" class="text-center py-5">
-                                <div class="loading-spinner"></div>
-                                <p class="mt-3 text-muted">加载题目中...</p>
-                            </div>
+        <div class="problem-workspace">
+            <!-- 左侧：题目描述区域 -->
+            <section class="workspace-pane problem-pane" aria-label="题目描述">
+                <!-- 加载状态 -->
+                <div v-if="loading" class="state-panel">
+                    <div class="loading-spinner"></div>
+                    <p class="state-text">加载题目中…</p>
+                </div>
 
-                            <!-- 错误状态 -->
-                            <div v-else-if="error" class="text-center py-5">
-                                <div class="error-state text-danger">
-                                    <i class="bi bi-exclamation-triangle display-4"></i>
-                                    <p class="mt-3">加载失败: {{ error }}</p>
-                                    <button class="btn btn-primary mt-2" @click="backToProblemList">返回题库</button>
-                                </div>
-                            </div>
+                <!-- 错误状态 -->
+                <div v-else-if="error" class="state-panel is-error">
+                    <span class="state-icon"><i class="bi bi-exclamation-triangle"></i></span>
+                    <p class="state-title">加载失败</p>
+                    <p class="state-text">{{ error }}</p>
+                    <button class="btn btn-primary" @click="backToProblemList">返回题库</button>
+                </div>
 
-                            <!-- 题目内容 -->
-                            <div v-else>
-                                <!-- 题目标题和操作按钮 -->
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <h2 class="problem-title mb-0">{{ problem.title || '加载中...' }}</h2>
-                                    <button class="btn btn-sm btn-outline-primary" @click="viewAnswer">
-                                        <i class="bi bi-book"></i> 查看题解
-                                    </button>
-                                </div>
-                                
-                                <!-- 题目元信息 -->
-                                <div class="problem-meta mb-4">
-                                    <span class="badge bg-light text-dark me-2">
-                                        <i class="bi bi-clock"></i> 时间限制: {{ problem.timeLimit || 0 }}s
-                                    </span>
-                                    <span class="badge bg-light text-dark me-2">
-                                        <i class="bi bi-memory"></i> 内存限制: {{ problem.memLimit || 0 }}MB
-                                    </span>
-                                    <span class="badge bg-light text-dark me-2">
-                                        <i class="bi bi-check-circle"></i> 测试点: {{ problem.testPoint || 0 }}
-                                    </span>
-                                </div>
+                <!-- 题目内容 -->
+                <div v-else class="problem-statement">
+                    <!-- 题目描述 -->
+                    <div class="problem-section">
+                        <h2 class="section-title"><i class="bi bi-file-text"></i> 题目描述</h2>
+                        <div class="section-content" v-html="formatContent(problem.description)"></div>
+                    </div>
 
-                                <!-- 题目描述 -->
-                                <div class="problem-section">
-                                    <h5 class="section-title">题目描述</h5>
-                                    <div class="section-content" v-html="formatContent(problem.description)"></div>
-                                </div>
-
-                                <!-- 输入格式 -->
-                                <div class="problem-section">
-                                    <h5 class="section-title">输入格式</h5>
-                                    <div class="section-content">
-                                        <p v-if="problem.inputFormat">{{ problem.inputFormat }}</p>
-                                        <p v-else class="text-muted fst-italic">题目未提供输入格式说明</p>
-                                    </div>
-                                </div>
-
-                                <!-- 输出格式 -->
-                                <div class="problem-section">
-                                    <h5 class="section-title">输出格式</h5>
-                                    <div class="section-content">
-                                        <p v-if="problem.outputFormat">{{ problem.outputFormat }}</p>
-                                        <p v-else class="text-muted fst-italic">题目未提供输出格式说明</p>
-                                    </div>
-                                </div>
-
-                                <!-- 样例输入输出 -->
-                                <div class="problem-section">
-                                    <h5 class="section-title">样例</h5>
-                                    <div class="section-content">
-                                        <div v-if="problem.sampleInput || problem.sampleOutput" class="row g-3">
-                                            <div class="col-md-6">
-                                                <h6 class="sample-title">输入</h6>
-                                                <pre class="sample-code"><code>{{ problem.sampleInput || '无' }}</code></pre>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <h6 class="sample-title">输出</h6>
-                                                <pre class="sample-code"><code>{{ problem.sampleOutput || '无' }}</code></pre>
-                                            </div>
-                                        </div>
-                                        <p v-else class="text-muted fst-italic">题目未提供样例</p>
-                                    </div>
-                                </div>
-
-                                <!-- 提示 -->
-                                <div v-if="problem.hint" class="problem-section">
-                                    <h5 class="section-title">提示</h5>
-                                    <div class="section-content" v-html="formatContent(problem.hint)"></div>
-                                </div>
-                            </div>
+                    <!-- 输入格式 -->
+                    <div class="problem-section">
+                        <h2 class="section-title"><i class="bi bi-box-arrow-in-right"></i> 输入格式</h2>
+                        <div class="section-content">
+                            <p v-if="problem.inputFormat">{{ problem.inputFormat }}</p>
+                            <p v-else class="text-muted fst-italic">题目未提供输入格式说明</p>
                         </div>
                     </div>
 
-                    <!-- 右侧：代码编辑区域 -->
-                    <div class="col-md-6 code-editor-area">
-                        <div class="p-4 h-100 d-flex flex-column">
-                            <!-- 语言选择 -->
-                            <div class="mb-3">
-                                <label for="language-select" class="form-label">选择编程语言</label>
-                                <select id="language-select" class="form-select" v-model="selectedLanguage">
-                                    <option value="c">C</option>
-                                    <option value="cpp">C++</option>
-                                    <option value="java">Java</option>
-                                    <option value="python">Python</option>
-                                    <option value="javascript">JavaScript</option>
-                                </select>
-                            </div>
+                    <!-- 输出格式 -->
+                    <div class="problem-section">
+                        <h2 class="section-title"><i class="bi bi-box-arrow-right"></i> 输出格式</h2>
+                        <div class="section-content">
+                            <p v-if="problem.outputFormat">{{ problem.outputFormat }}</p>
+                            <p v-else class="text-muted fst-italic">题目未提供输出格式说明</p>
+                        </div>
+                    </div>
 
-                            <!-- 代码编辑器容器 -->
-                            <div class="editor-container flex-grow-1 mb-3 border rounded">
-                                <div ref="editor" class="code-editor"></div>
+                    <!-- 样例输入输出 -->
+                    <div class="problem-section">
+                        <h2 class="section-title"><i class="bi bi-terminal"></i> 样例</h2>
+                        <div class="section-content">
+                            <div v-if="problem.sampleInput || problem.sampleOutput" class="sample-grid">
+                                <div class="sample-block">
+                                    <div class="sample-head">输入</div>
+                                    <pre class="sample-code"><code>{{ problem.sampleInput || '无' }}</code></pre>
+                                </div>
+                                <div class="sample-block">
+                                    <div class="sample-head">输出</div>
+                                    <pre class="sample-code"><code>{{ problem.sampleOutput || '无' }}</code></pre>
+                                </div>
                             </div>
+                            <p v-else class="text-muted fst-italic">题目未提供样例</p>
+                        </div>
+                    </div>
 
-                            <!-- 编辑器工具栏 -->
-                            <div class="editor-toolbar mb-3 d-flex justify-content-between align-items-center">
+                    <!-- 提示 -->
+                    <div v-if="problem.hint" class="problem-section">
+                        <h2 class="section-title"><i class="bi bi-info-circle"></i> 提示</h2>
+                        <div class="section-content" v-html="formatContent(problem.hint)"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 右侧：代码编辑区域 -->
+            <section class="workspace-pane editor-pane" aria-label="代码编辑">
+                <!-- 语言选择 -->
+                <div class="editor-toolbar">
+                    <div class="editor-toolbar-group">
+                        <label for="language-select" class="visually-hidden">选择编程语言</label>
+                        <select id="language-select" class="form-select form-select-sm language-select" v-model="selectedLanguage">
+                            <option value="c">C</option>
+                            <option value="cpp">C++</option>
+                            <option value="java">Java</option>
+                            <option value="python">Python</option>
+                            <option value="javascript">JavaScript</option>
+                        </select>
+                    </div>
+                    <!-- 编辑器工具栏 -->
+                    <div class="editor-toolbar-group">
+                        <button class="btn btn-sm btn-light tool-btn" @click="resetCode" title="重置代码">
+                            <i class="bi bi-arrow-counterclockwise"></i> 重置
+                        </button>
+                        <button class="btn btn-sm btn-light tool-btn" @click="copyCode" title="复制代码">
+                            <i class="bi bi-clipboard"></i> 复制
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 代码编辑器容器 -->
+                <div class="editor-container">
+                    <div ref="editor" class="code-editor"></div>
+                </div>
+
+                <div class="editor-footer">
+                    <div class="editor-status">
+                        <span class="editor-stat">行数 {{ editorLines }}</span>
+                        <span class="editor-stat">字符数 {{ editorChars }}</span>
+                    </div>
+                    <!-- 提交按钮区域 -->
+                    <div class="submit-area">
+                        <button class="btn btn-primary submit-btn" :disabled="isSubmitting" @click="submitCode">
+                            <span v-if="isSubmitting">
+                                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                提交中...
+                            </span>
+                            <span v-else>
+                                <i class="bi bi-send me-1"></i> 提交代码
+                            </span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 测试用例区域 -->
+                <div v-if="testCases && testCases.length > 0" class="test-cases">
+                    <h6 class="mb-2">测试用例</h6>
+                    <div class="list-group">
+                        <div v-for="(testCase, index) in testCases" :key="index" 
+                             class="list-group-item list-group-item-action">
+                            <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <button class="btn btn-sm btn-outline-secondary me-2" @click="resetCode">
-                                        <i class="bi bi-arrow-clockwise"></i> 重置代码
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-secondary" @click="copyCode">
-                                        <i class="bi bi-clipboard"></i> 复制代码
-                                    </button>
+                                    <span class="badge bg-light text-dark me-2">用例 {{ index + 1 }}</span>
+                                    <span class="small">{{ testCase.input ? testCase.input.substring(0, 30) + '...' : '无输入' }}</span>
                                 </div>
-                                <div>
-                                    <span class="text-muted small me-3">行数: {{ editorLines }}</span>
-                                    <span class="text-muted small">字符数: {{ editorChars }}</span>
-                                </div>
-                            </div>
-
-                            <!-- 提交按钮区域 -->
-                            <div class="submit-area">
-                                <div class="d-grid">
-                                    <button class="btn btn-primary btn-lg" :disabled="isSubmitting" @click="submitCode">
-                                        <span v-if="isSubmitting">
-                                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                                            提交中...
-                                        </span>
-                                        <span v-else>
-                                            <i class="bi bi-send me-2"></i> 提交代码
-                                        </span>
-                                    </button>
-                                </div>
-                                
-                                <!-- 测试用例区域 -->
-                                <div v-if="testCases && testCases.length > 0" class="mt-3">
-                                    <h6 class="mb-2">测试用例</h6>
-                                    <div class="list-group">
-                                        <div v-for="(testCase, index) in testCases" :key="index" 
-                                             class="list-group-item list-group-item-action">
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <div>
-                                                    <span class="badge bg-light text-dark me-2">用例 {{ index + 1 }}</span>
-                                                    <span class="small">{{ testCase.input ? testCase.input.substring(0, 30) + '...' : '无输入' }}</span>
-                                                </div>
-                                                <span class="badge" :class="getTestCaseBadgeClass(testCase.status)">
-                                                    {{ testCase.status || '未测试' }}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <span class="badge" :class="getTestCaseBadgeClass(testCase.status)">
+                                    {{ testCase.status || '未测试' }}
+                                </span>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
         </div>
     </div>
 </template>
@@ -659,58 +635,87 @@ export default {
 </script>
 
 <style scoped>
-/* 主容器间距 */
-.content-field {
-    margin-top: 2rem;
-    padding-top: 1rem;
-    padding-bottom: 3rem;
-    min-height: calc(100vh - 200px);
+.problem-page {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: min(1440px, 100% - 2rem);
+    margin: 0 auto;
+    padding: 1.25rem 0 2rem;
+    min-height: calc(100vh - var(--app-navbar-height));
 }
 
-/* 卡片样式 */
-.oj-detail-card {
-    border: 1px solid #e0e0e0;
-    border-radius: 12px;
+/* 顶部工具条 */
+.problem-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1.5rem;
+    padding: 0.85rem 1.25rem;
+    background: var(--app-surface);
+    border: 1px solid rgba(148, 163, 184, 0.28);
+    border-radius: var(--app-radius-lg);
+    box-shadow: var(--app-shadow);
+}
+
+.problem-toolbar-left,
+.problem-toolbar-right {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+    min-width: 0;
+}
+
+.problem-heading {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-width: 0;
+}
+
+.problem-title {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--app-text);
+    white-space: nowrap;
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    background-color: #fff;
-    min-height: 600px;
+    text-overflow: ellipsis;
+    max-width: 420px;
 }
 
-/* 卡片头部样式 */
-.oj-detail-card .card-header {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    padding: 1rem 1.5rem;
-    border-bottom: 2px solid #dee2e6;
+/* 工作区 */
+.problem-workspace {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 1rem;
+    flex: 1;
+    min-height: 0;
 }
 
-/* 题目描述区域 */
-.problem-description-area {
-    height: calc(100vh - 250px);
+.workspace-pane {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    background: var(--app-surface);
+    border: 1px solid rgba(148, 163, 184, 0.28);
+    border-radius: var(--app-radius-lg);
+    box-shadow: var(--app-shadow);
+    overflow: hidden;
+}
+
+.problem-pane {
+    height: calc(100vh - var(--app-navbar-height) - 140px);
+    min-height: 520px;
     overflow-y: auto;
 }
 
-.problem-description-content {
-    height: 100%;
+.problem-statement {
+    padding: 1.75rem 2rem 2rem;
 }
 
-/* 题目标题 */
-.problem-title {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: #2c3e50;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid #f0f0f0;
-}
-
-/* 题目元信息 */
-.problem-meta .badge {
-    font-size: 0.85rem;
-    padding: 0.4em 0.8em;
-    border: 1px solid #dee2e6;
-}
-
-/* 题目章节 */
 .problem-section {
     margin-bottom: 2rem;
 }
@@ -720,57 +725,104 @@ export default {
 }
 
 .section-title {
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: #2c757d;
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 0.75rem;
+    font-size: 1.02rem;
+    font-weight: 700;
+    color: var(--app-text);
+}
+
+.section-title .bi {
+    color: var(--app-primary);
 }
 
 .section-content {
     font-size: 1rem;
-    line-height: 1.6;
-    color: #333;
+    line-height: 1.8;
+    color: #374151;
+    overflow-wrap: anywhere;
 }
 
 .section-content p {
-    margin-bottom: 1rem;
+    margin-bottom: 0;
+    white-space: pre-wrap;
 }
 
-/* 样例代码 */
-.sample-title {
-    font-size: 0.9rem;
+.sample-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.sample-block {
+    border: 1px solid var(--app-border);
+    border-radius: var(--app-radius);
+    overflow: hidden;
+}
+
+.sample-head {
+    padding: 0.45rem 0.85rem;
+    background: var(--app-surface-soft);
+    border-bottom: 1px solid var(--app-border);
+    font-size: 0.82rem;
     font-weight: 600;
-    color: #6c757d;
-    margin-bottom: 0.5rem;
+    color: var(--app-text-secondary);
 }
 
 .sample-code {
-    background-color: #f8f9fa;
-    border: 1px solid #e9ecef;
-    border-radius: 0.5rem;
-    padding: 1rem;
     margin: 0;
-    overflow-x: auto;
-    font-family: 'Courier New', Courier, monospace;
+    padding: 0.85rem 1rem;
+    background: #fff;
+    font-family: var(--app-font-mono);
     font-size: 0.9rem;
-    line-height: 1.4;
+    line-height: 1.6;
     white-space: pre-wrap;
     word-wrap: break-word;
+    min-height: 3.5rem;
 }
 
 /* 代码编辑区域 */
-.code-editor-area {
-    height: calc(100vh - 250px);
+.editor-pane {
+    height: calc(100vh - var(--app-navbar-height) - 140px);
+    min-height: 520px;
+}
+
+.editor-toolbar {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+    padding: 0.6rem 0.85rem;
+    border-bottom: 1px solid var(--app-border);
+    background: var(--app-surface-soft);
+}
+
+.editor-toolbar-group {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.language-select {
+    width: auto;
+    min-width: 130px;
+    font-weight: 500;
+}
+
+.tool-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
 }
 
 .editor-container {
+    flex: 1;
     min-height: 300px;
-    overflow: hidden;
     position: relative;
+    background: #272822;
 }
 
 .code-editor {
@@ -782,117 +834,93 @@ export default {
     font-size: 14px;
 }
 
-/* 编辑器工具栏 */
-.editor-toolbar {
-    padding: 0.5rem 0;
-    border-top: 1px solid #e9ecef;
-    border-bottom: 1px solid #e9ecef;
+.editor-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-top: 1px solid var(--app-border);
+    background: var(--app-surface-soft);
 }
 
-/* 难度标签样式 */
-.difficulty-badge {
-    font-size: 0.85rem;
-    padding: 0.4em 0.8em;
-    border-radius: 20px;
-    font-weight: 500;
-    display: inline-block;
-    min-width: 60px;
-    text-align: center;
+.editor-status {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem 1rem;
+    font-size: 0.8rem;
+    color: var(--app-text-muted);
 }
 
-.difficulty-easy {
-    background-color: rgba(40, 167, 69, 0.1);
-    color: #28a745;
-    border: 1px solid rgba(40, 167, 69, 0.3);
-}
-
-.difficulty-medium {
-    background-color: rgba(255, 193, 7, 0.1);
-    color: #ffc107;
-    border: 1px solid rgba(255, 193, 7, 0.3);
-}
-
-.difficulty-hard {
-    background-color: rgba(220, 53, 69, 0.1);
-    color: #dc3545;
-    border: 1px solid rgba(220, 53, 69, 0.3);
-}
-
-.difficulty-unknown {
-    background-color: rgba(108, 117, 125, 0.1);
-    color: #6c757d;
-    border: 1px solid rgba(108, 117, 125, 0.3);
+.submit-btn {
+    min-width: 140px;
+    padding: 0.55rem 1.4rem;
+    font-weight: 600;
 }
 
 /* 测试用例样式 */
+.test-cases {
+    padding: 0.75rem 1rem 1rem;
+    border-top: 1px solid var(--app-border);
+}
+
 .list-group-item {
-    border: 1px solid #e9ecef;
-    border-radius: 0.5rem;
+    border: 1px solid var(--app-border);
+    border-radius: var(--app-radius-sm);
     margin-bottom: 0.5rem;
     padding: 0.75rem 1rem;
-    transition: all 0.2s;
 }
 
-.list-group-item:hover {
-    background-color: #f8f9fa;
-    transform: translateX(2px);
-}
-
-/* 加载动画 */
-.loading-spinner {
-    width: 40px;
-    height: 40px;
-    border: 3px solid #f3f3f3;
-    border-top: 3px solid #0d6efd;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin: 2rem auto;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* 错误状态样式 */
-.error-state {
-    padding: 4rem 2rem;
-    color: #6c757d;
-}
-
-.error-state i {
-    opacity: 0.5;
-    font-size: 4rem;
-    color: #dc3545;
-}
-
-/* 响应式调整 */
-@media (max-width: 768px) {
-    .content-field {
-        margin-top: 1rem;
-        padding: 0.5rem;
-    }
-    
-    .oj-detail-card .card-header {
-        padding: 0.75rem;
-    }
-    
-    .problem-description-area,
-    .code-editor-area {
-        height: auto;
-        border: none !important;
-    }
-    
+@media (max-width: 1199.98px) {
     .problem-title {
-        font-size: 1.5rem;
+        max-width: 260px;
     }
-    
+}
+
+@media (max-width: 991.98px) {
+    .problem-workspace {
+        grid-template-columns: 1fr;
+    }
+
+    .problem-pane,
+    .editor-pane {
+        height: auto;
+        min-height: 0;
+    }
+
     .editor-container {
-        min-height: 250px;
+        min-height: 380px;
     }
-    
-    .problem-meta .badge {
-        margin-bottom: 0.5rem;
+
+    .problem-title {
+        max-width: 100%;
+        white-space: normal;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .problem-page {
+        width: calc(100% - 1rem);
+        padding-top: 0.75rem;
+    }
+
+    .problem-statement {
+        padding: 1.25rem;
+    }
+
+    .sample-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .problem-toolbar-right .tag {
+        display: none;
+    }
+
+    .submit-area,
+    .submit-btn {
+        width: 100%;
     }
 }
 </style>
