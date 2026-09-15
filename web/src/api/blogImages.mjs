@@ -1,3 +1,5 @@
+import { API_BASE } from '../config.mjs'
+
 export function createBlogImageFormData(blogId, file, FormDataClass = FormData) {
   const data = new FormDataClass()
   data.append('blog_id', String(blogId)); data.append('file', file)
@@ -5,7 +7,7 @@ export function createBlogImageFormData(blogId, file, FormDataClass = FormData) 
 }
 
 export async function uploadBlogImage(blogId, file, token) {
-  const response = await fetch('http://127.0.0.1:3000/user/blog/image/upload/', {
+  const response = await fetch(`${API_BASE}/user/blog/image/upload/`, {
     method: 'POST', headers: { Authorization: `Bearer ${token}` }, body: createBlogImageFormData(blogId, file)
   })
   const data = await response.json()

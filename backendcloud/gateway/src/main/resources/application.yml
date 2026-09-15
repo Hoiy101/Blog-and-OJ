@@ -1,0 +1,38 @@
+server:
+  port: 8000
+
+spring:
+  application:
+    name: gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 47.119.128.174:8848
+        username: nacos
+        password: quEYL8EnDp7fhyiPvmWv
+    gateway:
+      discovery:
+        locator:
+          enabled: false
+      routes:
+        - id: backend-http
+          uri: lb://backend
+          predicates:
+            - Path=/user/**,/oj/**,/manage/**
+
+        - id: backend-ws
+          uri: lb:ws://backend
+          predicates:
+            - Path=/websocket/**
+
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://localhost:8080"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+            allowCredentials: true
+            maxAge: 3600
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials

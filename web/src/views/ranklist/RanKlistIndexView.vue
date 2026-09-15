@@ -134,6 +134,7 @@
 <script>
 import { ref, onMounted } from 'vue'
 import $ from 'jquery'
+import { API_BASE } from '@/config.mjs'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { clampPage, normalizePageResponse, paginationQuery } from '../../utils/pagination.mjs'
@@ -223,7 +224,7 @@ export default {
             }
             
             $.ajax({
-                url: "http://127.0.0.1:3000/oj/topic/getlist/",
+                url: `${API_BASE}/oj/topic/getlist/`,
                 type: "GET",
                 headers: headers,
                 data: requestData,

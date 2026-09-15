@@ -58,6 +58,7 @@
 import { ref, onMounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import $ from 'jquery'
+import { API_BASE } from '@/config.mjs'
 import { useStore } from 'vuex'
 
 export default {
@@ -122,7 +123,7 @@ export default {
             }
             
             $.ajax({
-                url: "http://127.0.0.1:3000/oj/answer/get/",
+                url: `${API_BASE}/oj/answer/get/`,
                 type: "GET",
                 headers: headers,
                 data: {

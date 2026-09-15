@@ -174,6 +174,7 @@
 <script>
 import { ref, onMounted } from 'vue'
 import $ from 'jquery'
+import { API_BASE } from '@/config.mjs'
 import { useStore } from 'vuex'
 import MarkdownContent from '../../components/MarkdownContent.vue'
 import { clampPage, normalizePageResponse, paginationQuery } from '../../utils/pagination.mjs'
@@ -259,7 +260,7 @@ export default {
             
             // 发送请求获取博客详情
             $.ajax({
-                url: "http://127.0.0.1:3000/user/bot/get/",
+                url: `${API_BASE}/user/bot/get/`,
                 type: "GET",
                 headers: {
                     Authorization: "Bearer " + store.state.user.token,
@@ -362,7 +363,7 @@ export default {
             console.log('Token状态:', store.state.user.token ? '有token' : '无token')
             
             $.ajax({
-                url: "http://127.0.0.1:3000/user/bot/all/getlist/",
+                url: `${API_BASE}/user/bot/all/getlist/`,
                 type: "GET",
                 headers: {
                     Authorization: "Bearer " + store.state.user.token,

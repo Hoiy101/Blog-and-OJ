@@ -177,6 +177,7 @@
 import { ref, onMounted, onUnmounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import $ from 'jquery'
+import { API_BASE, WS_BASE } from '@/config.mjs'
 import { useStore } from 'vuex'
 import ace from 'ace-builds'
 import 'ace-builds/src-noconflict/mode-c_cpp'
@@ -324,7 +325,7 @@ export default {
             }
             
             $.ajax({
-                url: "http://127.0.0.1:3000/oj/topic/get/",
+                url: `${API_BASE}/oj/topic/get/`,
                 type: "GET",
                 headers: headers,
                 data: { id: problemId },
@@ -476,7 +477,7 @@ export default {
             isSubmitting.value = true
 
             $.ajax({
-                url: "http://127.0.0.1:3000/oj/evaluate/add/",
+                url: `${API_BASE}/oj/evaluate/add/`,
                 type: "POST",
                 headers: {
                     Authorization: "Bearer " + store.state.user.token,
@@ -533,7 +534,7 @@ export default {
                 return
             }
             
-            const wsUrl = `ws://127.0.0.1:3000/websocket/${userId}`
+            const wsUrl = `${WS_BASE}/websocket/${userId}`
             console.log('尝试建立WebSocket连接:', wsUrl)
             
             ws.value = new WebSocket(wsUrl)

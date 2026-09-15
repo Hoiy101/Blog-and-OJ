@@ -1,4 +1,5 @@
 import $ from "jquery";
+import { API_BASE } from "@/config.mjs";
 
 export default {
     state: {
@@ -41,7 +42,7 @@ export default {
     actions: {
         login(context, data) {
             $.ajax({
-                url: "http://127.0.0.1:3000/user/account/token/",
+                url: `${API_BASE}/user/account/token/`,
                 type: "post", 
                 data: {
                     username: data.username,
@@ -70,7 +71,7 @@ export default {
             };
 
             $.ajax({
-                url: "http://127.0.0.1:3000/user/account/info/",
+                url: `${API_BASE}/user/account/info/`,
                 type: "get",
                 headers: {
                     Authorization: "Bearer " + context.state.token,
@@ -97,7 +98,7 @@ export default {
             formData.append("file", data.file);
 
             $.ajax({
-                url: "http://127.0.0.1:3000/user/account/avatar/upload/",
+                url: `${API_BASE}/user/account/avatar/upload/`,
                 type: "post",
                 data: formData,
                 processData: false,

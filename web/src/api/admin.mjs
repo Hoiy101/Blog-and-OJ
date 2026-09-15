@@ -1,6 +1,5 @@
 import $ from 'jquery'
-
-const API_BASE = 'http://127.0.0.1:3000'
+import { API_BASE } from '../config.mjs'
 
 const request = options => new Promise((resolve, reject) => {
   const { token, ...ajaxOptions } = options

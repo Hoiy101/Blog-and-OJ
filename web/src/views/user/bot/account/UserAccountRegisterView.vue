@@ -44,6 +44,7 @@ import ContentField from '@/components/ContentField.vue';
 import { ref } from 'vue';
 import router from '@/router/index.js';
 import $ from 'jquery';
+import { API_BASE } from '@/config.mjs';
 
 export default{
     components: {
@@ -58,7 +59,7 @@ export default{
         const register = () => {
                 error_message.value = '';
                 $.ajax({
-                url: "http://127.0.0.1:3000/user/account/register/",
+                url: `${API_BASE}/user/account/register/`,
                 type: "post",
                 data: {
                     username: username.value,
