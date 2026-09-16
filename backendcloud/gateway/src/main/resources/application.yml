@@ -9,7 +9,7 @@ spring:
       discovery:
         server-addr: 47.119.128.174:8848
         username: nacos
-        password: quEYL8EnDp7fhyiPvmWv
+        password: nacos
     gateway:
       discovery:
         locator:
