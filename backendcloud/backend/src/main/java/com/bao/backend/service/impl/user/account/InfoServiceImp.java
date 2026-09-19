@@ -1,0 +1,35 @@
+package com.bao.backend.service.impl.user.account;
+
+import com.bao.backend.pojo.User;
+import com.bao.backend.service.impl.utils.UserDetailsImpl;
+import com.bao.backend.service.user.account.InfoService;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@Service
+public class InfoServiceImp implements InfoService {
+
+    @Override
+    public Map<String, String> getinfo() {
+        UsernamePasswordAuthenticationToken authentication =
+                (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        User user = userDetails.getUser();
+
+        Map<String, String> map = new HashMap<>();
+        if(user.getBanned().equals("true")){
+            map.put("error_message", "该账号已被封禁");
+            return map;
+        }
+        map.put("error_message", "success");
+        map.put("id", user.getId().toString());
+        map.put("username", user.getUsername());
+        map.put("photo", user.getPhoto());
+        map.put("root", user.getRoot());
+        return map;
+    }
+}

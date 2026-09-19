@@ -1,0 +1,98 @@
+package com.bao.backend.service.impl.blog;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.bao.backend.mapper.BlogMapper;
+import com.bao.backend.pojo.Blog;
+import com.bao.backend.pojo.User;
+import com.bao.backend.service.impl.utils.UserDetailsImpl;
+import com.bao.backend.service.blog.UpdateService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+@Service
+public class UpdateServiceImpl implements UpdateService {
+    @Autowired
+    private BlogMapper blogMapper;
+
+    @Autowired
+    private StringRedisTemplate redisTemplate;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Override
+    public Map<String, String> update(Map<String, String> data) throws JsonProcessingException {
+        UsernamePasswordAuthenticationToken authenticationToken =
+                (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl loginUser = (UserDetailsImpl) authenticationToken.getPrincipal();
+        User user = loginUser.getUser();
+
+        int bot_id = Integer.parseInt(data.get("bot_id"));
+        Blog blog = blogMapper.selectById(bot_id);
+
+        String title = data.get("title");
+        String description = data.get("description");
+        String content = data.get("content");
+
+        Map<String,String> map = new HashMap<>();
+
+        if(title == null || title.length() == 0){
+            map.put("error_message", "标题不能为空");
+            return map;
+        }
+
+        if(title.length() > 50){
+            map.put("error_message", "标题长度不能大于50");
+            return map;
+        }
+
+        if(description == null || description.length() == 0){
+            description = "该用户很懒，什么也没有写";
+        }
+
+        if(description.length() > 300){
+            map.put("error_message", "简介长度不能大于300");
+            return map;
+        }
+
+        if(content == null || content.length() == 0){
+            map.put("error_message", "正文不能为空");
+            return map;
+        }
+
+        if(content.length() > 10000){
+            map.put("error_message", "正文长度不能大于10000");
+            return map;
+        }
+
+        if(blog == null){
+            map.put("error_message", "bot不存在或已被删除");
+            return map;
+        }
+
+        if(!user.getId().equals(blog.getUserId())){
+            map.put("error_message", "没有权限修改此bot");
+            return map;
+        }
+
+
+        Date date = new Date();
+        Blog new_blog = new Blog(blog.getId(), user.getId(), title, description, content, blog.getCreatetime(), date);
+
+        blogMapper.updateById(new_blog);
+        String string_blog = objectMapper.writeValueAsString(new_blog);
+        redisTemplate.opsForValue().set("blog:" + blog.getId(), string_blog);
+
+        map.put("error_message", "success");
+
+        return map;
+    }
+}

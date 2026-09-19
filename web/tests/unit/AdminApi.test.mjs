@@ -17,7 +17,9 @@ const endpointContracts = [
   ['updateTopic', '/oj/topic/updata/', 'POST'],
   ['removeTopic', '/oj/topic/remove/', 'POST'],
   ['getEvaluates', '/manage/evaluate/get/', 'POST'],
-  ['updateEvaluates', '/manage/evaluate/updata/', 'POST']
+  ['updateEvaluates', '/manage/evaluate/updata/', 'POST'],
+  ['judgeStatus', '/manage/judge/status/', 'GET'],
+  ['judgeCircuitBreaker', '/manage/judge/circuitbreaker/', 'GET']
 ]
 
 test('declares every management endpoint and HTTP method', () => {

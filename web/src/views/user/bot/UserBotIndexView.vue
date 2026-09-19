@@ -67,7 +67,7 @@
                                     </div>
                                     <div class="blog-manage-actions">
                                         <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" :data-bs-target="'#update-bot-modal-' + bot.id"><i class="bi bi-pencil"></i> 编辑</button>
-                                        <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#romver"><i class="bi bi-trash3"></i> 删除</button>
+                                        <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" :data-bs-target="'#remove-bot-modal-' + bot.id"><i class="bi bi-trash3"></i> 删除</button>
                                     </div>
 
                                     <div class="modal fade" :id="'update-bot-modal-' + bot.id" tabindex="-1">
@@ -100,11 +100,11 @@
                                         </div>
                                     </div>
 
-                                    <div class="modal fade" id="romver" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal fade" :id="'remove-bot-modal-' + bot.id" tabindex="-1" :aria-labelledby="'remove-bot-modal-label-' + bot.id" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalLabel"><i class="bi bi-trash3 me-2 text-danger"></i>删除博客</h5>
+                                                    <h5 class="modal-title" :id="'remove-bot-modal-label-' + bot.id"><i class="bi bi-trash3 me-2 text-danger"></i>删除博客</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
@@ -425,7 +425,7 @@ export default{
                 success(resp){
                     if(resp.error_message === "success"){
                         refresh_bots();
-                        Modal.getInstance("#romver").hide();
+                        Modal.getInstance('#remove-bot-modal-' + bot.id).hide();
                     }
                 }
             })

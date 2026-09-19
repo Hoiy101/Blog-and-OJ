@@ -31,6 +31,7 @@
             <li><router-link class="dropdown-item" :to="{name:'manage_users'}"><i class="bi bi-people"></i> 用户管理</router-link></li>
             <li><router-link class="dropdown-item" :to="{name:'manage_login_records'}"><i class="bi bi-clock-history"></i> 用户登录信息</router-link></li>
             <li><router-link class="dropdown-item" :to="{name:'manage_topics'}"><i class="bi bi-collection"></i> 题库管理</router-link></li>
+            <li><router-link class="dropdown-item" :to="{name:'manage_runtime_status'}"><i class="bi bi-activity"></i> 运行状态</router-link></li>
           </ul>
         </li>
         <!-- <li class="nav-item">

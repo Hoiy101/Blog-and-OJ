@@ -13,6 +13,7 @@ import AnswerDetail from '@/views/answer/AnswerDetail.vue'
 import ManageUsersView from '@/views/manage/ManageUsersView.vue'
 import ManageLoginRecordsView from '@/views/manage/ManageLoginRecordsView.vue'
 import ManageTopicsView from '@/views/manage/ManageTopicsView.vue'
+import ManageRuntimeStatusView from '@/views/manage/ManageRuntimeStatusView.vue'
 import { isAdmin } from '@/utils/admin.mjs'
 
 const routes = [
@@ -92,6 +93,12 @@ const routes = [
     path:"/manage/topics/",
     name:"manage_topics",
     component:ManageTopicsView,
+    meta: { requiresAuth: true, requiresAdmin: true },
+  },
+  {
+    path:"/manage/runtime-status/",
+    name:"manage_runtime_status",
+    component:ManageRuntimeStatusView,
     meta: { requiresAuth: true, requiresAdmin: true },
   },
   {

@@ -96,5 +96,17 @@ export const adminApi = {
     token,
     contentType: 'application/json; charset=UTF-8',
     data: JSON.stringify(payload)
+  }),
+
+  judgeStatus: token => request({
+    url: '/manage/judge/status/',
+    type: 'GET',
+    token
+  }),
+
+  judgeCircuitBreaker: token => request({
+    url: '/manage/judge/circuitbreaker/',
+    type: 'GET',
+    token
   })
 }

@@ -15,16 +15,18 @@ const loginSource = await readFile(
   'utf8'
 )
 
-test('registers three authenticated administrator routes', () => {
+test('registers four authenticated administrator routes', () => {
   const contracts = [
     ['manage_users', '/manage/users/'],
     ['manage_login_records', '/manage/login-records/'],
-    ['manage_topics', '/manage/topics/']
+    ['manage_topics', '/manage/topics/'],
+    ['manage_runtime_status', '/manage/runtime-status/']
   ]
 
   assert.match(routerSource, /ManageUsersView/)
   assert.match(routerSource, /ManageLoginRecordsView/)
   assert.match(routerSource, /ManageTopicsView/)
+  assert.match(routerSource, /ManageRuntimeStatusView/)
 
   for (const [name, path] of contracts) {
     const route = routerSource.match(
@@ -53,5 +55,6 @@ test('shows an administrator dropdown with all management links', () => {
   assert.match(navbarSource, /name:'manage_users'/)
   assert.match(navbarSource, /name:'manage_login_records'/)
   assert.match(navbarSource, /name:'manage_topics'/)
+  assert.match(navbarSource, /name:'manage_runtime_status'/)
   assert.match(navbarSource, /computed\(\(\)\s*=>\s*isAdmin\(store\.state\.user\.root\)\)/)
 })

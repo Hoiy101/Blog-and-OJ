@@ -12,6 +12,7 @@ import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -20,6 +21,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class EvaluatePool {
     @Autowired
     private final Consumer consumer;
+    private final AtomicInteger atomicInteger = new AtomicInteger(0);
 
     public EvaluatePool(Consumer consumer) {
         this.consumer = consumer;
@@ -27,6 +29,16 @@ public class EvaluatePool {
 
     @RabbitListener(queues = "evaluate.task.queue", concurrency = "2")
     private void pool(JSONObject message) {
-        consumer.startEvaluate(message);
+        try {
+            consumer.startEvaluate(message);
+            atomicInteger.incrementAndGet();
+        }
+        finally {
+            atomicInteger.decrementAndGet();
+        }
+    }
+
+    public int getAtomicInteger() {
+        return atomicInteger.get();
     }
 }

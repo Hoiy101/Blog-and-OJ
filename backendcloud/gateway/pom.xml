@@ -15,6 +15,13 @@
         <spring-cloud-alibaba.version>2021.0.5.0</spring-cloud-alibaba.version>
         <spring-cloud.version>2021.0.5</spring-cloud.version>
     </properties>
+
+    <parent>
+        <groupId>com.bao</groupId>
+        <artifactId>backendcloud</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
